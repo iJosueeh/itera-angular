@@ -1,59 +1,179 @@
-# Itera
+<div align="center">
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.2.
+# Itera AI Mentor
 
-## Development server
+Plataforma web de orientacion profesional para comparar carreras por salario, demanda y crecimiento con acompanamiento de un mentor IA.
 
-To start a local development server, run:
+![Angular](https://img.shields.io/badge/Angular-21.2-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![Tailwind](https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![RxJS](https://img.shields.io/badge/RxJS-7.8-B7178C?style=for-the-badge&logo=reactivex&logoColor=white)
+![Build](https://img.shields.io/badge/Build-Passing-22C55E?style=for-the-badge)
+![Idioma](https://img.shields.io/badge/Idioma-Espanol-2563EB?style=for-the-badge)
 
-```bash
-ng serve
+</div>
+
+---
+
+## Tabla de contenidos
+
+- Vision
+- Caracteristicas
+- Stack tecnologico
+- Arquitectura
+- Rutas
+- Puesta en marcha
+- Scripts
+- UI y diseño
+- Roadmap
+
+---
+
+## Vision
+
+Itera esta pensado para ayudar a estudiantes y profesionales a tomar decisiones de carrera con mejor informacion y una experiencia guiada.
+
+Objetivos del producto:
+
+- Comparar opciones profesionales en un solo flujo.
+- Traducir datos a decisiones practicas.
+- Ofrecer una experiencia clara, rapida y visual.
+
+---
+
+## Caracteristicas
+
+| Area | Implementacion actual |
+| --- | --- |
+| Landing | Dashboard principal en `/` |
+| Comparador | Snapshot por carrera con datos mock |
+| Autenticacion | Login y Registro con formularios reactivos |
+| Social login UI | Google y LinkedIn |
+| Servicios mock | Dashboard + Auth con latencia simulada (`delay`) |
+| Navegacion | Lazy loading por feature |
+| Fallback | Pagina 404 para rutas no encontradas |
+| Shared UI | BaseLayout, Header y Footer reutilizables |
+
+---
+
+## Stack tecnologico
+
+- Angular 21.2 (arquitectura standalone)
+- Tailwind CSS 4.1
+- RxJS 7.8
+- Bootstrap Icons
+- Vitest
+- Tipografias: Sora y Nunito Sans
+
+---
+
+## Arquitectura
+
+```text
+src/
+  app/
+    features/
+      dashboard/
+      auth/
+        login/
+        register/
+    shared/
+      components/
+        base-layout/
+        header/
+        footer/
+        not-found-page/
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Patron principal:
 
-## Code scaffolding
+- `features`: dominio funcional.
+- `shared/components`: piezas reutilizables de interfaz.
+- `services`: mock API y logica de acceso a datos.
+- `interfaces`: contratos tipados para cada feature.
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
-```
+## Rutas
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+| Ruta | Comportamiento |
+| --- | --- |
+| `/` | Dashboard principal |
+| `/auth/login` | Inicio de sesion |
+| `/auth/register` | Registro de usuario |
+| `/dashboard` | Redireccion a `/` |
+| `**` | Vista 404 |
 
-```bash
-ng generate --help
-```
+---
 
-## Building
+## Puesta en marcha
 
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### 1. Instalar dependencias
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### 2. Ejecutar en desarrollo
 
 ```bash
-ng e2e
+npm run start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Aplicacion disponible en `http://localhost:4200`.
 
-## Additional Resources
+### 3. Generar build
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npm run build
+```
+
+### 4. Ejecutar tests
+
+```bash
+npm run test
+```
+
+---
+
+## Scripts
+
+| Script | Descripcion |
+| --- | --- |
+| `npm run start` | Levanta servidor de desarrollo |
+| `npm run build` | Compila build de produccion |
+| `npm run watch` | Compila en modo observacion |
+| `npm run test` | Ejecuta pruebas |
+
+---
+
+## UI y diseño
+
+Base visual definida en variables globales:
+
+- `--page-bg`
+- `--text-color`
+- `--brand`
+- `--accent`
+- `--title-font` (Sora)
+- `--body-font` (Nunito Sans)
+
+Lineamientos aplicados:
+
+- Contenido en espanol orientado a mentoring de carrera.
+- Identidad consistente entre dashboard y auth.
+- Composicion responsive con Tailwind y componentes reutilizables.
+
+---
+
+## Roadmap
+
+- Guard de autenticacion para rutas protegidas.
+- Flujo de recuperacion de contrasena.
+- Comparativa multi-carrera en paralelo.
+- Mayor cobertura de pruebas para formularios y servicios.
+
+---
+
+## Creditos
+
+Proyecto generado con Angular CLI 21.2.2 y evolucionado a una arquitectura modular basada en features y shared components.
