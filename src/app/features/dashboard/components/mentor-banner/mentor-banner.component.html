@@ -1,0 +1,17 @@
+<section class="px-5 pb-12 pt-7" aria-label="Recomendación del mentor">
+  <article class="mx-auto grid max-w-[900px] grid-cols-1 gap-4 rounded-2xl border border-[#e2e4f4] bg-white p-5 shadow-[0_18px_30px_rgba(53,55,191,0.12)] sm:grid-cols-[auto_1fr]">
+    <div class="grid h-16 w-16 place-content-center rounded-full bg-gradient-to-br from-[#00a181] to-[#3537bf] font-bold text-white" role="img" [attr.aria-label]="mentor().avatarAlt">
+      <span>AI</span>
+    </div>
+
+    <div>
+      <p class="m-0 text-[0.92rem] font-semibold text-[#3537bf]">{{ mentor().mentorName }}</p>
+      <p class="mt-2 text-[clamp(1.2rem,2.5vw,1.5rem)] leading-[1.34]">{{ mentor().message }}</p>
+
+      <div class="mt-4 flex flex-wrap gap-3">
+        <button type="button" class="cursor-pointer rounded-full border border-[#3537bf] bg-gradient-to-br from-[#3537bf] to-[#24289a] px-4 py-2 font-semibold text-white">{{ mentor().primaryAction }}</button>
+        <button type="button" class="cursor-pointer rounded-full border border-[#dbddee] bg-transparent px-4 py-2 font-semibold text-[#3d3f5d]">{{ mentor().secondaryAction }}</button>
+      </div>
+    </div>
+  </article>
+</section>

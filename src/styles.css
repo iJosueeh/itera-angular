@@ -1,3 +1,38 @@
 /* You can add global styles to this file, and also import other style files */
 
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Nunito+Sans:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+:root {
+	--page-bg: #f6f7ff;
+	--text-color: #16162a;
+	--brand: #3537bf;
+	--brand-strong: #24289a;
+	--accent: #00a181;
+	--line-color: #e2e4f4;
+	--title-font: 'Sora', 'Segoe UI', sans-serif;
+	--body-font: 'Nunito Sans', 'Segoe UI', sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	min-height: 100%;
+}
+
+body {
+	font-family: var(--body-font);
+	color: var(--text-color);
+	background: var(--page-bg);
+}
+
+button,
+input,
+textarea {
+	font-family: inherit;
+}

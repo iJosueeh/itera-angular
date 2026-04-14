@@ -1,0 +1,27 @@
+<aside class="hidden min-h-screen bg-gradient-to-br from-[#3a44ab] to-[#2a2e87] p-12 text-white lg:block">
+  <div class="flex h-full flex-col">
+    <h1 class="font-[Sora] text-5xl font-bold">{{ vm().productName }}</h1>
+    <p class="mt-6 max-w-md text-lg text-[#d7dcff]">{{ vm().visualSubtitle }}</p>
+
+    <div class="mt-24 space-y-10">
+      @for (bullet of vm().visualBullets; track bullet.title) {
+        <article class="flex gap-6">
+          <div class="mt-1 grid h-12 w-12 flex-shrink-0 place-content-center rounded-xl bg-[#4b56ca]">
+            <i [class]="'text-lg ' + bullet.icon" aria-hidden="true"></i>
+          </div>
+          <div>
+            <h2 class="m-0 font-[Sora] text-2xl font-semibold">{{ bullet.title }}</h2>
+            <p class="m-0 mt-3 max-w-md text-base text-[#d7dcff]/90">{{ bullet.description }}</p>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="mt-24 flex flex-col">
+      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-[#9fa5ff]">{{ vm().mentorName }}</p>
+      <div class="mt-6 rounded-2xl border border-white/25 bg-gradient-to-br from-white/15 to-white/5 p-8 backdrop-blur-md">
+        <p class="m-0 text-base leading-relaxed text-white">{{ vm().mentorQuote }}</p>
+      </div>
+    </div>
+  </div>
+</aside>

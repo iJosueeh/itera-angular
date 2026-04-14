@@ -1,0 +1,41 @@
+<aside class="relative hidden min-h-screen overflow-hidden bg-gradient-to-br from-[#171b58] via-[#232a74] to-[#12153f] p-12 text-white lg:block">
+  <div class="absolute inset-0 opacity-40" aria-hidden="true">
+    <div class="absolute -left-8 top-20 h-72 w-72 rounded-full bg-[#3f4ec9]/35 blur-3xl"></div>
+    <div class="absolute right-6 top-1/3 h-80 w-80 rounded-full bg-[#00b7a8]/20 blur-3xl"></div>
+  </div>
+
+  <div class="relative z-10 flex h-full flex-col">
+    <span class="inline-block w-fit rounded-full bg-[#76ffd7] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#0d2a2e]">
+      {{ vm().visualTag }}
+    </span>
+
+    <h1 class="mt-10 max-w-lg font-[Sora] text-5xl font-bold leading-tight">
+      {{ vm().visualTitle }}
+    </h1>
+
+    <p class="mt-8 max-w-xl text-lg text-[#d6dbff]">
+      {{ vm().visualSubtitle }}
+    </p>
+
+    <div class="mt-16 space-y-6">
+      @for (bullet of vm().visualBullets; track bullet.title) {
+        <article class="rounded-2xl border border-white/20 bg-white/10 px-6 py-5 backdrop-blur transition-all duration-300 hover:bg-white/15">
+          <div class="flex items-start gap-4">
+            <i [class]="'text-xl ' + bullet.icon" aria-hidden="true"></i>
+            <div>
+              <p class="m-0 text-base font-semibold">{{ bullet.title }}</p>
+              <p class="m-0 mt-2 text-sm text-[#d6dbff]/80">{{ bullet.description }}</p>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="mt-24 flex flex-col">
+      <p class="text-xs font-semibold uppercase tracking-[0.15em] text-[#76ffd7]">{{ vm().mentorName }}</p>
+      <div class="mt-6 rounded-2xl border border-white/30 bg-gradient-to-br from-white/15 to-white/5 p-8 backdrop-blur-md">
+        <p class="m-0 text-base leading-relaxed text-[#d6dbff]">{{ vm().mentorQuote }}</p>
+      </div>
+    </div>
+  </div>
+</aside>

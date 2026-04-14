@@ -1,0 +1,33 @@
+@if (showHeader()) {
+  <itera-header [brand]="headerBrand()" [items]="headerItems()" [showUserActions]="headerShowUserActions()" />
+}
+
+@switch (layoutType()) {
+  @case ('auth') {
+    <main class="grid min-h-screen grid-cols-1 lg:grid-cols-2">
+      <!-- Left Panel: Visual (Hidden on mobile) -->
+      @if (leftPanelContent()) {
+        <ng-container [ngTemplateOutlet]="leftPanelContent()"></ng-container>
+      }
+
+      <!-- Right Panel: Form/Content -->
+      <section class="relative flex flex-col">
+        @if (rightPanelContent()) {
+          <ng-container [ngTemplateOutlet]="rightPanelContent()"></ng-container>
+        }
+        <ng-content></ng-content>
+      </section>
+    </main>
+  }
+
+  @default {
+    <!-- Full-width layout (future enhancement) -->
+    <main class="min-h-screen">
+      <ng-content></ng-content>
+    </main>
+  }
+}
+
+@if (showFooter()) {
+  <itera-footer [brand]="footerBrand()" [links]="footerLinks()" />
+}

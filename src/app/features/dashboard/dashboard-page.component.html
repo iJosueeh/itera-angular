@@ -1,0 +1,91 @@
+<main class="min-h-screen bg-[#f6f7ff] text-[#16162a]">
+  <itera-top-nav [brand]="vm().brand" [items]="vm().navItems" />
+
+  @if (isLoading()) {
+    <div class="mx-auto max-w-[1100px] px-5 pt-6">
+      <p class="rounded-xl border border-[#e2e4f4] bg-white px-4 py-3 text-[#4b4d6b]">
+        Cargando tu panel de mentor de carreras...
+      </p>
+    </div>
+  }
+
+  @if (loadingError()) {
+    <div class="mx-auto max-w-[1100px] px-5 pt-4">
+      <p class="rounded-xl border border-[#ffd3d9] bg-[#fff5f7] px-4 py-3 text-[#8f2440]">
+        {{ loadingError() }}
+      </p>
+    </div>
+  }
+
+  <itera-hero-search
+    [content]="vm().hero"
+    (explore)="onExplore($event)"
+  />
+
+  @if (lastSearch()) {
+    <p class="mx-auto max-w-[1100px] px-5 pb-5 text-[0.95rem] text-[#3d3f5d]" aria-live="polite">
+      Analizando comparativo para: <strong>{{ lastSearch() }}</strong>
+    </p>
+  }
+
+  @if (isAnalyzing()) {
+    <div class="mx-auto max-w-[1100px] px-5 pb-4">
+      <p class="rounded-xl border border-[#d5daf8] bg-[#eef1ff] px-4 py-3 text-[#303485]">
+        Procesando salario anual, demanda y ruta de aprendizaje...
+      </p>
+    </div>
+  }
+
+  @if (analysisError()) {
+    <div class="mx-auto max-w-[1100px] px-5 pb-4">
+      <p class="rounded-xl border border-[#ffd3d9] bg-[#fff5f7] px-4 py-3 text-[#8f2440]">
+        {{ analysisError() }}
+      </p>
+    </div>
+  }
+
+  @if (careerSnapshot(); as snapshot) {
+    <section class="mx-auto max-w-[1100px] px-5 pb-5" aria-label="Comparativo de carrera">
+      <article class="rounded-2xl border border-[#e2e4f4] bg-white p-6 shadow-[0_18px_35px_rgba(53,55,191,0.08)]">
+        <h2 class="font-[Sora] text-2xl font-semibold text-[#22245b]">
+          Comparativo de {{ snapshot.career }}
+        </h2>
+
+        <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-3">
+          <div class="rounded-xl bg-[#f4f6ff] p-3">
+            <p class="text-xs uppercase tracking-wide text-[#4d5199]">Salario anual estimado</p>
+            <p class="mt-1 text-lg font-semibold">{{ snapshot.annualSalaryUsd }}</p>
+          </div>
+          <div class="rounded-xl bg-[#f4f6ff] p-3">
+            <p class="text-xs uppercase tracking-wide text-[#4d5199]">Demanda de mercado</p>
+            <p class="mt-1 text-lg font-semibold">{{ snapshot.demandLevel }}</p>
+          </div>
+          <div class="rounded-xl bg-[#f4f6ff] p-3">
+            <p class="text-xs uppercase tracking-wide text-[#4d5199]">Proyeccion de crecimiento</p>
+            <p class="mt-1 text-lg font-semibold">{{ snapshot.marketGrowth }}</p>
+          </div>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2">
+          <div class="rounded-xl border border-[#eceffd] p-4">
+            <p class="text-sm font-semibold text-[#2f327d]">Ruta de aprendizaje sugerida</p>
+            <p class="mt-1 text-[#4b4d6b]">{{ snapshot.learningRoute }}</p>
+          </div>
+          <div class="rounded-xl border border-[#eceffd] p-4">
+            <p class="text-sm font-semibold text-[#2f327d]">Perfil recomendado</p>
+            <p class="mt-1 text-[#4b4d6b]">{{ snapshot.profileFit }}</p>
+          </div>
+        </div>
+      </article>
+    </section>
+  }
+
+  <itera-feature-highlights
+    [cards]="vm().featureCards"
+    [progress]="vm().progress"
+  />
+
+  <itera-mentor-banner [mentor]="vm().mentor" />
+
+  <itera-site-footer [brand]="vm().brand" [links]="vm().footerLinks" />
+</main>

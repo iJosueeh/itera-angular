@@ -1,0 +1,17 @@
+<footer class="border-t border-[#e2e4f4] bg-white/88">
+  <div class="mx-auto grid min-h-[74px] max-w-[1100px] grid-cols-1 items-center gap-3 px-5 py-3 text-center lg:grid-cols-[auto_1fr_auto] lg:text-left">
+    <p class="m-0 font-[Sora] font-bold text-[#3537bf]">{{ brand() }}</p>
+
+    @if (links().length > 0) {
+      <ul class="m-0 flex list-none flex-wrap justify-center gap-4 p-0" aria-label="Enlaces legales">
+        @for (link of links(); track link.label) {
+          <li>
+            <a [href]="link.href" class="text-[0.85rem] text-[#5e607f] no-underline hover:text-[#3537bf] transition-colors">{{ link.label }}</a>
+          </li>
+        }
+      </ul>
+    }
+
+    <p class="m-0 text-[0.85rem] text-[#5e607f]">{{ copyright() }}</p>
+  </div>
+</footer>
