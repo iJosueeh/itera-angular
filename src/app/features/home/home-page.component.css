@@ -1,0 +1,8 @@
+.home-hero {
+  min-height: 360px;
+}
+
+.home-cta {
+  display: flex;
+  gap: 0.5rem;
+}

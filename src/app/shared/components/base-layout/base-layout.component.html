@@ -1,5 +1,9 @@
 @if (showHeader()) {
-  <itera-header [brand]="headerBrand()" [items]="headerItems()" [showUserActions]="headerShowUserActions()" />
+  <itera-header
+    [brand]="headerBrand()"
+    [items]="headerItems()"
+    [showUserActions]="headerShowUserActions()"
+  />
 }
 
 @switch (layoutType()) {

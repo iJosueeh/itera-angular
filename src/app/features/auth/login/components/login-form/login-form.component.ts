@@ -8,7 +8,7 @@ import { LoginPayload, LoginViewModel } from '../../../interfaces/auth.interface
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginFormComponent {
   private readonly formBuilder = inject(FormBuilder);
@@ -19,7 +19,7 @@ export class LoginFormComponent {
 
   protected readonly loginForm = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]]
+    password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
   protected onSubmit(): void {

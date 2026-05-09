@@ -11,7 +11,7 @@ export interface NavItem {
   standalone: true,
   templateUrl: './header.component.html',
   styleUrl: './header.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
   readonly brand = input<string>('Itera');

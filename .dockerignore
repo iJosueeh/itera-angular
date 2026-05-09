@@ -1,0 +1,17 @@
+*.md
+.git
+.gitignore
+.env
+.env.local
+.vscode
+.idea
+node_modules
+dist
+build
+.DS_Store
+.gitkeep
+package-lock.json
+yarn.lock
+angular.json
+tsconfig.*
+karma.conf.js

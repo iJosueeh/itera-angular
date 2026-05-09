@@ -1,0 +1,19 @@
+<main
+  class="min-h-screen bg-[radial-gradient(circle_at_top,_#f0ecff_0%,_#eef2ff_45%,_#f7fbff_100%)] text-[#16162a]"
+>
+  <itera-top-nav [brand]="vm().brand" [items]="vm().navItems" />
+
+  <section class="mx-auto max-w-[1100px] px-5 pt-8">
+    <div
+      class="rounded-[28px] border border-white/70 bg-white/45 px-5 py-6 shadow-[0_25px_60px_rgba(73,84,174,0.14)] backdrop-blur-xl sm:px-7 sm:py-8"
+    >
+      <itera-hero-search [content]="vm().hero" />
+    </div>
+  </section>
+
+  <itera-feature-highlights [cards]="vm().featureCards" [progress]="vm().progress" />
+
+  <itera-mentor-banner [mentor]="vm().mentor" />
+
+  <itera-footer [brand]="vm().brand" [links]="vm().footerLinks" />
+</main>

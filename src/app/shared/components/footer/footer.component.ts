@@ -10,7 +10,7 @@ export interface FooterLink {
   standalone: true,
   templateUrl: './footer.component.html',
   styleUrl: './footer.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FooterComponent {
   readonly brand = input<string>('Itera');

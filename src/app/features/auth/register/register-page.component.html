@@ -9,13 +9,17 @@
     />
 
     @if (responseMessage()) {
-      <p class="pointer-events-none absolute left-1/2 top-6 w-[calc(100%-3rem)] max-w-[430px] -translate-x-1/2 rounded-lg border border-[#cdeed6] bg-[#f1fff5] px-3 py-2 text-sm text-[#165a2f]">
+      <p
+        class="pointer-events-none absolute left-1/2 top-6 w-[calc(100%-3rem)] max-w-[430px] -translate-x-1/2 rounded-lg border border-[#cdeed6] bg-[#f1fff5] px-3 py-2 text-sm text-[#165a2f]"
+      >
         {{ responseMessage() }}
       </p>
     }
 
     @if (responseError()) {
-      <p class="pointer-events-none absolute left-1/2 top-6 w-[calc(100%-3rem)] max-w-[430px] -translate-x-1/2 rounded-lg border border-[#ffd3d9] bg-[#fff5f7] px-3 py-2 text-sm text-[#8f2440]">
+      <p
+        class="pointer-events-none absolute left-1/2 top-6 w-[calc(100%-3rem)] max-w-[430px] -translate-x-1/2 rounded-lg border border-[#ffd3d9] bg-[#fff5f7] px-3 py-2 text-sm text-[#8f2440]"
+      >
         {{ responseError() }}
       </p>
     }

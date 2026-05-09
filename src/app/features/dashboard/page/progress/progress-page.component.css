@@ -1,0 +1,16 @@
+:host {
+  display: block;
+}
+
+.ring {
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.ring-inner {
+  height: 56px;
+  width: 56px;
+  border-radius: 50%;
+}
