@@ -1,0 +1,24 @@
+<article
+  class="rounded-[32px] bg-[#4f54c4] p-8 text-white shadow-[0_24px_50px_rgba(79,84,196,0.28)]"
+>
+  <div
+    class="flex items-center gap-3 text-[0.82rem] font-semibold uppercase tracking-[0.22em] text-white/70"
+  >
+    <i class="bi bi-award-fill text-lg" aria-hidden="true"></i>
+    Mentor Alert
+  </div>
+  <h2 class="mt-6 text-[1.8rem] font-semibold leading-[1.15]">
+    {{ title() }}
+  </h2>
+  <p class="mt-4 text-[1.02rem] leading-[1.65] text-white/85">
+    {{ message() }}
+  </p>
+  <button
+    type="button"
+    (click)="actionClick.emit()"
+    class="mt-8 flex w-full items-center justify-center gap-3 rounded-full border-0 bg-[#56f0b9] px-6 py-4 text-[1.05rem] font-bold text-[#1f244c] shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-[#43e6a9] hover:shadow-xl"
+  >
+    {{ buttonText() }}
+    <i class="bi bi-arrow-right" aria-hidden="true"></i>
+  </button>
+</article>

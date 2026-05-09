@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
+import { MasteryCardComponent } from '@shared/ui/mastery-card/mastery-card.component';
+import { MentorAlertCardComponent } from '@shared/ui/mentor-alert-card/mentor-alert-card.component';
 import { NavItem } from '@shared/interfaces/dashboard.interface';
 
 interface MasteryCard {
@@ -25,7 +27,7 @@ interface BadgeItem {
 @Component({
   selector: 'itera-dashboard-progress-page',
   standalone: true,
-  imports: [DashboardShellComponent],
+  imports: [DashboardShellComponent, MasteryCardComponent, MentorAlertCardComponent],
   templateUrl: './progress-page.component.html',
   styleUrl: './progress-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

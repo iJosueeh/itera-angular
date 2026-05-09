@@ -48,68 +48,22 @@
 
           <div class="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             @for (card of masteryCards; track card.title) {
-              <article
-                class="rounded-[22px] bg-white p-4 text-center shadow-[0_14px_30px_rgba(53,55,191,0.06)]"
-              >
-                <div class="mx-auto grid h-20 w-20 place-content-center">
-                  <div
-                    class="ring"
-                    [style.background]="
-                      card.tone === 'indigo'
-                        ? 'conic-gradient(#4046b8 ' +
-                          card.progress +
-                          '%, #eef1ff ' +
-                          card.progress +
-                          '%)'
-                        : card.tone === 'emerald'
-                          ? 'conic-gradient(#21b77f ' +
-                            card.progress +
-                            '%, #eef1ff ' +
-                            card.progress +
-                            '%)'
-                          : 'conic-gradient(#7b83eb ' +
-                            card.progress +
-                            '%, #eef1ff ' +
-                            card.progress +
-                            '%)'
-                    "
-                  >
-                    <div class="ring-inner bg-white grid place-content-center">
-                      {{ card.progress }}%
-                    </div>
-                  </div>
-                </div>
-                <p class="mt-4 text-[0.95rem] font-semibold text-[#2f327d]">{{ card.title }}</p>
-                <p class="mt-1 text-[0.76rem] text-[#7b7f9a]">{{ card.subtitle }}</p>
-              </article>
+              <itera-mastery-card
+                [title]="card.title"
+                [subtitle]="card.subtitle"
+                [progress]="card.progress"
+                [tone]="card.tone"
+              />
             }
           </div>
         </div>
       </article>
 
       <aside class="flex flex-col gap-4">
-        <article
-          class="rounded-[32px] bg-[#4f54c4] p-8 text-white shadow-[0_24px_50px_rgba(79,84,196,0.28)]"
-        >
-          <div
-            class="flex items-center gap-3 text-[0.82rem] font-semibold uppercase tracking-[0.22em] text-white/70"
-          >
-            <i class="bi bi-award-fill text-lg" aria-hidden="true"></i>
-            Mentor Alert
-          </div>
-          <h2 class="mt-6 text-[1.8rem] font-semibold leading-[1.15]">Retoma tu ruta en Python</h2>
-          <p class="mt-4 text-[1.02rem] leading-[1.65] text-white/85">
-            Has estado ausente 2 días. El módulo de iteraciones profundizadas está esperando para
-            alcanzar tu meta semanal.
-          </p>
-          <button
-            type="button"
-            class="mt-8 flex w-full items-center justify-center gap-3 rounded-full border-0 bg-[#56f0b9] px-6 py-4 text-[1.05rem] font-bold text-[#1f244c] shadow-lg transition-all duration-300 hover:-translate-y-1 hover:bg-[#43e6a9] hover:shadow-xl"
-          >
-            Continue Learning
-            <i class="bi bi-arrow-right" aria-hidden="true"></i>
-          </button>
-        </article>
+        <itera-mentor-alert-card
+          title="Retoma tu ruta en Python"
+          message="Has estado ausente 2 días. El módulo de iteraciones profundizadas está esperando para alcanzar tu meta semanal."
+        />
       </aside>
     </section>
 
