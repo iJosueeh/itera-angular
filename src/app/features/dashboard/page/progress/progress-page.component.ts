@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DashboardContentService } from '../../../home/services/dashboard-content.service';
-import { DashboardShellComponent } from '../../../../shared/components/dashboard-shell/dashboard-shell.component';
-import { NavItem } from '../../../../shared/interfaces/dashboard.interface';
+import { DashboardContentService } from '@features/home/services/dashboard-content.service';
+import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
+import { NavItem } from '@shared/interfaces/dashboard.interface';
 
 interface MasteryCard {
   title: string;
