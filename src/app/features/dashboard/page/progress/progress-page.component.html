@@ -81,18 +81,11 @@
 
         <div class="mt-5 flex flex-wrap gap-3">
           @for (badge of badges; track badge.label) {
-            <div
-              class="grid h-14 w-14 place-content-center rounded-[18px] border transition-all duration-200"
-              [class.border-[#dbe0f9]]="badge.earned"
-              [class.bg-[#e8fff6]]="badge.earned"
-              [class.text-[#0ebd86]]="badge.earned"
-              [class.border-[#eceef7]]="!badge.earned"
-              [class.bg-[#f3f4f9]]="!badge.earned"
-              [class.text-[#c0c4d7]]="!badge.earned"
-              [title]="badge.label"
-            >
-              <i [class]="'bi ' + badge.icon"></i>
-            </div>
+            <itera-badge-item
+              [label]="badge.label"
+              [icon]="badge.icon"
+              [earned]="badge.earned"
+            />
           }
         </div>
       </article>
@@ -154,24 +147,8 @@
       >
         <h2 class="text-[1.05rem] font-semibold text-[#2f327d]">Quick Stats</h2>
         <div class="mt-4 space-y-4 text-sm">
-          <div>
-            <div class="flex items-center justify-between text-[#6b6f92]">
-              <span>Weekly completion</span>
-              <span class="font-semibold text-[#2f327d]">72%</span>
-            </div>
-            <div class="mt-2 h-3 rounded-full bg-[#eef1ff]">
-              <div class="h-3 w-[72%] rounded-full bg-[#4046b8]"></div>
-            </div>
-          </div>
-          <div>
-            <div class="flex items-center justify-between text-[#6b6f92]">
-              <span>Quiz accuracy</span>
-              <span class="font-semibold text-[#2f327d]">88%</span>
-            </div>
-            <div class="mt-2 h-3 rounded-full bg-[#eef1ff]">
-              <div class="h-3 w-[88%] rounded-full bg-[#35d39b]"></div>
-            </div>
-          </div>
+          <itera-stat-bar label="Weekly completion" [value]="72" color="#4046b8" />
+          <itera-stat-bar label="Quiz accuracy" [value]="88" color="#35d39b" />
         </div>
       </aside>
     </section>
