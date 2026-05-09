@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { HeroContent } from '../../interfaces/dashboard.interface';
+import { HeroContent } from '@shared/interfaces/dashboard.interface';
 
 @Component({
   selector: 'itera-hero-search',

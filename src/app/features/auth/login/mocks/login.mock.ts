@@ -1,4 +1,4 @@
-import { LoginViewModel } from '../../interfaces/auth.interface';
+import { LoginViewModel } from '@features/auth/interfaces/auth.interface';
 
 export const LOGIN_VIEW_MODEL_MOCK: LoginViewModel = {
   productName: 'Itera',

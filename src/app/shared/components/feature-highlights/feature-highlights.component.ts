@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { FeatureCard, ProgressCard } from '../../interfaces/dashboard.interface';
+import { FeatureCard, ProgressCard } from '@shared/interfaces/dashboard.interface';
 
 @Component({
   selector: 'itera-feature-highlights',

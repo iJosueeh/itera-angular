@@ -1,0 +1,13 @@
+<div>
+  <div class="flex items-center justify-between text-[#6b6f92]">
+    <span>{{ label() }}</span>
+    <span class="font-semibold text-[#2f327d]">{{ value() }}%</span>
+  </div>
+  <div class="mt-2 h-3 rounded-full bg-[#eef1ff]">
+    <div
+      class="h-3 rounded-full transition-all duration-500"
+      [style.width.%]="value()"
+      [style.background-color]="color()"
+    ></div>
+  </div>
+</div>

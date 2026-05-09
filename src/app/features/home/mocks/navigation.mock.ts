@@ -1,4 +1,4 @@
-import { NavItem } from '../../../shared/interfaces/dashboard.interface';
+import { NavItem } from '@shared/interfaces/dashboard.interface';
 
 export const NAV_ITEMS_MOCK: ReadonlyArray<NavItem> = [
   { label: 'Inicio', href: '/', icon: 'bi-house-door', active: true },

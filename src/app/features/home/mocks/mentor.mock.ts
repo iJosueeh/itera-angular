@@ -1,4 +1,4 @@
-import { MentorSuggestion } from '../../../shared/interfaces/dashboard.interface';
+import { MentorSuggestion } from '@shared/interfaces/dashboard.interface';
 
 export const MENTOR_SUGGESTION_MOCK: MentorSuggestion = {
   avatarAlt: 'Mentor AI',

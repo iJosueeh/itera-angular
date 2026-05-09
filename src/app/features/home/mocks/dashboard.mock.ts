@@ -1,4 +1,4 @@
-import { DashboardViewModel } from '../../../shared/interfaces/dashboard.interface';
+import { DashboardViewModel } from '@shared/interfaces/dashboard.interface';
 import { FOOTER_LINKS_MOCK } from './footer.mock';
 import { HERO_CONTENT_MOCK } from './hero.mock';
 import { FEATURE_CARDS_MOCK, PROGRESS_CARD_MOCK } from './highlights.mock';

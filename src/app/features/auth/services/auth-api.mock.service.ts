@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { Observable, delay, of } from 'rxjs';
-import { AuthResult, LoginPayload, RegisterPayload } from '../interfaces/auth.interface';
+import {
+  AuthResult,
+  LoginPayload,
+  RegisterPayload,
+} from '@features/auth/interfaces/auth.interface';
 
 @Injectable({ providedIn: 'root' })
 export class AuthApiMockService {

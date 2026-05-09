@@ -1,4 +1,4 @@
-import { HeroContent } from '../../../shared/interfaces/dashboard.interface';
+import { HeroContent } from '@shared/interfaces/dashboard.interface';
 
 export const HERO_CONTENT_MOCK: HeroContent = {
   badge: 'Mentoria inteligente para tu carrera',

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProgressPageComponent } from './progress-page.component';
 import { By } from '@angular/platform-browser';
-import { DashboardContentService } from '../../../home/services/dashboard-content.service';
+import { DashboardContentService } from '@features/home/services/dashboard-content.service';
 import { provideRouter } from '@angular/router';
 
 describe('ProgressPageComponent', () => {

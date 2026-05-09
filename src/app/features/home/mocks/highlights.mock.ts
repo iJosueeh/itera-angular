@@ -1,4 +1,4 @@
-import { FeatureCard, ProgressCard } from '../../../shared/interfaces/dashboard.interface';
+import { FeatureCard, ProgressCard } from '@shared/interfaces/dashboard.interface';
 
 export const FEATURE_CARDS_MOCK: ReadonlyArray<FeatureCard> = [
   {

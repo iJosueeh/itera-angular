@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { LoginPayload, LoginViewModel } from '../../../interfaces/auth.interface';
+import { LoginPayload, LoginViewModel } from '@features/auth/interfaces/auth.interface';
 
 @Component({
   selector: 'itera-login-form',
+  standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css',

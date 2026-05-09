@@ -1,4 +1,4 @@
-import { FooterLink } from '../../../shared/interfaces/dashboard.interface';
+import { FooterLink } from '@shared/interfaces/dashboard.interface';
 
 export const FOOTER_LINKS_MOCK: ReadonlyArray<FooterLink> = [
   { label: 'Politica de privacidad', href: '#' },

@@ -1,4 +1,4 @@
-import { CareerSnapshot } from '../../../shared/interfaces/dashboard.interface';
+import { CareerSnapshot } from '@shared/interfaces/dashboard.interface';
 
 export const CAREER_SNAPSHOTS_MOCK: ReadonlyArray<CareerSnapshot> = [
   {
