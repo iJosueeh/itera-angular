@@ -4,7 +4,7 @@ import { DashboardApiMockService } from './dashboard-api.mock.service';
 import { of } from 'rxjs';
 import { DASHBOARD_MODEL_MOCK } from '../mocks/dashboard.mock';
 
-import { CareerSnapshot } from '../../../shared/interfaces/dashboard.interface';
+import { CareerSnapshot } from '@shared/interfaces/dashboard.interface';
 
 describe('DashboardContentService', () => {
   let service: DashboardContentService;

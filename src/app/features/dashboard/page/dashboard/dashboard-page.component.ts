@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DashboardContentService } from '../../../home/services/dashboard-content.service';
-import { DashboardShellComponent } from '../../../../shared/components/dashboard-shell/dashboard-shell.component';
+import { DashboardContentService } from '@features/home/services/dashboard-content.service';
+import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
 import { InteractiveRoadmapComponent } from '../../components/interactive-roadmap/interactive-roadmap.component';
-import { NavItem } from '../../../../shared/interfaces/dashboard.interface';
+import { NavItem } from '@shared/interfaces/dashboard.interface';
 
 @Component({
   selector: 'itera-dashboard-page',

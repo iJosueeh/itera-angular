@@ -1,8 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthResult, RegisterPayload, RegisterViewModel } from '../../interfaces/auth.interface';
+import { AuthResult, RegisterPayload, RegisterViewModel } from '@features/auth/interfaces/auth.interface';
 import { REGISTER_VIEW_MODEL_MOCK } from '../mocks/register.mock';
-import { AuthApiMockService } from '../../services/auth-api.mock.service';
+import { AuthApiMockService } from '@features/auth/services/auth-api.mock.service';
 
 @Injectable({ providedIn: 'root' })
 export class RegisterContentService {

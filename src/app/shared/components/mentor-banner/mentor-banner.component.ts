@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { MentorSuggestion } from '../../interfaces/dashboard.interface';
+import { MentorSuggestion } from '@shared/interfaces/dashboard.interface';
 
 @Component({
   selector: 'itera-mentor-banner',

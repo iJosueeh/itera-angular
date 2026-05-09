@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
-import { LoginPayload } from '../interfaces/auth.interface';
+import { LoginPayload } from '@features/auth/interfaces/auth.interface';
 import { LoginFormComponent } from './components/login-form/login-form.component';
 import { LoginVisualComponent } from './components/login-visual/login-visual.component';
 import { LoginContentService } from './services/login-content.service';

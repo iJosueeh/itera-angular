@@ -1,9 +1,9 @@
 import { Component, input, ChangeDetectionStrategy, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HeaderComponent } from '../header/header.component';
-import { FooterComponent } from '../footer/footer.component';
-import { type NavItem } from '../header/header.component';
-import { type FooterLink } from '../footer/footer.component';
+import { HeaderComponent } from '@shared/components/header/header.component';
+import { FooterComponent } from '@shared/components/footer/footer.component';
+import { type NavItem } from '@shared/components/header/header.component';
+import { type FooterLink } from '@shared/components/footer/footer.component';
 
 @Component({
   selector: 'itera-base-layout',

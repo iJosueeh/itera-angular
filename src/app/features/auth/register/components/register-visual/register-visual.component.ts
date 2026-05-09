@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { RegisterViewModel } from '../../../interfaces/auth.interface';
+import { RegisterViewModel } from '@features/auth/interfaces/auth.interface';
 
 @Component({
   selector: 'itera-register-visual',

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
-import { RegisterPayload } from '../interfaces/auth.interface';
+import { RegisterPayload } from '@features/auth/interfaces/auth.interface';
 import { RegisterFormComponent } from './components/register-form/register-form.component';
 import { RegisterVisualComponent } from './components/register-visual/register-visual.component';
 import { RegisterContentService } from './services/register-content.service';

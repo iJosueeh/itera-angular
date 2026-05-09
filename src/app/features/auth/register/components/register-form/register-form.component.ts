@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { RegisterPayload, RegisterViewModel } from '../../../interfaces/auth.interface';
+import { RegisterPayload, RegisterViewModel } from '@features/auth/interfaces/auth.interface';
 
 @Component({
   selector: 'itera-register-form',

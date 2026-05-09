@@ -1,8 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthResult, LoginPayload, LoginViewModel } from '../../interfaces/auth.interface';
+import { AuthResult, LoginPayload, LoginViewModel } from '@features/auth/interfaces/auth.interface';
 import { LOGIN_VIEW_MODEL_MOCK } from '../mocks/login.mock';
-import { AuthApiMockService } from '../../services/auth-api.mock.service';
+import { AuthApiMockService } from '@features/auth/services/auth-api.mock.service';
 
 @Injectable({ providedIn: 'root' })
 export class LoginContentService {

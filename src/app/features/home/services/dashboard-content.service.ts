@@ -1,6 +1,6 @@
 import { inject, Injectable, computed, signal } from '@angular/core';
 import { Observable, take } from 'rxjs';
-import { CareerSnapshot, DashboardViewModel } from '../../../shared/interfaces/dashboard.interface';
+import { CareerSnapshot, DashboardViewModel } from '@shared/interfaces/dashboard.interface';
 import { DashboardApiMockService } from './dashboard-api.mock.service';
 import { DASHBOARD_MODEL_MOCK } from '../mocks/dashboard.mock';
 

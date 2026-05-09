@@ -1,4 +1,4 @@
-import { RegisterViewModel } from '../../interfaces/auth.interface';
+import { RegisterViewModel } from '@features/auth/interfaces/auth.interface';
 
 export const REGISTER_VIEW_MODEL_MOCK: RegisterViewModel = {
   productName: 'Itera',

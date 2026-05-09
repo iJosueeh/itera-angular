@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, delay, of } from 'rxjs';
-import { CareerSnapshot, DashboardViewModel } from '../../../shared/interfaces/dashboard.interface';
+import { CareerSnapshot, DashboardViewModel } from '@shared/interfaces/dashboard.interface';
 import { DASHBOARD_MODEL_MOCK } from '../mocks/dashboard.mock';
 import { CAREER_SNAPSHOTS_MOCK, DEFAULT_CAREER_SNAPSHOT_MOCK } from '../mocks/career-snapshot.mock';
 

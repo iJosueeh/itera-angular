@@ -1,7 +1,7 @@
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NavItem } from '../../interfaces/dashboard.interface';
+import { NavItem } from '@shared/interfaces/dashboard.interface';
 
 @Component({
   selector: 'itera-top-nav',
