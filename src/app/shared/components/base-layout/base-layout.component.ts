@@ -1,4 +1,4 @@
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../header/header.component';
 import { FooterComponent } from '../footer/footer.component';
@@ -57,10 +57,10 @@ export class BaseLayoutComponent {
   /**
    * Content for the left panel (visual side, hidden on mobile)
    */
-  leftPanelContent = input<any>(null);
+  leftPanelContent = input<TemplateRef<unknown> | null>(null);
 
   /**
    * Content for the right panel (form/main content)
    */
-  rightPanelContent = input<any>(null);
+  rightPanelContent = input<TemplateRef<unknown> | null>(null);
 }

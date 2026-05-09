@@ -8,6 +8,7 @@ import { RegisterContentService } from './services/register-content.service';
 
 @Component({
   selector: 'itera-register-page',
+  standalone: true,
   imports: [RegisterVisualComponent, RegisterFormComponent],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css',

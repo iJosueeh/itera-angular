@@ -4,6 +4,8 @@ import { DashboardApiMockService } from './dashboard-api.mock.service';
 import { of } from 'rxjs';
 import { DASHBOARD_MODEL_MOCK } from '../mocks/dashboard.mock';
 
+import { CareerSnapshot } from '../../../shared/interfaces/dashboard.interface';
+
 describe('DashboardContentService', () => {
   let service: DashboardContentService;
   let apiMockService: Partial<DashboardApiMockService>;
@@ -11,7 +13,15 @@ describe('DashboardContentService', () => {
   beforeEach(() => {
     apiMockService = {
       getDashboardViewModel: () => of(DASHBOARD_MODEL_MOCK),
-      getCareerSnapshot: (query: string) => of({ career: query, match: 80, items: [] } as any),
+      getCareerSnapshot: (query: string) =>
+        of({
+          career: query,
+          annualSalaryUsd: '0',
+          demandLevel: 'Low',
+          marketGrowth: '0%',
+          learningRoute: '',
+          profileFit: '0%',
+        } as CareerSnapshot),
     };
 
     TestBed.configureTestingModule({
@@ -40,9 +50,11 @@ describe('DashboardContentService', () => {
   });
 
   it('should call getCareerSnapshot from API service', async () => {
-    const response = await new Promise((resolve) => {
-      service.getCareerSnapshot('cloud').subscribe(resolve);
+    const response = await new Promise<CareerSnapshot>((resolve) => {
+      service
+        .getCareerSnapshot('cloud')
+        .subscribe((response) => resolve(response as CareerSnapshot));
     });
-    expect((response as any).career).toBe('cloud');
+    expect(response.career).toBe('cloud');
   });
 });

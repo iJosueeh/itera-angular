@@ -8,6 +8,7 @@ import { LoginContentService } from './services/login-content.service';
 
 @Component({
   selector: 'itera-login-page',
+  standalone: true,
   imports: [LoginVisualComponent, LoginFormComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css',
