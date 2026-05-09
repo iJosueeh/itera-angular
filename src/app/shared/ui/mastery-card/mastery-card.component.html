@@ -1,11 +1,7 @@
-<article
-  class="rounded-[22px] bg-white p-4 text-center shadow-[0_14px_30px_rgba(53,55,191,0.06)]"
->
+<article class="rounded-[22px] bg-white p-4 text-center shadow-[0_14px_30px_rgba(53,55,191,0.06)]">
   <div class="mx-auto grid h-20 w-20 place-content-center">
     <div class="ring" [style.background]="gradient">
-      <div class="ring-inner grid place-content-center bg-white">
-        {{ progress() }}%
-      </div>
+      <div class="ring-inner grid place-content-center bg-white">{{ progress() }}%</div>
     </div>
   </div>
   <p class="mt-4 text-[0.95rem] font-semibold text-[#2f327d]">{{ title() }}</p>

@@ -18,7 +18,8 @@ export class MasteryCardComponent {
   tone = input<MasteryCardTone>('indigo');
 
   protected get gradient(): string {
-    const color = this.tone() === 'indigo' ? '#4046b8' : this.tone() === 'emerald' ? '#21b77f' : '#7b83eb';
+    const color =
+      this.tone() === 'indigo' ? '#4046b8' : this.tone() === 'emerald' ? '#21b77f' : '#7b83eb';
     return `conic-gradient(${color} ${this.progress()}%, #eef1ff ${this.progress()}%)`;
   }
 }

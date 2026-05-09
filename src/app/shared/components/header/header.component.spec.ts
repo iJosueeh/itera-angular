@@ -26,7 +26,9 @@ describe('HeaderComponent', () => {
     fixture.componentRef.setInput('brand', 'Custom Brand');
     fixture.detectChanges();
 
-    const brandElement = fixture.debugElement.query(By.css('a[aria-label="Ir al inicio"]')).nativeElement;
+    const brandElement = fixture.debugElement.query(
+      By.css('a[aria-label="Ir al inicio"]'),
+    ).nativeElement;
     expect(brandElement.textContent).toContain('Custom Brand');
   });
   it('should render navigation items', () => {

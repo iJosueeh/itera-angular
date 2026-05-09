@@ -81,11 +81,7 @@
 
         <div class="mt-5 flex flex-wrap gap-3">
           @for (badge of badges; track badge.label) {
-            <itera-badge-item
-              [label]="badge.label"
-              [icon]="badge.icon"
-              [earned]="badge.earned"
-            />
+            <itera-badge-item [label]="badge.label" [icon]="badge.icon" [earned]="badge.earned" />
           }
         </div>
       </article>
