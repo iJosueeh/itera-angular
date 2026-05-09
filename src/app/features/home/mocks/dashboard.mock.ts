@@ -12,5 +12,5 @@ export const DASHBOARD_MODEL_MOCK: DashboardViewModel = {
   featureCards: FEATURE_CARDS_MOCK,
   progress: PROGRESS_CARD_MOCK,
   mentor: MENTOR_SUGGESTION_MOCK,
-  footerLinks: FOOTER_LINKS_MOCK
+  footerLinks: FOOTER_LINKS_MOCK,
 };

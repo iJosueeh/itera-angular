@@ -8,10 +8,16 @@ import { TopNavComponent } from '../../shared/components/top-nav/top-nav.compone
 
 @Component({
   selector: 'itera-home-page',
-  imports: [TopNavComponent, HeroSearchComponent, FeatureHighlightsComponent, MentorBannerComponent, FooterComponent],
+  imports: [
+    TopNavComponent,
+    HeroSearchComponent,
+    FeatureHighlightsComponent,
+    MentorBannerComponent,
+    FooterComponent,
+  ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePageComponent {
   private readonly dashboardContentService = inject(DashboardContentService);

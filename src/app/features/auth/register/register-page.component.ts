@@ -11,7 +11,7 @@ import { RegisterContentService } from './services/register-content.service';
   imports: [RegisterVisualComponent, RegisterFormComponent],
   templateUrl: './register-page.component.html',
   styleUrl: './register-page.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterPageComponent {
   private readonly registerContentService = inject(RegisterContentService);

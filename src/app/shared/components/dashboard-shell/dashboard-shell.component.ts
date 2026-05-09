@@ -10,7 +10,7 @@ import { FooterLink, NavItem } from '../../interfaces/dashboard.interface';
   imports: [RouterLink, TopNavComponent, FooterComponent],
   templateUrl: './dashboard-shell.component.html',
   styleUrl: './dashboard-shell.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardShellComponent {
   readonly brand = input<string>('Itera');

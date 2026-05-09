@@ -14,12 +14,12 @@ export class DashboardApiMockService {
     const normalizedQuery = query.trim().toLowerCase();
 
     const matchedSnapshot = CAREER_SNAPSHOTS_MOCK.find((snapshot) =>
-      normalizedQuery.includes(snapshot.career.toLowerCase())
+      normalizedQuery.includes(snapshot.career.toLowerCase()),
     );
 
     const response = matchedSnapshot ?? {
       ...DEFAULT_CAREER_SNAPSHOT_MOCK,
-      career: query
+      career: query,
     };
 
     return of(response).pipe(delay(900));

@@ -11,7 +11,7 @@ import { type FooterLink } from '../footer/footer.component';
   imports: [CommonModule, HeaderComponent, FooterComponent],
   styleUrl: './base-layout.component.css',
   templateUrl: './base-layout.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BaseLayoutComponent {
   /**

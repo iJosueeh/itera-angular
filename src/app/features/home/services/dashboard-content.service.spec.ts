@@ -11,14 +11,14 @@ describe('DashboardContentService', () => {
   beforeEach(() => {
     apiMockService = {
       getDashboardViewModel: () => of(DASHBOARD_MODEL_MOCK),
-      getCareerSnapshot: (query: string) => of({ career: query, match: 80, items: [] } as any)
+      getCareerSnapshot: (query: string) => of({ career: query, match: 80, items: [] } as any),
     };
 
     TestBed.configureTestingModule({
       providers: [
         DashboardContentService,
-        { provide: DashboardApiMockService, useValue: apiMockService }
-      ]
+        { provide: DashboardApiMockService, useValue: apiMockService },
+      ],
     });
     service = TestBed.inject(DashboardContentService);
   });
@@ -40,7 +40,7 @@ describe('DashboardContentService', () => {
   });
 
   it('should call getCareerSnapshot from API service', async () => {
-    const response = await new Promise(resolve => {
+    const response = await new Promise((resolve) => {
       service.getCareerSnapshot('cloud').subscribe(resolve);
     });
     expect((response as any).career).toBe('cloud');

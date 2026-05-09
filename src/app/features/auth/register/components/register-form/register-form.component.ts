@@ -8,7 +8,7 @@ import { RegisterPayload, RegisterViewModel } from '../../../interfaces/auth.int
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register-form.component.html',
   styleUrl: './register-form.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterFormComponent {
   private readonly formBuilder = inject(FormBuilder);
@@ -20,7 +20,14 @@ export class RegisterFormComponent {
   protected readonly registerForm = this.formBuilder.nonNullable.group({
     fullName: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/)]]
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d).+$/),
+      ],
+    ],
   });
 
   protected onSubmit(): void {

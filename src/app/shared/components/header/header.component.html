@@ -1,6 +1,10 @@
 <header class="sticky top-0 z-30 border-b border-[#e2e4f4] bg-white/85 backdrop-blur">
   <div class="mx-auto flex min-h-[72px] max-w-[1100px] items-center justify-between gap-4 px-5">
-    <a href="/" class="font-[Sora] text-[1.4rem] font-bold text-[#3537bf] no-underline" aria-label="Ir al inicio">
+    <a
+      href="/"
+      class="font-[Sora] text-[1.4rem] font-bold text-[#3537bf] no-underline"
+      aria-label="Ir al inicio"
+    >
       {{ brand() }}
     </a>
 
@@ -27,10 +31,18 @@
 
     @if (showUserActions()) {
       <div class="flex items-center gap-2" aria-label="Acciones del usuario">
-        <button type="button" class="grid h-9 w-9 cursor-pointer place-content-center rounded-full border-0 bg-[#ececfc] text-[#3537bf]" aria-label="Notificaciones">
+        <button
+          type="button"
+          class="grid h-9 w-9 cursor-pointer place-content-center rounded-full border-0 bg-[#ececfc] text-[#3537bf]"
+          aria-label="Notificaciones"
+        >
           <i class="bi bi-bell-fill" aria-hidden="true"></i>
         </button>
-        <button type="button" class="grid h-9 w-9 cursor-pointer place-content-center rounded-full border-0 bg-[#ececfc] text-[#3537bf]" aria-label="Perfil">
+        <button
+          type="button"
+          class="grid h-9 w-9 cursor-pointer place-content-center rounded-full border-0 bg-[#ececfc] text-[#3537bf]"
+          aria-label="Perfil"
+        >
           <i class="bi bi-person-circle" aria-hidden="true"></i>
         </button>
       </div>

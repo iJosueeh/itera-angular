@@ -10,7 +10,7 @@ import { NavItem } from '../../../../shared/interfaces/dashboard.interface';
   imports: [DashboardShellComponent, ComparisonComponent],
   templateUrl: './comparison-page.component.html',
   styleUrl: './comparison-page.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ComparisonPageComponent {
   private readonly dashboardContentService = inject(DashboardContentService);
@@ -21,13 +21,23 @@ export class ComparisonPageComponent {
     { label: 'Dashboard', href: '/dashboard', icon: 'bi-grid-1x2' },
     { label: 'My Routes', href: '/dashboard#routes', icon: 'bi-signpost-2' },
     { label: 'Skills', href: '/dashboard#skills', icon: 'bi-stars' },
-    { label: 'Comparison', href: '/dashboard/comparison', icon: 'bi-arrow-left-right', active: true },
-    { label: 'Progress', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' }
+    {
+      label: 'Comparison',
+      href: '/dashboard/comparison',
+      icon: 'bi-arrow-left-right',
+      active: true,
+    },
+    { label: 'Progress', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
   ];
 
   protected readonly topNavItems: ReadonlyArray<NavItem> = [
     { label: 'Dashboard', href: '/dashboard', icon: 'bi-grid-1x2' },
-    { label: 'Comparison', href: '/dashboard/comparison', icon: 'bi-arrow-left-right', active: true },
-    { label: 'Skills', href: '/dashboard#skills', icon: 'bi-stars' }
+    {
+      label: 'Comparison',
+      href: '/dashboard/comparison',
+      icon: 'bi-arrow-left-right',
+      active: true,
+    },
+    { label: 'Skills', href: '/dashboard#skills', icon: 'bi-stars' },
   ];
 }

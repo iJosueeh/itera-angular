@@ -5,7 +5,7 @@ import { MentorSuggestion } from '../../interfaces/dashboard.interface';
   selector: 'itera-mentor-banner',
   templateUrl: './mentor-banner.component.html',
   styleUrl: './mentor-banner.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MentorBannerComponent {
   readonly mentor = input.required<MentorSuggestion>();

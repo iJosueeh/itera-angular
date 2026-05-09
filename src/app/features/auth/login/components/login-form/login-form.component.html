@@ -5,7 +5,9 @@
 
     <form class="mt-12 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <div>
-        <label class="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-[#4d5199]">{{ vm().emailLabel }}</label>
+        <label class="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-[#4d5199]">{{
+          vm().emailLabel
+        }}</label>
         <div class="relative">
           <input
             type="email"
@@ -13,14 +15,21 @@
             class="w-full rounded-xl border border-transparent bg-[#eceef8] px-4 py-3 pr-10 outline-none ring-[#b6b9ef] focus:ring-2"
             placeholder="nombre@empresa.com"
           />
-          <i class="bi bi-envelope-fill pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#9ea2c7]" aria-hidden="true"></i>
+          <i
+            class="bi bi-envelope-fill pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#9ea2c7]"
+            aria-hidden="true"
+          ></i>
         </div>
       </div>
 
       <div>
         <div class="mb-3 flex items-center justify-between">
-          <label class="text-xs font-semibold uppercase tracking-[0.2em] text-[#4d5199]">{{ vm().passwordLabel }}</label>
-          <a href="#" class="text-sm font-semibold text-[#2d33b8] no-underline hover:opacity-80">{{ vm().forgotPasswordText }}</a>
+          <label class="text-xs font-semibold uppercase tracking-[0.2em] text-[#4d5199]">{{
+            vm().passwordLabel
+          }}</label>
+          <a href="#" class="text-sm font-semibold text-[#2d33b8] no-underline hover:opacity-80">{{
+            vm().forgotPasswordText
+          }}</a>
         </div>
         <div class="relative">
           <input
@@ -29,12 +38,17 @@
             class="w-full rounded-xl border border-transparent bg-[#eceef8] px-4 py-3 pr-10 outline-none ring-[#b6b9ef] focus:ring-2"
             placeholder="••••••••"
           />
-          <i class="bi bi-lock-fill pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#9ea2c7]" aria-hidden="true"></i>
+          <i
+            class="bi bi-lock-fill pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#9ea2c7]"
+            aria-hidden="true"
+          ></i>
         </div>
       </div>
 
       @if (formError()) {
-        <p class="rounded-lg border border-[#ffd3d9] bg-[#fff5f7] px-4 py-3 text-sm text-[#8f2440]">{{ formError() }}</p>
+        <p class="rounded-lg border border-[#ffd3d9] bg-[#fff5f7] px-4 py-3 text-sm text-[#8f2440]">
+          {{ formError() }}
+        </p>
       }
 
       <button
@@ -55,7 +69,10 @@
 
     <div class="grid grid-cols-2 gap-3">
       @for (provider of vm().socialProviders; track provider.label) {
-        <button type="button" class="flex items-center justify-center gap-2 rounded-xl border border-[#e1e3f1] bg-white px-3 py-3 font-semibold text-[#232648] hover:bg-[#f5f5fa] transition-colors">
+        <button
+          type="button"
+          class="flex items-center justify-center gap-2 rounded-xl border border-[#e1e3f1] bg-white px-3 py-3 font-semibold text-[#232648] hover:bg-[#f5f5fa] transition-colors"
+        >
           <i [class]="provider.icon" aria-hidden="true"></i>
           {{ provider.label }}
         </button>
@@ -64,12 +81,18 @@
 
     <p class="mt-10 text-center text-sm text-[#54577a]">
       {{ vm().registerPrompt }}
-      <a routerLink="/auth/register" class="font-semibold text-[#2d33b8] no-underline hover:opacity-80">{{ vm().registerCta }}</a>
+      <a
+        routerLink="/auth/register"
+        class="font-semibold text-[#2d33b8] no-underline hover:opacity-80"
+        >{{ vm().registerCta }}</a
+      >
     </p>
 
     <div class="mt-12 flex flex-wrap justify-center gap-4 text-xs text-[#8e90a9]">
       @for (link of vm().footerLinks; track link.label) {
-        <a [href]="link.href" class="no-underline hover:text-[#3537bf] transition-colors">{{ link.label }}</a>
+        <a [href]="link.href" class="no-underline hover:text-[#3537bf] transition-colors">{{
+          link.label
+        }}</a>
       }
     </div>
   </div>

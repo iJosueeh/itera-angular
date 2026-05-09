@@ -5,7 +5,7 @@ import gsap from 'gsap';
   selector: 'itera-interactive-roadmap',
   standalone: true,
   templateUrl: './interactive-roadmap.component.html',
-  styleUrls: ['./interactive-roadmap.component.css']
+  styleUrls: ['./interactive-roadmap.component.css'],
 })
 export class InteractiveRoadmapComponent implements AfterViewInit {
   @ViewChild('chart', { static: true }) chartContainer!: ElementRef<HTMLDivElement>;
@@ -38,8 +38,20 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
     const nodes = [
       { id: 'foundation', x: 80, y: 120, label: 'Foundation', status: 'completed' },
       { id: 'cloud', x: Math.min(240, width * 0.3), y: 70, label: 'Cloud', status: 'attention' },
-      { id: 'k8s', x: Math.min(420, width * 0.55), y: 120, label: 'K8s Orchestration', status: 'planned' },
-      { id: 'goal', x: Math.min(620, width * 0.85), y: 80, label: 'Chief Architect', status: 'goal' }
+      {
+        id: 'k8s',
+        x: Math.min(420, width * 0.55),
+        y: 120,
+        label: 'K8s Orchestration',
+        status: 'planned',
+      },
+      {
+        id: 'goal',
+        x: Math.min(620, width * 0.85),
+        y: 80,
+        label: 'Chief Architect',
+        status: 'goal',
+      },
     ];
 
     const d = nodes.reduce((acc, p, i, arr) => {
@@ -84,7 +96,10 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
 
       const circle = document.createElementNS(svgns, 'circle');
       circle.setAttribute('r', '26');
-      circle.setAttribute('fill', n.status === 'completed' ? '#2dd4bf' : n.status === 'attention' ? '#ff6b6b' : '#a3b0ff');
+      circle.setAttribute(
+        'fill',
+        n.status === 'completed' ? '#2dd4bf' : n.status === 'attention' ? '#ff6b6b' : '#a3b0ff',
+      );
       circle.setAttribute('stroke', '#fff');
       circle.setAttribute('stroke-width', '4');
       circle.style.cursor = 'pointer';
@@ -127,19 +142,26 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
       gsap.to(path.style, {
         strokeDashoffset: 0,
         duration: 1.2,
-        ease: 'power2.out'
+        ease: 'power2.out',
       });
 
       gsap.fromTo(
         circleElements,
         { scale: 0, transformOrigin: '50% 50%' },
-        { scale: 1, duration: 0.6, stagger: 0.12, ease: 'back.out(1.4)' }
+        { scale: 1, duration: 0.6, stagger: 0.12, ease: 'back.out(1.4)' },
       );
 
       circleElements.forEach((c, idx) => {
         const status = nodes[idx].status;
         if (status === 'attention') {
-          gsap.to(c, { scale: 1.08, transformOrigin: '50% 50%', repeat: -1, yoyo: true, duration: 1.2, ease: 'sine.inOut' });
+          gsap.to(c, {
+            scale: 1.08,
+            transformOrigin: '50% 50%',
+            repeat: -1,
+            yoyo: true,
+            duration: 1.2,
+            ease: 'sine.inOut',
+          });
         }
       });
     } catch (err) {

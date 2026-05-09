@@ -9,7 +9,7 @@ import { NavItem } from '../../interfaces/dashboard.interface';
   imports: [RouterLink, RouterLinkActive, NgClass],
   templateUrl: './top-nav.component.html',
   styleUrl: './top-nav.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopNavComponent {
   readonly brand = input<string>('Itera');

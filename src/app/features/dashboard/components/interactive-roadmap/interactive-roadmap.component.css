@@ -1,3 +1,10 @@
-.interactive-roadmap { position: relative; width: 100%; }
-.interactive-roadmap svg { display: block; }
-.roadmap-tooltip { box-shadow: 0 6px 18px rgba(16,24,40,0.12); }
+.interactive-roadmap {
+  position: relative;
+  width: 100%;
+}
+.interactive-roadmap svg {
+  display: block;
+}
+.roadmap-tooltip {
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.12);
+}

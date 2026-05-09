@@ -5,7 +5,7 @@ import { HeroContent } from '../../interfaces/dashboard.interface';
   selector: 'itera-hero-search',
   templateUrl: './hero-search.component.html',
   styleUrl: './hero-search.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroSearchComponent {
   readonly content = input.required<HeroContent>();

@@ -1,18 +1,31 @@
 <section class="px-5 pb-14 pt-20" aria-labelledby="dashboard-title">
   <div class="mx-auto max-w-[920px] text-center">
-    <span class="inline-block rounded-full bg-[#ececfc] px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-[#3537bf]">{{ content().badge }}</span>
+    <span
+      class="inline-block rounded-full bg-[#ececfc] px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-[#3537bf]"
+      >{{ content().badge }}</span
+    >
 
-    <h1 id="dashboard-title" class="mt-5 font-[Sora] text-[clamp(2.2rem,7.8vw,4.4rem)] font-bold leading-[1.06]">
+    <h1
+      id="dashboard-title"
+      class="mt-5 font-[Sora] text-[clamp(2.2rem,7.8vw,4.4rem)] font-bold leading-[1.06]"
+    >
       {{ content().titleLead }}
       <span class="block text-[#3537bf]">{{ content().titleAccent }}</span>
     </h1>
 
-    <p class="mx-auto mt-5 max-w-[720px] text-[clamp(1rem,2.3vw,1.65rem)] text-[#3d3f5d]">{{ content().subtitle }}</p>
+    <p class="mx-auto mt-5 max-w-[720px] text-[clamp(1rem,2.3vw,1.65rem)] text-[#3d3f5d]">
+      {{ content().subtitle }}
+    </p>
 
-    <div class="mt-9 grid grid-cols-1 gap-2 rounded-2xl border border-[#cecff6] bg-white p-2 shadow-[0_15px_35px_rgba(53,55,191,0.2)] sm:grid-cols-[1fr_auto]">
+    <div
+      class="mt-9 grid grid-cols-1 gap-2 rounded-2xl border border-[#cecff6] bg-white p-2 shadow-[0_15px_35px_rgba(53,55,191,0.2)] sm:grid-cols-[1fr_auto]"
+    >
       <label for="search-input" class="sr-only">Buscar una carrera o meta profesional</label>
       <div class="relative">
-        <i class="bi bi-search pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#6b6f9a]" aria-hidden="true"></i>
+        <i
+          class="bi bi-search pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#6b6f9a]"
+          aria-hidden="true"
+        ></i>
         <input
           id="search-input"
           type="text"
@@ -22,7 +35,11 @@
           (input)="onQueryChange($event)"
         />
       </div>
-      <button type="button" class="min-w-[135px] cursor-pointer rounded-xl border-0 bg-gradient-to-br from-[#3537bf] to-[#24289a] px-4 py-3 font-semibold text-white" (click)="submitSearch()">
+      <button
+        type="button"
+        class="min-w-[135px] cursor-pointer rounded-xl border-0 bg-gradient-to-br from-[#3537bf] to-[#24289a] px-4 py-3 font-semibold text-white"
+        (click)="submitSearch()"
+      >
         {{ content().primaryAction }}
       </button>
     </div>

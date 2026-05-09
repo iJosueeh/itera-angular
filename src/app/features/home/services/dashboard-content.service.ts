@@ -37,7 +37,7 @@ export class DashboardContentService {
         },
         complete: () => {
           this.isLoading.set(false);
-        }
+        },
       });
   }
 }

@@ -5,34 +5,34 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 :root {
-	--page-bg: #f6f7ff;
-	--text-color: #16162a;
-	--brand: #3537bf;
-	--brand-strong: #24289a;
-	--accent: #00a181;
-	--line-color: #e2e4f4;
-	--title-font: 'Sora', 'Segoe UI', sans-serif;
-	--body-font: 'Nunito Sans', 'Segoe UI', sans-serif;
+  --page-bg: #f6f7ff;
+  --text-color: #16162a;
+  --brand: #3537bf;
+  --brand-strong: #24289a;
+  --accent: #00a181;
+  --line-color: #e2e4f4;
+  --title-font: 'Sora', 'Segoe UI', sans-serif;
+  --body-font: 'Nunito Sans', 'Segoe UI', sans-serif;
 }
 
 * {
-	box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 html,
 body {
-	margin: 0;
-	min-height: 100%;
+  margin: 0;
+  min-height: 100%;
 }
 
 body {
-	font-family: var(--body-font);
-	color: var(--text-color);
-	background: var(--page-bg);
+  font-family: var(--body-font);
+  color: var(--text-color);
+  background: var(--page-bg);
 }
 
 button,
 input,
 textarea {
-	font-family: inherit;
+  font-family: inherit;
 }

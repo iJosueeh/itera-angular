@@ -10,7 +10,7 @@ export class AuthApiMockService {
     const result: AuthResult = {
       success: true,
       message: `Bienvenido de nuevo, ${normalizedEmail}. Tu panel de mentor ya esta listo.`,
-      redirectTo: '/dashboard'
+      redirectTo: '/dashboard',
     };
 
     return of(result).pipe(delay(900));
@@ -22,7 +22,7 @@ export class AuthApiMockService {
     const result: AuthResult = {
       success: true,
       message: `${firstName}, tu cuenta fue creada. Ahora puedes comparar carreras y ver rutas personalizadas.`,
-      redirectTo: '/dashboard'
+      redirectTo: '/dashboard',
     };
 
     return of(result).pipe(delay(1100));

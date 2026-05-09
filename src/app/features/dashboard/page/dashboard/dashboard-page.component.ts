@@ -10,7 +10,7 @@ import { NavItem } from '../../../../shared/interfaces/dashboard.interface';
   imports: [DashboardShellComponent, InteractiveRoadmapComponent],
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPageComponent {
   private readonly dashboardContentService = inject(DashboardContentService);
@@ -23,12 +23,12 @@ export class DashboardPageComponent {
     { label: 'My Routes', href: '#routes', icon: 'bi-signpost-2' },
     { label: 'Skills', href: '#skills', icon: 'bi-stars' },
     { label: 'Comparison', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Progress', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' }
+    { label: 'Progress', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
   ];
 
   protected readonly topNavItems: ReadonlyArray<NavItem> = [
     { label: 'Dashboard', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
     { label: 'Comparison', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Skills', href: '/dashboard#skills', icon: 'bi-stars' }
+    { label: 'Skills', href: '/dashboard#skills', icon: 'bi-stars' },
   ];
 }

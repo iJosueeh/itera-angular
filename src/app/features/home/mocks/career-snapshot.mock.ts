@@ -7,7 +7,7 @@ export const CAREER_SNAPSHOTS_MOCK: ReadonlyArray<CareerSnapshot> = [
     demandLevel: 'Alta',
     marketGrowth: '+28% a 3 años',
     learningRoute: 'Fundamentos de datos -> Python -> SQL -> ML aplicado',
-    profileFit: 'Analitico, orientado a experimentacion y negocio'
+    profileFit: 'Analitico, orientado a experimentacion y negocio',
   },
   {
     career: 'Cloud Architect',
@@ -15,7 +15,7 @@ export const CAREER_SNAPSHOTS_MOCK: ReadonlyArray<CareerSnapshot> = [
     demandLevel: 'Muy alta',
     marketGrowth: '+31% a 3 años',
     learningRoute: 'Redes -> Cloud fundamentals -> DevOps -> Arquitectura empresarial',
-    profileFit: 'Vision de sistemas, liderazgo tecnico y toma de decisiones'
+    profileFit: 'Vision de sistemas, liderazgo tecnico y toma de decisiones',
   },
   {
     career: 'UX/UI Designer',
@@ -23,7 +23,7 @@ export const CAREER_SNAPSHOTS_MOCK: ReadonlyArray<CareerSnapshot> = [
     demandLevel: 'Alta',
     marketGrowth: '+22% a 3 años',
     learningRoute: 'Research -> UX writing -> UI systems -> Prototipado avanzado',
-    profileFit: 'Empatia por el usuario y criterio visual'
+    profileFit: 'Empatia por el usuario y criterio visual',
   },
   {
     career: 'Backend Engineer',
@@ -31,8 +31,8 @@ export const CAREER_SNAPSHOTS_MOCK: ReadonlyArray<CareerSnapshot> = [
     demandLevel: 'Alta',
     marketGrowth: '+24% a 3 años',
     learningRoute: 'APIs -> Bases de datos -> Seguridad -> Escalabilidad',
-    profileFit: 'Pensamiento logico y arquitectura de software'
-  }
+    profileFit: 'Pensamiento logico y arquitectura de software',
+  },
 ];
 
 export const DEFAULT_CAREER_SNAPSHOT_MOCK: CareerSnapshot = {
@@ -41,5 +41,5 @@ export const DEFAULT_CAREER_SNAPSHOT_MOCK: CareerSnapshot = {
   demandLevel: 'Media-Alta',
   marketGrowth: '+20% a 3 años',
   learningRoute: 'Diagnostico -> Fundamentos -> Especializacion -> Portafolio',
-  profileFit: 'Basado en tus intereses y fortalezas actuales'
+  profileFit: 'Basado en tus intereses y fortalezas actuales',
 };

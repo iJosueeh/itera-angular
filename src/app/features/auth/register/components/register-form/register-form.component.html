@@ -1,12 +1,16 @@
 <section class="flex min-h-screen items-center bg-[#f5f5fa] px-6 py-10">
   <div class="mx-auto w-full max-w-[430px]">
-    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#4d5199]">{{ vm().formEyebrow }}</p>
+    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-[#4d5199]">
+      {{ vm().formEyebrow }}
+    </p>
     <h2 class="mt-4 font-[Sora] text-5xl font-bold text-[#16162a]">{{ vm().formTitle }}</h2>
     <p class="mt-4 text-lg text-[#7a7da5]">{{ vm().formSubtitle }}</p>
 
     <form class="mt-12 space-y-6" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <div>
-        <label class="mb-3 block text-sm font-semibold text-[#232648]">{{ vm().fullNameLabel }}</label>
+        <label class="mb-3 block text-sm font-semibold text-[#232648]">{{
+          vm().fullNameLabel
+        }}</label>
         <input
           type="text"
           formControlName="fullName"
@@ -26,7 +30,9 @@
       </div>
 
       <div>
-        <label class="mb-3 block text-sm font-semibold text-[#232648]">{{ vm().passwordLabel }}</label>
+        <label class="mb-3 block text-sm font-semibold text-[#232648]">{{
+          vm().passwordLabel
+        }}</label>
         <input
           type="password"
           formControlName="password"
@@ -37,7 +43,9 @@
       </div>
 
       @if (formError()) {
-        <p class="rounded-lg border border-[#ffd3d9] bg-[#fff5f7] px-4 py-3 text-sm text-[#8f2440]">{{ formError() }}</p>
+        <p class="rounded-lg border border-[#ffd3d9] bg-[#fff5f7] px-4 py-3 text-sm text-[#8f2440]">
+          {{ formError() }}
+        </p>
       }
 
       <button
@@ -58,7 +66,10 @@
 
     <div class="grid grid-cols-2 gap-3">
       @for (provider of vm().socialProviders; track provider.label) {
-        <button type="button" class="flex items-center justify-center gap-2 rounded-xl border border-[#e1e3f1] bg-white px-3 py-3 font-semibold text-[#232648] hover:bg-[#f5f5fa] transition-colors">
+        <button
+          type="button"
+          class="flex items-center justify-center gap-2 rounded-xl border border-[#e1e3f1] bg-white px-3 py-3 font-semibold text-[#232648] hover:bg-[#f5f5fa] transition-colors"
+        >
           <i [class]="provider.icon" aria-hidden="true"></i>
           {{ provider.label }}
         </button>
@@ -67,12 +78,18 @@
 
     <p class="mt-10 text-center text-sm text-[#54577a]">
       {{ vm().loginPrompt }}
-      <a routerLink="/auth/login" class="font-semibold text-[#2d33b8] no-underline hover:opacity-80">{{ vm().loginCta }}</a>
+      <a
+        routerLink="/auth/login"
+        class="font-semibold text-[#2d33b8] no-underline hover:opacity-80"
+        >{{ vm().loginCta }}</a
+      >
     </p>
 
     <div class="mt-12 flex flex-wrap justify-center gap-4 text-xs text-[#8e90a9]">
       @for (link of vm().footerLinks; track link.label) {
-        <a [href]="link.href" class="no-underline hover:text-[#3537bf] transition-colors">{{ link.label }}</a>
+        <a [href]="link.href" class="no-underline hover:text-[#3537bf] transition-colors">{{
+          link.label
+        }}</a>
       }
     </div>
   </div>

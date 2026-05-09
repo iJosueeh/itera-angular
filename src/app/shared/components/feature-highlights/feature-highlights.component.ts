@@ -5,7 +5,7 @@ import { FeatureCard, ProgressCard } from '../../interfaces/dashboard.interface'
   selector: 'itera-feature-highlights',
   templateUrl: './feature-highlights.component.html',
   styleUrl: './feature-highlights.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FeatureHighlightsComponent {
   readonly cards = input.required<ReadonlyArray<FeatureCard>>();

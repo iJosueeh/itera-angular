@@ -12,6 +12,6 @@ export const HERO_CONTENT_MOCK: HeroContent = {
     { label: 'Data Scientist' },
     { label: 'Cloud Architect' },
     { label: 'Backend Engineer' },
-    { label: 'UX/UI Design' }
-  ]
+    { label: 'UX/UI Design' },
+  ],
 };

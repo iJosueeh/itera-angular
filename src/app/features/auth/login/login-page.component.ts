@@ -11,7 +11,7 @@ import { LoginContentService } from './services/login-content.service';
   imports: [LoginVisualComponent, LoginFormComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
   private readonly loginContentService = inject(LoginContentService);

@@ -24,7 +24,7 @@ interface MetricRow {
   standalone: true,
   templateUrl: './comparison.component.html',
   styleUrl: './comparison.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ComparisonComponent {
   protected readonly title = 'Path Comparator';
@@ -40,7 +40,7 @@ export class ComparisonComponent {
       salary: '$128,400',
       growth: '+22%',
       stack: ['TypeScript', 'Rust', 'Kubernetes', 'Go'],
-      projectionBars: [18, 26, 34, 43, 58]
+      projectionBars: [18, 26, 34, 43, 58],
     },
     {
       label: 'Option B',
@@ -50,8 +50,8 @@ export class ComparisonComponent {
       salary: '$135,200',
       growth: '+36%',
       stack: ['Python', 'PyTorch', 'SQL', 'Pandas'],
-      projectionBars: [12, 24, 38, 46, 54]
-    }
+      projectionBars: [12, 24, 38, 46, 54],
+    },
   ];
 
   protected readonly metricRows: ReadonlyArray<MetricRow> = [
@@ -60,29 +60,29 @@ export class ComparisonComponent {
       optionA: '8 Months (Intensive)',
       optionB: '14 Months (Academic)',
       outcome: 'Faster pivot',
-      tone: 'indigo'
+      tone: 'indigo',
     },
     {
       metric: 'Opportunity Cost',
       optionA: '$45,000 (Loss of Wages)',
       optionB: '$82,000 (Loss of Wages)',
       outcome: 'Lower risk',
-      tone: 'neutral'
+      tone: 'neutral',
     },
     {
       metric: 'Entry Difficulty',
       optionA: 'Medium (Project Based)',
       optionB: 'High (Math Intensive)',
       outcome: 'Higher barrier',
-      tone: 'emerald'
+      tone: 'emerald',
     },
     {
       metric: 'Market Saturation',
       optionA: 'High (Junior Level)',
       optionB: 'Low (Specialized Level)',
       outcome: '$ scarcity premium',
-      tone: 'emerald'
-    }
+      tone: 'emerald',
+    },
   ];
 
   protected readonly mentorSummary =
