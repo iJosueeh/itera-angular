@@ -1,0 +1,50 @@
+<div class="dashboard-shell flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,_rgba(120,129,255,0.16)_0%,_rgba(248,249,255,0.95)_28%,_#f8f9ff_100%)] text-[#1b1d2b]">
+  <itera-top-nav [brand]="brand()" [items]="topNavItems()"></itera-top-nav>
+
+  <div class="mx-auto flex w-full max-w-[1440px] flex-1 gap-5 px-4 py-4 lg:px-5">
+    <aside class="dashboard-sidebar hidden w-[250px] shrink-0 rounded-[24px] border border-white/70 bg-white/70 p-4 shadow-[0_18px_45px_rgba(53,55,191,0.08)] backdrop-blur-xl lg:flex lg:flex-col">
+      <div class="px-2 pt-1">
+        <p class="text-[1.18rem] font-semibold text-[#4046b8]">{{ sidebarTitle() }}</p>
+        <div class="mt-2 flex items-center gap-2 text-[0.72rem] font-semibold uppercase tracking-[0.2em] text-[#6f74a1]">
+          <span class="h-2 w-2 rounded-full bg-[#41d29a]"></span>
+          {{ sidebarStatus() }}
+        </div>
+      </div>
+
+      @if (sidebarItems().length > 0) {
+        <nav class="mt-6 flex-1" aria-label="Secciones del dashboard">
+          <ul class="space-y-2">
+            @for (item of sidebarItems(); track item.label) {
+              <li>
+                <a
+                  [routerLink]="item.href"
+                  class="flex items-center gap-3 rounded-[18px] px-3 py-3 text-[0.92rem] font-medium no-underline transition-colors duration-200"
+                  [class.bg-white]="item.active === true"
+                  [class.text-[#4046b8]]="item.active === true"
+                  [class.shadow-[0_10px_24px_rgba(53,55,191,0.08)]]="item.active === true"
+                  [class.text-[#72779d]]="item.active !== true"
+                  [class.hover:bg-[#f7f8ff]]="item.active !== true"
+                  [class.hover:text-[#4046b8]]="item.active !== true"
+                >
+                  <span class="grid h-8 w-8 place-content-center rounded-full bg-[#eef0ff] text-[#4046b8]" aria-hidden="true">
+                    <i [class]="'bi ' + item.icon"></i>
+                  </span>
+                  {{ item.label }}
+                </a>
+              </li>
+            }
+          </ul>
+        </nav>
+      }
+    </aside>
+
+    <main class="min-w-0 flex flex-1 flex-col pb-8">
+      <ng-content select="[dashboard-main]"></ng-content>
+    </main>
+  </div>
+
+  <div class="w-full border-t border-[#e2e4f4]"></div>
+  <div class="mx-auto w-full max-w-[1440px] px-4 mt-6 lg:px-5">
+    <itera-footer [brand]="brand()" [links]="footerLinks()"></itera-footer>
+  </div>
+</div>

@@ -4,8 +4,8 @@ export const routes: Routes = [
 	{
 		path: '',
 		loadComponent: () =>
-			import('./features/dashboard/dashboard-page.component').then(
-				(m) => m.DashboardPageComponent
+			import('./features/home/home-page.component').then(
+				(m) => m.HomePageComponent
 			)
 	},
 	{
@@ -24,8 +24,24 @@ export const routes: Routes = [
 	},
 	{
 		path: 'dashboard',
-		redirectTo: '',
-		pathMatch: 'full'
+		loadComponent: () =>
+			import('./features/dashboard/page/dashboard/dashboard-page.component').then(
+				(m) => m.DashboardPageComponent
+			)
+	},
+	{
+		path: 'dashboard/comparison',
+		loadComponent: () =>
+			import('./features/dashboard/page/comparison/comparison-page.component').then(
+				(m) => m.ComparisonPageComponent
+			)
+	},
+	{
+		path: 'dashboard/progress',
+		loadComponent: () =>
+			import('./features/dashboard/page/progress/progress-page.component').then(
+				(m) => m.ProgressPageComponent
+			)
 	},
 	{
 		path: '**',
