@@ -49,8 +49,9 @@ Este documento define las normativas estrictas para el desarrollo en el proyecto
 
 ## 🧪 5. Calidad y Validación
 
+- **Build Obligatorio:** Ningún cambio será aceptado si rompe la compilación del proyecto. Es responsabilidad del desarrollador asegurar que `npm run build` sea exitoso antes de realizar cualquier commit.
 - **Testing Obligatorio:** Cada componente o servicio nuevo **debe** incluir su archivo `.spec.ts` con una cobertura mínima que valide su comportamiento principal.
-- **Pre-commit Check:** Es recomendable ejecutar el script de validación local antes de realizar un push:
+- **Pre-commit Check:** Es obligatorio ejecutar el script de validación local antes de realizar un push (este script incluye build y tests):
   ```bash
   ./verify-ci.sh
   ```

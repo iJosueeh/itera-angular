@@ -5,6 +5,7 @@ import { LoginPayload, LoginViewModel } from '@features/auth/interfaces/auth.int
 
 @Component({
   selector: 'itera-login-form',
+  standalone: true,
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login-form.component.html',
   styleUrl: './login-form.component.css',
