@@ -1,25 +1,24 @@
-# Build stage
-FROM node:18-alpine AS builder
-
+# Multi-stage build for Angular application
+# Stage 1: Build the Angular application
+FROM node:20-alpine AS build
 WORKDIR /app
 
+# Install dependencies
 COPY package*.json ./
-RUN npm ci
+RUN npm install
 
+# Copy source and build
 COPY . .
-RUN npm run build
+# Using the output path specified in angular.json or defaulting to dist/itera
+RUN npm run build -- --configuration production
 
-# Production stage
-FROM node:18-alpine
+# Stage 2: Serve the application using Nginx
+FROM nginx:stable-alpine
+# The directory name inside dist depends on the project name in angular.json ("itera")
+COPY --from=build /app/dist/itera/browser /usr/share/nginx/html
 
-WORKDIR /app
+# Copy custom nginx configuration if needed (optional)
+# COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Instalar http-server para servir la aplicación
-RUN npm install -g http-server
-
-COPY --from=builder /app/dist/itera-angular ./dist
-
-EXPOSE 4200
-
-# Servir la aplicación Angular compilada
-CMD ["http-server", "dist", "-p", "4200", "--cors", "-g"]
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
