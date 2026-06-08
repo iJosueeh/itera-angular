@@ -47,10 +47,31 @@
       }
     </aside>
 
-    <main class="min-w-0 flex flex-1 flex-col pb-8">
+    <main class="min-w-0 flex flex-1 flex-col pb-20 lg:pb-8">
       <ng-content select="[dashboard-main]"></ng-content>
     </main>
   </div>
+
+  <!-- Mobile Bottom Nav -->
+  @if (sidebarItems().length > 0) {
+    <nav class="fixed bottom-0 left-0 z-40 w-full border-t border-[#e2e4f4] bg-white/95 px-4 py-2 backdrop-blur lg:hidden">
+      <ul class="flex justify-around items-center">
+        @for (item of sidebarItems().slice(0, 4); track item.label) {
+          <li>
+            <a
+              [routerLink]="item.href"
+              class="flex flex-col items-center gap-1 p-2 no-underline"
+              [class.text-[#4046b8]]="item.active === true"
+              [class.text-[#72779d]]="item.active !== true"
+            >
+              <i [class]="'bi ' + item.icon + ' text-xl'"></i>
+              <span class="text-[0.65rem] font-bold uppercase tracking-tight">{{ item.label }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    </nav>
+  }
 
   <div class="w-full border-t border-[#e2e4f4]"></div>
   <div class="mx-auto w-full max-w-[1440px] px-4 mt-6 lg:px-5">

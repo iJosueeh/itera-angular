@@ -1,0 +1,81 @@
+<itera-dashboard-shell [sidebarItems]="sidebarItems" sidebarTitle="Admin Console">
+  <div dashboard-main class="min-w-0 flex flex-1 flex-col gap-6 pb-6">
+    <header>
+      <h1 class="text-3xl font-bold text-[#2f327d]">Audit Monitor</h1>
+      <p class="text-[#6b6f92] mt-1">Real-time status of the automated data extraction pipeline.</p>
+    </header>
+
+    @if (isLoading()) {
+      <div class="flex-1 grid place-content-center py-20">
+        <div class="animate-spin rounded-full h-12 w-12 border-4 border-indigo-500/20 border-t-indigo-500"></div>
+      </div>
+    } @else {
+      <div class="bg-white rounded-[32px] border border-slate-100 shadow-[0_20px_50px_rgba(0,0,0,0.03)] overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50/50 border-b border-slate-100">
+                <th class="px-6 py-4 text-[0.72rem] font-bold uppercase tracking-[0.15em] text-slate-400">Execution Date</th>
+                <th class="px-6 py-4 text-[0.72rem] font-bold uppercase tracking-[0.15em] text-slate-400">Source</th>
+                <th class="px-6 py-4 text-[0.72rem] font-bold uppercase tracking-[0.15em] text-slate-400">Status</th>
+                <th class="px-6 py-4 text-[0.72rem] font-bold uppercase tracking-[0.15em] text-slate-400">Extracted</th>
+                <th class="px-6 py-4 text-[0.72rem] font-bold uppercase tracking-[0.15em] text-slate-400">Discarded</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+              @for (log of auditLogs(); track log._id) {
+                <tr class="hover:bg-slate-50/30 transition-colors">
+                  <td class="px-6 py-4 text-sm text-slate-600 whitespace-nowrap">
+                    {{ log.fecha_ejecucion | date:'medium' }}
+                  </td>
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full" [class.bg-blue-500]="log.fuente === 'LinkedIn'" [class.bg-orange-500]="log.fuente === 'Computrabajo'"></span>
+                      <span class="font-semibold text-slate-700">{{ log.fuente }}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span 
+                      class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border"
+                      [ngClass]="getStatusClass(log.estado)"
+                    >
+                      {{ log.estado }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="text-sm font-bold text-slate-700">{{ log.ofertas_extraidas }}</span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="text-sm font-medium" [class.text-rose-500]="log.ofertas_descartadas > 0" [class.text-slate-400]="log.ofertas_descartadas === 0">
+                      {{ log.ofertas_descartadas }}
+                    </span>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="5" class="px-6 py-20 text-center text-slate-400 italic">
+                    No execution logs found.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      @if (auditLogs().length > 0) {
+        <div class="mt-4 p-5 rounded-3xl bg-indigo-50/50 border border-indigo-100 flex items-start gap-4">
+          <div class="grid h-10 w-10 shrink-0 place-content-center rounded-full bg-indigo-100 text-indigo-600">
+            <i class="bi bi-info-circle-fill"></i>
+          </div>
+          <div>
+            <h4 class="text-sm font-bold text-indigo-900">Pipeline Insights</h4>
+            <p class="text-xs text-indigo-700/70 mt-1 leading-relaxed">
+              The scrapers are configured to automatically discard duplicates based on URL origin. Discards usually indicate that the same offer was found in a previous run.
+            </p>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</itera-dashboard-shell>

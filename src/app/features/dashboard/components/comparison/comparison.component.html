@@ -20,7 +20,7 @@
   </div>
 
   <div class="mt-6 grid gap-4 xl:grid-cols-2">
-    @for (option of options; track option.title) {
+    @for (option of options(); track option.title) {
       <article class="overflow-hidden rounded-[24px] border border-[#eef0fb] bg-[#f8f9ff]">
         <div
           class="comparison-hero comparison-hero--{{ option.accent }} px-5 pb-5 pt-24 text-white"
@@ -109,12 +109,12 @@
         class="grid grid-cols-[1.1fr_1fr_1fr_auto] gap-4 border-b border-[#edf0fb] px-4 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#9aa0c0]"
       >
         <span>Metric</span>
-        <span class="text-[#4046b8]">Software Engineering</span>
-        <span class="text-[#0f8b66]">Data Science</span>
+        <span class="text-[#4046b8]">{{ options()[0]?.title ?? 'Option A' }}</span>
+        <span class="text-[#0f8b66]">{{ options()[1]?.title ?? 'Option B' }}</span>
         <span>Outcome</span>
       </div>
 
-      @for (row of metricRows; track row.metric) {
+      @for (row of metricRows(); track row.metric) {
         <div
           class="grid grid-cols-[1.1fr_1fr_1fr_auto] items-center gap-4 border-b border-[#edf0fb] px-4 py-4 text-sm last:border-b-0"
         >

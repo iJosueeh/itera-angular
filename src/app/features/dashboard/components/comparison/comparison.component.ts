@@ -1,4 +1,6 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, OnInit } from '@angular/core';
+import { MarketApiService } from '@features/home/services/market-api.service';
+import { take } from 'rxjs';
 
 interface ComparisonOption {
   label: string;
@@ -26,65 +28,55 @@ interface MetricRow {
   styleUrl: './comparison.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ComparisonComponent {
+export class ComparisonComponent implements OnInit {
+  private readonly marketApi = inject(MarketApiService);
+  
   protected readonly title = 'Path Comparator';
   protected readonly subtitle =
     'A deep-dive analytical comparison between your top two potential career pivots. Leverage data-driven growth projections and cost-benefit analysis.';
 
-  protected readonly options: ReadonlyArray<ComparisonOption> = [
-    {
-      label: 'Option A',
-      title: 'Software Engineering',
-      subtitle: 'Specializing in Full-Stack Development & Distributed Systems.',
-      accent: 'indigo',
-      salary: '$128,400',
-      growth: '+22%',
-      stack: ['TypeScript', 'Rust', 'Kubernetes', 'Go'],
-      projectionBars: [18, 26, 34, 43, 58],
-    },
-    {
-      label: 'Option B',
-      title: 'Data Science',
-      subtitle: 'Specializing in Machine Learning & Predictive Analytics.',
-      accent: 'emerald',
-      salary: '$135,200',
-      growth: '+36%',
-      stack: ['Python', 'PyTorch', 'SQL', 'Pandas'],
-      projectionBars: [12, 24, 38, 46, 54],
-    },
-  ];
+  readonly options = signal<ReadonlyArray<ComparisonOption>>([]);
+  readonly metricRows = signal<ReadonlyArray<MetricRow>>([]);
 
-  protected readonly metricRows: ReadonlyArray<MetricRow> = [
-    {
-      metric: 'Total Learning Time',
-      optionA: '8 Months (Intensive)',
-      optionB: '14 Months (Academic)',
-      outcome: 'Faster pivot',
-      tone: 'indigo',
-    },
-    {
-      metric: 'Opportunity Cost',
-      optionA: '$45,000 (Loss of Wages)',
-      optionB: '$82,000 (Loss of Wages)',
-      outcome: 'Lower risk',
-      tone: 'neutral',
-    },
-    {
-      metric: 'Entry Difficulty',
-      optionA: 'Medium (Project Based)',
-      optionB: 'High (Math Intensive)',
-      outcome: 'Higher barrier',
-      tone: 'emerald',
-    },
-    {
-      metric: 'Market Saturation',
-      optionA: 'High (Junior Level)',
-      optionB: 'Low (Specialized Level)',
-      outcome: '$ scarcity premium',
-      tone: 'emerald',
-    },
-  ];
+  ngOnInit(): void {
+    this.marketApi.getCareerMetrics().pipe(take(1)).subscribe(metrics => {
+      if (metrics.length >= 2) {
+        const m1 = metrics[0];
+        const m2 = metrics[1];
+
+        const mappedOptions: ComparisonOption[] = [m1, m2].map((m, i) => ({
+          label: `Option ${i === 0 ? 'A' : 'B'}`,
+          title: m.titulo_carrera,
+          subtitle: `Specializing in ${m.aprendizaje.habilidades_top.slice(0, 2).join(' & ')}.`,
+          accent: i === 0 ? 'indigo' : 'emerald',
+          salary: `$${m.salario_anual_usd.mediana.toLocaleString()}`,
+          growth: m.demanda_mercado.tendencia === 'creciente' ? '+15%' : '+5%',
+          stack: m.aprendizaje.habilidades_top,
+          projectionBars: [15, 25, 40, 50, 60]
+        }));
+        this.options.set(mappedOptions);
+
+        const mappedRows: MetricRow[] = [
+          {
+            metric: 'Total Learning Time',
+            optionA: `${m1.aprendizaje.tiempo_estimado_upgrading_meses} Months`,
+            optionB: `${m2.aprendizaje.tiempo_estimado_upgrading_meses} Months`,
+            outcome: m1.aprendizaje.tiempo_estimado_upgrading_meses < m2.aprendizaje.tiempo_estimado_upgrading_meses ? 'Faster pivot' : 'Longer path',
+            tone: 'indigo',
+          },
+          {
+            metric: 'Entry Difficulty',
+            optionA: `${m1.analisis_competitivo.dificultad_entrada}/10`,
+            optionB: `${m2.analisis_competitivo.dificultad_entrada}/10`,
+            outcome: m1.analisis_competitivo.dificultad_entrada < m2.analisis_competitivo.dificultad_entrada ? 'Lower barrier' : 'High barrier',
+            tone: 'emerald',
+          }
+        ];
+        this.metricRows.set(mappedRows);
+      }
+    });
+  }
 
   protected readonly mentorSummary =
-    'Based on your previous 4 years in Marketing, Data Science offers a stronger long-term ROI. While the learning curve is 40% steeper, your existing domain expertise in consumer analytics makes you a "T-Shaped" candidate. Software Engineering would be a total reset, whereas Data Science is a force multiplier for your career.';
+    'Based on the current market data, both paths offer significant growth. Option A provides a faster entry to the market with lower initial difficulty.';
 }

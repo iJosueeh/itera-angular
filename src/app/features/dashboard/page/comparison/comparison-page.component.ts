@@ -19,6 +19,8 @@ export class ComparisonPageComponent {
 
   protected readonly sidebarItems: ReadonlyArray<NavItem> = [
     { label: 'Dashboard', href: '/dashboard', icon: 'bi-grid-1x2' },
+    { label: 'Job Explorer', href: '/dashboard/jobs', icon: 'bi-search' },
+    { label: 'Audit Monitor', href: '/dashboard/audit', icon: 'bi-shield-check' },
     { label: 'My Routes', href: '/dashboard#routes', icon: 'bi-signpost-2' },
     { label: 'Skills', href: '/dashboard#skills', icon: 'bi-stars' },
     {

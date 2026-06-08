@@ -1,15 +1,22 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map, catchError, of } from 'rxjs';
+import { Observable, map, catchError, tap, of } from 'rxjs';
 import { AuthResult, LoginPayload, RegisterPayload } from '../interfaces/auth.interface';
+import { AuthStorageService } from '@shared/services/auth-storage.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthApiService {
   private readonly http = inject(HttpClient);
+  private readonly authStorage = inject(AuthStorageService);
   private readonly baseUrl = '/api/core/auth'; // Using relative path for proxy
 
   signIn(payload: LoginPayload): Observable<AuthResult> {
     return this.http.post<any>(`${this.baseUrl}/login`, payload).pipe(
+      tap((response) => {
+        if (response.userId) {
+          this.authStorage.saveSession('', response.userId); // Token is now in cookie
+        }
+      }),
       map((response) => ({
         success: true,
         message: `Bienvenido, ${response.email}.`,

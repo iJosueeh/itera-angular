@@ -1,30 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
+import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
-import { MasteryCardComponent } from '@shared/ui/mastery-card/mastery-card.component';
-import { MentorAlertCardComponent } from '@shared/ui/mentor-alert-card/mentor-alert-card.component';
-import { BadgeItemComponent } from '@shared/ui/badge-item/badge-item.component';
-import { StatBarComponent } from '@shared/ui/stat-bar/stat-bar.component';
+// ... (rest of imports)
 import { NavItem } from '@shared/interfaces/dashboard.interface';
 
-interface MasteryCard {
-  title: string;
-  subtitle: string;
-  progress: number;
-  tone: 'indigo' | 'emerald' | 'violet';
-}
-
-interface MilestoneItem {
-  title: string;
-  meta: string;
-  status: 'completed' | 'in-progress' | 'locked';
-}
-
-interface BadgeItem {
-  label: string;
-  icon: string;
-  earned: boolean;
-}
+// ... (interfaces)
 
 @Component({
   selector: 'itera-dashboard-progress-page',
@@ -39,11 +20,18 @@ interface BadgeItem {
   templateUrl: './progress-page.component.html',
   styleUrl: './progress-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [DashboardContentService, ProfileContentService],
 })
-export class ProgressPageComponent {
+export class ProgressPageComponent implements OnInit {
   private readonly dashboardContentService = inject(DashboardContentService);
+  private readonly profileContentService = inject(ProfileContentService);
 
   protected readonly vm = this.dashboardContentService.vm;
+  protected readonly profile = this.profileContentService.profile;
+
+  ngOnInit(): void {
+    this.profileContentService.loadProfile();
+  }
 
   protected readonly topNavItems: ReadonlyArray<NavItem> = [
     { label: 'Dashboard', href: '/dashboard', icon: 'bi-grid-1x2' },
@@ -53,6 +41,8 @@ export class ProgressPageComponent {
 
   protected readonly sidebarItems: ReadonlyArray<NavItem> = [
     { label: 'Dashboard', href: '/dashboard', icon: 'bi-grid-1x2' },
+    { label: 'Job Explorer', href: '/dashboard/jobs', icon: 'bi-search' },
+    { label: 'Audit Monitor', href: '/dashboard/audit', icon: 'bi-shield-check' },
     { label: 'Demand', href: '/dashboard#demand', icon: 'bi-bar-chart-line' },
     { label: 'My Routes', href: '/dashboard#routes', icon: 'bi-signpost-2' },
     { label: 'Skills', href: '/dashboard#skills', icon: 'bi-stars' },

@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, inject, effect } from '@angular/core';
+import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import gsap from 'gsap';
 
 @Component({
@@ -8,10 +9,21 @@ import gsap from 'gsap';
   styleUrls: ['./interactive-roadmap.component.css'],
 })
 export class InteractiveRoadmapComponent implements AfterViewInit {
+  private readonly profileContentService = inject(ProfileContentService);
   @ViewChild('chart', { static: true }) chartContainer!: ElementRef<HTMLDivElement>;
 
+  constructor() {
+    effect(() => {
+      const roadmap = this.profileContentService.roadmap();
+      if (roadmap) {
+        this.renderChart(roadmap);
+      }
+    });
+  }
+
   ngAfterViewInit(): void {
-    this.renderChart();
+    const currentRoadmap = this.profileContentService.roadmap();
+    this.renderChart(currentRoadmap);
     window.addEventListener('resize', () => this.resize());
   }
 
@@ -19,12 +31,13 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
     const container = this.chartContainer?.nativeElement;
     if (container) {
       container.innerHTML = '';
-      this.renderChart();
+      this.renderChart(this.profileContentService.roadmap());
     }
   }
 
-  private renderChart(): void {
+  private renderChart(realData?: any): void {
     const container = this.chartContainer.nativeElement;
+    container.innerHTML = ''; // Clear previous
     const width = container.clientWidth || 800;
     const height = 200;
 
@@ -35,7 +48,7 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.style.overflow = 'visible';
 
-    const nodes = [
+    let nodes = [
       { id: 'foundation', x: 80, y: 120, label: 'Foundation', status: 'completed' },
       { id: 'cloud', x: Math.min(240, width * 0.3), y: 70, label: 'Cloud', status: 'attention' },
       {
@@ -53,6 +66,17 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
         status: 'goal',
       },
     ];
+
+    if (realData && Array.isArray(realData)) {
+       // Simple mapping for demo
+       nodes = realData.map((n, i) => ({
+         id: n.id || `node-${i}`,
+         x: 80 + (i * (width - 160) / (realData.length - 1 || 1)),
+         y: i % 2 === 0 ? 120 : 70,
+         label: n.name || n.label || 'Step',
+         status: n.status || 'planned'
+       }));
+    }
 
     const d = nodes.reduce((acc, p, i, arr) => {
       if (i === 0) return `M ${p.x} ${p.y}`;

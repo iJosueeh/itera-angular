@@ -9,14 +9,14 @@
     </a>
 
     <nav aria-label="Navegación principal">
-      <ul class="m-0 flex list-none flex-wrap items-center gap-2 p-0 md:gap-3">
+      <ul class="m-0 flex list-none flex-wrap items-center gap-1 p-0 md:gap-3">
         @for (item of items(); track item.label) {
           <li>
             <a
               [routerLink]="item.href"
               routerLinkActive="is-active"
               [routerLinkActiveOptions]="{ exact: item.active === true }"
-              class="group flex items-center gap-2 rounded-full border border-transparent px-3 py-2 text-[0.92rem] font-medium text-[#5e607f] no-underline transition-colors duration-200 hover:border-[#d9def8] hover:bg-[#f7f8ff] hover:text-[#3537bf]"
+              class="group flex items-center gap-2 rounded-full border border-transparent px-2 py-2 text-[0.92rem] font-medium text-[#5e607f] no-underline transition-colors duration-200 hover:border-[#d9def8] hover:bg-[#f7f8ff] hover:text-[#3537bf] md:px-3"
               [class.text-[#3537bf]]="item.active === true"
               [class.border-[#3537bf]]="item.active === true"
               [class.bg-[#f0f2ff]]="item.active === true"
@@ -29,7 +29,7 @@
               >
                 <i class="bi" [ngClass]="item.icon"></i>
               </span>
-              {{ item.label }}
+              <span class="hidden md:inline">{{ item.label }}</span>
             </a>
           </li>
         }
