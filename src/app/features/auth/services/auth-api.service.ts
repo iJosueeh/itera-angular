@@ -1,11 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map, catchError, of } from 'rxjs';
-import {
-  AuthResult,
-  LoginPayload,
-  RegisterPayload,
-} from '../interfaces/auth.interface';
+import { AuthResult, LoginPayload, RegisterPayload } from '../interfaces/auth.interface';
 
 @Injectable({ providedIn: 'root' })
 export class AuthApiService {
@@ -22,7 +18,7 @@ export class AuthApiService {
       catchError((error) => {
         const message = error.error?.message || 'Error al iniciar sesión';
         return of({ success: false, message, redirectTo: '' });
-      })
+      }),
     );
   }
 
@@ -30,7 +26,7 @@ export class AuthApiService {
     // Note: The backend expects { email, password } for now based on AuthCommands.scala
     const registerCmd = {
       email: payload.email,
-      password: payload.password
+      password: payload.password,
     };
 
     return this.http.post<any>(`${this.baseUrl}/register`, registerCmd).pipe(
@@ -42,7 +38,7 @@ export class AuthApiService {
       catchError((error) => {
         const message = error.error?.message || 'Error al registrarse';
         return of({ success: false, message, redirectTo: '' });
-      })
+      }),
     );
   }
 }
