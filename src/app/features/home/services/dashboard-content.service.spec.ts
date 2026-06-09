@@ -18,25 +18,29 @@ describe('DashboardContentService', () => {
     };
 
     marketApiMock = {
-      getCareerMetrics: () => of([
-        {
-          titulo_carrera: 'Cloud Architecture',
-          salario_anual_usd: { min: 45000, max: 85000, promedio: 65000 },
-          demanda_mercado: { volumen_total: 60, tendencia: 'creciente' },
-          aprendizaje: { habilidades_clave: ['AWS', 'Docker'], tiempo_estimado_upgrading_meses: 6 },
-          analisis_competitivo: { top_empresas: ['Google', 'AWS'] },
-          ultima_actualizacion: new Date().toISOString()
-        }
-      ] as CareerMetrics[]),
+      getCareerMetrics: () =>
+        of([
+          {
+            titulo_carrera: 'Cloud Architecture',
+            salario_anual_usd: { min: 45000, max: 85000, promedio: 65000 },
+            demanda_mercado: { volumen_total: 60, tendencia: 'creciente' },
+            aprendizaje: {
+              habilidades_clave: ['AWS', 'Docker'],
+              tiempo_estimado_upgrading_meses: 6,
+            },
+            analisis_competitivo: { top_empresas: ['Google', 'AWS'] },
+            ultima_actualizacion: new Date().toISOString(),
+          },
+        ] as CareerMetrics[]),
       getMarketSkills: () => of([]),
-      getMarketDemand: () => of(null)
+      getMarketDemand: () => of(null),
     };
 
     TestBed.configureTestingModule({
       providers: [
         DashboardContentService,
         { provide: DashboardApiMockService, useValue: apiMockService },
-        { provide: MarketApiService, useValue: marketApiMock }
+        { provide: MarketApiService, useValue: marketApiMock },
       ],
     });
     service = TestBed.inject(DashboardContentService);
@@ -58,7 +62,7 @@ describe('DashboardContentService', () => {
 
   it('should update careerSnapshot signal when getCareerSnapshot is called', () => {
     service.getCareerSnapshot('Cloud');
-    
+
     const snapshot = service.careerSnapshot();
     expect(snapshot).toBeTruthy();
     expect(snapshot?.career).toBe('Cloud Architecture');
