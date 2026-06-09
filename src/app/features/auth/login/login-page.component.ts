@@ -26,13 +26,19 @@ export class LoginPageComponent {
   protected async onSubmit(payload: LoginPayload): Promise<void> {
     this.isSubmitting.set(true);
     this.responseError.set(null);
+    this.responseMessage.set(null);
 
     try {
       const result = await firstValueFrom(this.loginContentService.signIn(payload));
-      this.responseMessage.set(result.message);
-      await this.router.navigateByUrl(result.redirectTo);
+
+      if (result.success) {
+        this.responseMessage.set(result.message);
+        await this.router.navigateByUrl(result.redirectTo);
+      } else {
+        this.responseError.set(result.message);
+      }
     } catch {
-      this.responseError.set('No se pudo iniciar sesion. Intenta nuevamente.');
+      this.responseError.set('No se pudo establecer conexión con el servidor.');
     } finally {
       this.isSubmitting.set(false);
     }

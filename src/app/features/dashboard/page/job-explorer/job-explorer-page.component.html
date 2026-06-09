@@ -1,0 +1,135 @@
+<itera-dashboard-shell
+  [theme]="currentTheme()"
+  [sidebarItems]="sidebarItems"
+  sidebarTitle="Mercado e Inteligencia"
+>
+  <div dashboard-main class="min-w-0 flex flex-1 flex-col gap-8 pb-6">
+    <header class="flex flex-wrap items-center justify-between gap-6">
+      <div>
+        <h1 class="text-3xl font-black text-white tracking-tighter">
+          Explorador de Empleos<span class="text-primary">.</span>
+        </h1>
+        <p class="text-white/40 mt-2 font-medium">
+          Descubre oportunidades reales analizadas por Itera AI.
+        </p>
+      </div>
+
+      <div class="form-control w-full max-w-md">
+        <div class="relative">
+          <i
+            class="bi bi-search absolute left-5 top-1/2 -translate-y-1/2 text-white/30 text-lg"
+          ></i>
+          <input
+            type="text"
+            placeholder="Filtrar por rol, empresa o habilidad..."
+            class="input w-full pl-14 py-7 bg-white/[0.03] border-white/[0.05] focus:border-primary focus:outline-none text-white rounded-2xl shadow-inner placeholder:text-white/20"
+            (input)="onSearch($event)"
+          />
+        </div>
+      </div>
+    </header>
+
+    @if (isLoading()) {
+      <div class="flex-1 grid place-content-center py-20">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    } @else {
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @for (offer of filteredOffers(); track offer.url_origen) {
+          <article
+            class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-md shadow-2xl hover:bg-neutral/60 transition-all duration-500 group overflow-hidden rounded-[2.5rem]"
+          >
+            <div class="card-body p-8">
+              <div class="flex justify-between items-start mb-4">
+                <span
+                  class="badge badge-primary border-none text-white font-bold uppercase tracking-widest text-[0.6rem] py-3 px-3 shadow-lg shadow-primary/20"
+                >
+                  {{ offer.fuente }}
+                </span>
+                @if (offer.salario_normalizado_usd) {
+                  <span class="text-lg font-black text-secondary tracking-tighter">
+                    ${{ offer.salario_normalizado_usd | number: '1.0-0' }}
+                  </span>
+                }
+              </div>
+
+              <h3
+                class="card-title text-xl font-black text-white leading-tight group-hover:text-primary transition-colors"
+              >
+                {{ offer.puesto }}
+              </h3>
+              <p class="text-sm text-white/40 flex items-center gap-2 mb-6 font-medium">
+                <i class="bi bi-building opacity-50"></i> {{ offer.empresa }}
+              </p>
+
+              <div class="flex flex-wrap gap-2 mb-8">
+                @for (skill of offer.habilidades_requeridas.slice(0, 4); track skill) {
+                  <span
+                    class="badge bg-white/5 border-none text-white/60 text-[0.7rem] font-bold px-3 py-3"
+                  >
+                    {{ skill }}
+                  </span>
+                }
+                @if (offer.habilidades_requeridas.length > 4) {
+                  <span class="text-xs text-white/20 font-bold ml-1">
+                    +{{ offer.habilidades_requeridas.length - 4 }}
+                  </span>
+                }
+              </div>
+
+              <div class="card-actions mt-auto">
+                <a
+                  [href]="offer.url_origen"
+                  target="_blank"
+                  (click)="trackJobView(offer)"
+                  class="btn btn-primary w-full rounded-2xl h-12 text-xs font-black uppercase tracking-[0.2em] border-none shadow-xl shadow-primary/10"
+                >
+                  Ver Detalles <i class="bi bi-arrow-up-right text-[10px] ml-1"></i>
+                </a>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="col-span-full py-24 text-center">
+            <div class="text-6xl mb-6 opacity-10">🔍</div>
+            <h3 class="text-2xl font-black text-white/20 tracking-tighter">
+              No se encontraron ofertas
+            </h3>
+            <p class="text-white/10 font-medium mt-2 uppercase tracking-widest text-xs">
+              Intenta ajustar tu búsqueda
+            </p>
+          </div>
+        }
+      </div>
+
+      <!-- Pagination Footer -->
+      <footer class="mt-12 flex justify-center pb-10">
+        <div
+          class="join bg-neutral/40 border border-white/[0.03] backdrop-blur-md rounded-2xl shadow-xl p-1"
+        >
+          <button
+            class="btn btn-ghost join-item px-6 font-bold text-white/50 hover:text-white disabled:bg-transparent"
+            [disabled]="currentPage() === 0 || isLoading()"
+            (click)="prevPage()"
+          >
+            <i class="bi bi-chevron-left mr-2"></i> Anterior
+          </button>
+
+          <div
+            class="join-item px-6 flex items-center bg-white/[0.03] text-primary font-black text-sm uppercase tracking-widest"
+          >
+            Página {{ currentPage() + 1 }}
+          </div>
+
+          <button
+            class="btn btn-ghost join-item px-6 font-bold text-white/50 hover:text-white disabled:bg-transparent"
+            [disabled]="offers().length < pageSize || isLoading()"
+            (click)="nextPage()"
+          >
+            Siguiente <i class="bi bi-chevron-right ml-2"></i>
+          </button>
+        </div>
+      </footer>
+    }
+  </div>
+</itera-dashboard-shell>

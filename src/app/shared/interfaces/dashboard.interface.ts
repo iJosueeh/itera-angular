@@ -3,6 +3,7 @@ export interface NavItem {
   href: string;
   icon: string;
   active?: boolean;
+  fragment?: string;
 }
 
 export interface TrendItem {
@@ -53,10 +54,11 @@ export interface FooterLink {
 export interface CareerSnapshot {
   career: string;
   annualSalaryUsd: string;
+  growthYoY: string;
   demandLevel: string;
-  marketGrowth: string;
-  learningRoute: string;
+  demandMomentum: string;
   profileFit: string;
+  alignmentDescription: string;
 }
 
 export interface DashboardViewModel {

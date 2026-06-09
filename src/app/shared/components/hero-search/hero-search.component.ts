@@ -1,14 +1,17 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { HeroContent } from '@shared/interfaces/dashboard.interface';
+import { MarketSkill } from '@shared/interfaces/market.interface';
 
 @Component({
   selector: 'itera-hero-search',
+  standalone: true,
   templateUrl: './hero-search.component.html',
   styleUrl: './hero-search.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeroSearchComponent {
   readonly content = input.required<HeroContent>();
+  readonly marketTrends = input<ReadonlyArray<MarketSkill>>([]);
   readonly explore = output<string>();
   readonly query = signal('');
 

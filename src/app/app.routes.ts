@@ -40,6 +40,20 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'dashboard/jobs',
+    loadComponent: () =>
+      import('./features/dashboard/page/job-explorer/job-explorer-page.component').then(
+        (m) => m.JobExplorerPageComponent,
+      ),
+  },
+  {
+    path: 'dashboard/audit',
+    loadComponent: () =>
+      import('./features/dashboard/page/audit-monitor/audit-monitor-page.component').then(
+        (m) => m.AuditMonitorPageComponent,
+      ),
+  },
+  {
     path: '**',
     loadComponent: () =>
       import('./shared/components/not-found-page/not-found-page.component').then(

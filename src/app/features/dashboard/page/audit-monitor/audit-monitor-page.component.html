@@ -1,0 +1,116 @@
+<itera-dashboard-shell [sidebarItems]="sidebarItems" sidebarTitle="Admin Console">
+  <div dashboard-main class="min-w-0 flex flex-1 flex-col gap-8 pb-6">
+    <header>
+      <h1 class="text-3xl font-black text-white tracking-tighter">
+        Audit Monitor<span class="text-primary">.</span>
+      </h1>
+      <p class="text-white/40 mt-2 font-medium">
+        Real-time status of the automated data extraction pipeline.
+      </p>
+    </header>
+
+    @if (isLoading()) {
+      <div class="flex-1 grid place-content-center py-20">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    } @else {
+      <div
+        class="overflow-x-auto bg-neutral/40 rounded-[2.5rem] border border-white/[0.03] backdrop-blur-md shadow-2xl overflow-hidden"
+      >
+        <table class="table w-full border-none">
+          <thead>
+            <tr class="bg-white/[0.02] border-b border-white/[0.03]">
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
+                Execution Date
+              </th>
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
+                Source
+              </th>
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
+                Status
+              </th>
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
+                Extracted
+              </th>
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
+                Discarded
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/[0.02]">
+            @for (log of auditLogs(); track log._id) {
+              <tr class="hover:bg-white/[0.02] transition-colors group">
+                <td class="px-6 py-5 text-sm text-white/60 font-medium whitespace-nowrap">
+                  {{ log.fecha_ejecucion | date: 'medium' }}
+                </td>
+                <td class="px-6 py-5">
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="w-2.5 h-2.5 rounded-full shadow-[0_0_8px_rgba(255,255,255,0.2)]"
+                      [class.bg-secondary]="log.fuente === 'LinkedIn'"
+                      [class.bg-accent]="log.fuente === 'Computrabajo'"
+                    ></span>
+                    <span class="font-bold text-white/80">{{ log.fuente }}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-5">
+                  <span
+                    class="badge badge-sm font-black uppercase tracking-widest py-3 px-4 border-none"
+                    [ngClass]="getStatusClass(log.estado)"
+                  >
+                    {{ log.estado }}
+                  </span>
+                </td>
+                <td class="px-6 py-5">
+                  <span class="text-base font-black text-white">{{ log.ofertas_extraidas }}</span>
+                </td>
+                <td class="px-6 py-5">
+                  <span
+                    class="text-sm font-bold"
+                    [class.text-rose-500]="log.ofertas_descartadas > 0"
+                    [class.text-white/20]="log.ofertas_descartadas === 0"
+                  >
+                    {{ log.ofertas_descartadas }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td
+                  colspan="5"
+                  class="py-24 text-center text-white/10 italic font-medium uppercase tracking-widest text-xs"
+                >
+                  No execution logs found
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      @if (auditLogs().length > 0) {
+        <div
+          class="alert bg-primary/5 border border-primary/10 text-primary shadow-xl rounded-[2rem] p-6 mt-6"
+        >
+          <i class="bi bi-shield-lock-fill text-2xl"></i>
+          <div>
+            <h4 class="font-black uppercase tracking-widest text-xs">Pipeline Integrity</h4>
+            <p class="text-sm font-medium opacity-70 mt-1">
+              Automated deduplication active. Discards represent pre-indexed job URL collisions.
+            </p>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</itera-dashboard-shell>

@@ -1,64 +1,77 @@
-<section class="px-5 pb-14 pt-20" aria-labelledby="dashboard-title">
-  <div class="mx-auto max-w-[920px] text-center">
-    <span
-      class="inline-block rounded-full bg-[#ececfc] px-3 py-1 text-[0.68rem] uppercase tracking-[0.18em] text-[#3537bf]"
-      >{{ content().badge }}</span
-    >
-
-    <h1
-      id="dashboard-title"
-      class="mt-5 font-[Sora] text-[clamp(2.2rem,7.8vw,4.4rem)] font-bold leading-[1.06]"
-    >
-      {{ content().titleLead }}
-      <span class="block text-[#3537bf]">{{ content().titleAccent }}</span>
-    </h1>
-
-    <p class="mx-auto mt-5 max-w-[720px] text-[clamp(1rem,2.3vw,1.65rem)] text-[#3d3f5d]">
-      {{ content().subtitle }}
-    </p>
-
-    <div
-      class="mt-9 grid grid-cols-1 gap-2 rounded-2xl border border-[#cecff6] bg-white p-2 shadow-[0_15px_35px_rgba(53,55,191,0.2)] sm:grid-cols-[1fr_auto]"
-    >
-      <label for="search-input" class="sr-only">Buscar una carrera o meta profesional</label>
-      <div class="relative">
-        <i
-          class="bi bi-search pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#6b6f9a]"
-          aria-hidden="true"
-        ></i>
-        <input
-          id="search-input"
-          type="text"
-          class="w-full rounded-xl border-0 py-4 pl-12 pr-4 text-base text-[#16162a] outline-none ring-[#acadee] focus:ring-2"
-          [value]="query()"
-          [placeholder]="content().placeholder"
-          (input)="onQueryChange($event)"
-        />
-      </div>
-      <button
-        type="button"
-        class="min-w-[135px] cursor-pointer rounded-xl border-0 bg-gradient-to-br from-[#3537bf] to-[#24289a] px-4 py-3 font-semibold text-white"
-        (click)="submitSearch()"
+<section class="hero bg-transparent py-10 md:py-16" aria-labelledby="dashboard-title">
+  <div class="hero-content text-center p-0 max-w-4xl flex-col">
+    <div class="max-w-3xl">
+      <span
+        class="badge badge-primary border-none text-white font-bold uppercase tracking-[0.25em] text-[0.6rem] py-3 px-4 mb-8 shadow-lg shadow-primary/20"
       >
-        {{ content().primaryAction }}
-      </button>
-    </div>
+        {{ content().badge }}
+      </span>
 
-    <div class="mt-4 flex flex-wrap items-center justify-center gap-3">
-      <span class="text-[0.84rem] text-[#5e607f]">Tendencias:</span>
-      <ul class="m-0 flex list-none flex-wrap gap-2 p-0" aria-label="Tendencias de carreras">
-        @for (trend of content().trends; track trend.label) {
-          <li>
+      <h1
+        id="dashboard-title"
+        class="text-4xl md:text-6xl lg:text-8xl font-black leading-[0.98] tracking-tighter text-white"
+      >
+        {{ content().titleLead }}
+        <span class="text-primary block mt-1 drop-shadow-sm">{{ content().titleAccent }}</span>
+      </h1>
+
+      <p
+        class="py-8 text-lg md:text-2xl text-white/50 leading-relaxed max-w-2xl mx-auto font-medium"
+      >
+        {{ content().subtitle }}
+      </p>
+
+      <div
+        class="join w-full max-w-2xl shadow-3xl rounded-[2rem] overflow-hidden border border-white/5 bg-white/5 backdrop-blur-md"
+      >
+        <div class="relative flex-1">
+          <i
+            class="bi bi-search absolute left-6 top-1/2 -translate-y-1/2 text-white/30 text-xl"
+          ></i>
+          <input
+            id="search-input"
+            type="text"
+            class="input join-item w-full pl-16 py-10 bg-transparent border-none focus:outline-none text-xl text-white placeholder:text-white/20"
+            [value]="query()"
+            [placeholder]="content().placeholder"
+            (input)="onQueryChange($event)"
+          />
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary join-item px-10 h-auto text-lg font-black uppercase tracking-widest border-none"
+          (click)="submitSearch()"
+        >
+          {{ content().primaryAction }}
+        </button>
+      </div>
+
+      <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
+        <span class="text-[0.65rem] font-black opacity-30 uppercase tracking-[0.2em] text-white"
+          >Demanda en Vivo:</span
+        >
+        <div class="flex flex-wrap gap-2 justify-center">
+          @for (trend of marketTrends().slice(0, 5); track trend.habilidad) {
             <button
               type="button"
-              class="cursor-pointer rounded-full border-0 bg-[#eef0ff] px-3 py-1.5 text-[0.84rem] text-[#3537bf] transition-colors duration-200 hover:bg-[#dde1ff]"
-              (click)="useTrend(trend.label)"
+              class="badge bg-white/5 border-white/5 text-white/60 hover:bg-primary hover:text-white transition-all cursor-pointer py-4 px-5 font-bold text-xs"
+              (click)="useTrend(trend.habilidad)"
             >
-              {{ trend.label }}
+              {{ trend.habilidad }}
             </button>
-          </li>
-        }
-      </ul>
+          } @empty {
+            @for (trend of content().trends; track trend.label) {
+              <button
+                type="button"
+                class="badge bg-white/5 border-white/5 text-white/60 hover:bg-primary hover:text-white transition-all cursor-pointer py-4 px-5 font-bold text-xs"
+                (click)="useTrend(trend.label)"
+              >
+                {{ trend.label }}
+              </button>
+            }
+          }
+        </div>
+      </div>
     </div>
   </div>
 </section>
