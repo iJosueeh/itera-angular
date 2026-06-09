@@ -14,9 +14,10 @@ import { FooterLink, NavItem } from '@shared/interfaces/dashboard.interface';
 })
 export class DashboardShellComponent {
   readonly brand = input<string>('Itera');
+  readonly theme = input<string>('dim');
   readonly topNavItems = input<ReadonlyArray<NavItem>>([]);
   readonly sidebarItems = input<ReadonlyArray<NavItem>>([]);
-  readonly sidebarTitle = input<string>('Learning Hub');
-  readonly sidebarStatus = input<string>('AI Mentor Active');
+  readonly sidebarTitle = input<string>('Panel de Control');
+  readonly sidebarStatus = input<string>('Mentor IA Activo');
   readonly footerLinks = input<ReadonlyArray<FooterLink>>([]);
 }

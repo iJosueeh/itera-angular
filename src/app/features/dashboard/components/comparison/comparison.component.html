@@ -1,94 +1,91 @@
 <section
-  class="comparison-panel rounded-[28px] border border-white/70 bg-white p-5 shadow-[0_18px_45px_rgba(53,55,191,0.08)] sm:p-6"
+  class="comparison-panel"
   id="comparison"
   aria-label="Comparador de carrera"
 >
-  <div class="flex flex-wrap items-start justify-between gap-4">
+  <div class="flex flex-wrap items-start justify-between gap-4 mb-10">
     <div>
       <p
-        class="inline-flex rounded-full bg-[#eef0ff] px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#5b60c5]"
+        class="inline-flex rounded-full bg-primary/20 px-4 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.25em] text-primary"
       >
         AI Route Intelligence
       </p>
-      <h2 class="mt-3 text-[clamp(2rem,3vw,2.9rem)] font-semibold leading-[1.02] text-[#2f327d]">
-        {{ title }}
+      <h2 class="mt-4 text-[clamp(2.5rem,4vw,3.5rem)] font-black leading-[0.95] text-white tracking-tighter">
+        {{ title }}<span class="text-primary">.</span>
       </h2>
-      <p class="mt-3 max-w-[820px] text-[0.98rem] leading-[1.65] text-[#52577a]">
+      <p class="mt-4 max-w-[820px] text-lg leading-relaxed text-white/50 font-medium">
         {{ subtitle }}
       </p>
     </div>
   </div>
 
-  <div class="mt-6 grid gap-4 xl:grid-cols-2">
+  <div class="mt-6 grid gap-6 xl:grid-cols-2">
     @for (option of options(); track option.title) {
-      <article class="overflow-hidden rounded-[24px] border border-[#eef0fb] bg-[#f8f9ff]">
-        <div
-          class="comparison-hero comparison-hero--{{ option.accent }} px-5 pb-5 pt-24 text-white"
-        >
-          <p class="text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-white/75">
+      <article class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl shadow-2xl rounded-[3rem] overflow-hidden">
+        <div class="p-8 pb-0">
+          <p class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/30">
             {{ option.label }}
           </p>
-          <h3 class="mt-2 text-[clamp(1.7rem,2.8vw,2.4rem)] font-semibold leading-[1.05]">
+          <h3 class="mt-2 text-3xl font-black text-white tracking-tight">
             {{ option.title }}
           </h3>
-          <p class="mt-3 max-w-[420px] text-[0.92rem] leading-[1.5] text-white/85">
+          <p class="mt-3 max-w-[420px] text-sm font-medium leading-relaxed text-white/50">
             {{ option.subtitle }}
           </p>
         </div>
 
-        <div class="grid gap-3 p-5 sm:grid-cols-2">
-          <div class="rounded-[16px] bg-white p-4 shadow-[0_10px_24px_rgba(53,55,191,0.06)]">
-            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#a0a4be]">
-              Avg. Salary
+        <div class="grid gap-4 p-8 sm:grid-cols-2">
+          <div class="rounded-3xl bg-white/[0.02] border border-white/[0.03] p-5 shadow-inner">
+            <p class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">
+              Salario Promedio
             </p>
             <p
-              class="mt-2 text-[clamp(1.6rem,2.5vw,2.1rem)] font-semibold"
-              [class.text-[#4046b8]]="option.accent === 'indigo'"
-              [class.text-[#0f8b66]]="option.accent === 'emerald'"
+              class="mt-2 text-2xl font-black tracking-tighter"
+              [class.text-primary]="option.accent === 'primary'"
+              [class.text-secondary]="option.accent === 'secondary'"
             >
-              {{ option.salary }}
+              {{ (option.salary === '$0' ? 'En análisis...' : option.salary) }}
             </p>
           </div>
-          <div class="rounded-[16px] bg-white p-4 shadow-[0_10px_24px_rgba(53,55,191,0.06)]">
-            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#a0a4be]">
-              Growth
+          <div class="rounded-3xl bg-white/[0.02] border border-white/[0.03] p-5 shadow-inner">
+            <p class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">
+              Crecimiento
             </p>
             <p
-              class="mt-2 text-[clamp(1.6rem,2.5vw,2.1rem)] font-semibold"
-              [class.text-[#4046b8]]="option.accent === 'indigo'"
-              [class.text-[#0f8b66]]="option.accent === 'emerald'"
+              class="mt-2 text-2xl font-black tracking-tighter"
+              [class.text-primary]="option.accent === 'primary'"
+              [class.text-secondary]="option.accent === 'secondary'"
             >
               {{ option.growth }}
             </p>
           </div>
         </div>
 
-        <div class="px-5 pb-5">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#a0a4be]">
-            Core Stack
+        <div class="px-8 pb-4">
+          <p class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">
+            Stack Tecnológico
           </p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            @for (tech of option.stack; track tech) {
+          <div class="mt-4 flex flex-wrap gap-2">
+            @for (tech of option.stack.slice(0, 5); track tech) {
               <span
-                class="rounded-full bg-white px-3 py-1.5 text-[0.82rem] font-semibold text-[#4046b8] shadow-[0_8px_20px_rgba(53,55,191,0.06)]"
+                class="badge bg-white/5 border-none text-white/70 font-bold px-3 py-3"
                 >{{ tech }}</span
               >
             }
           </div>
         </div>
 
-        <div class="px-5 pb-5">
-          <p class="text-[0.68rem] font-semibold uppercase tracking-[0.2em] text-[#a0a4be]">
-            Demand Projection (5yr)
+        <div class="px-8 pb-8 mt-4">
+          <p class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">
+            Proyección de Demanda (5 años)
           </p>
-          <div class="mt-3 flex h-[110px] items-end gap-2 rounded-[18px] bg-white/60 px-3 py-3">
+          <div class="mt-4 flex h-[70px] items-end gap-2 rounded-2xl bg-white/[0.02] border border-white/[0.02] px-4 py-3 shadow-inner">
             @for (bar of option.projectionBars; track $index) {
               <div
-                class="flex-1 rounded-t-[12px]"
-                [class.bg-[#d7d9f5]]="option.accent === 'indigo' && $index < 4"
-                [class.bg-[#4046b8]]="option.accent === 'indigo' && $index === 4"
-                [class.bg-[#bfeee0]]="option.accent === 'emerald' && $index < 4"
-                [class.bg-[#40d7a4]]="option.accent === 'emerald' && $index === 4"
+                class="flex-1 rounded-t-lg transition-all duration-700"
+                [class.bg-primary]="option.accent === 'primary'"
+                [class.bg-secondary]="option.accent === 'secondary'"
+                [class.opacity-30]="$index < 4"
                 [style.height.%]="bar"
               ></div>
             }
@@ -99,70 +96,72 @@
   </div>
 
   <article
-    class="mt-5 rounded-[28px] border border-white/70 bg-white p-5 shadow-[0_18px_45px_rgba(53,55,191,0.08)] sm:p-6"
+    class="mt-6 card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl shadow-2xl rounded-[3rem] p-8"
     aria-label="Comparación directa de métricas"
   >
-    <h3 class="text-[1.3rem] font-semibold text-[#2f327d]">Direct Metric Comparison</h3>
+    <h3 class="text-2xl font-black text-white tracking-tight">Comparación Directa</h3>
 
-    <div class="mt-6 overflow-hidden rounded-[20px] border border-[#eef0fb] bg-[#fafbff]">
+    <div class="mt-8 overflow-hidden rounded-3xl border border-white/[0.03] bg-white/[0.02] shadow-inner">
       <div
-        class="grid grid-cols-[1.1fr_1fr_1fr_auto] gap-4 border-b border-[#edf0fb] px-4 py-4 text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-[#9aa0c0]"
+        class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] gap-4 border-b border-white/[0.05] px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30"
       >
-        <span>Metric</span>
-        <span class="text-[#4046b8]">{{ options()[0]?.title ?? 'Option A' }}</span>
-        <span class="text-[#0f8b66]">{{ options()[1]?.title ?? 'Option B' }}</span>
-        <span>Outcome</span>
+        <span>Métrica</span>
+        <span class="text-primary">{{ options()[0]?.title ?? 'Opción A' }}</span>
+        <span class="text-secondary">{{ options()[1]?.title ?? 'Opción B' }}</span>
+        <span class="text-right">Análisis</span>
       </div>
 
       @for (row of metricRows(); track row.metric) {
         <div
-          class="grid grid-cols-[1.1fr_1fr_1fr_auto] items-center gap-4 border-b border-[#edf0fb] px-4 py-4 text-sm last:border-b-0"
+          class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] items-center gap-4 border-b border-white/[0.02] px-6 py-5 text-sm font-medium text-white/60 last:border-b-0 hover:bg-white/[0.02] transition-colors"
         >
-          <span class="font-medium text-[#2f327d]">{{ row.metric }}</span>
-          <span class="text-[#52577a]">{{ row.optionA }}</span>
-          <span class="text-[#52577a]">{{ row.optionB }}</span>
-          <span
-            class="inline-flex justify-self-end rounded-full px-3 py-1 text-[0.68rem] font-semibold uppercase tracking-[0.16em]"
-            [class.bg-[#ececff]]="row.tone === 'indigo' || row.tone === 'neutral'"
-            [class.text-[#6f74c7]]="row.tone === 'indigo' || row.tone === 'neutral'"
-            [class.bg-[#e4fff4]]="row.tone === 'emerald'"
-            [class.text-[#1bbf83]]="row.tone === 'emerald'"
-          >
-            {{ row.outcome }}
-          </span>
+          <span class="font-bold text-white/90">{{ row.metric }}</span>
+          <span>{{ row.optionA }}</span>
+          <span>{{ row.optionB }}</span>
+          <div class="flex justify-end">
+            <span
+              class="badge font-black uppercase tracking-widest py-3 px-4 border-none text-[0.6rem] text-center"
+              [class.bg-primary/20]="row.tone === 'primary' || row.tone === 'neutral'"
+              [class.text-primary]="row.tone === 'primary' || row.tone === 'neutral'"
+              [class.bg-secondary/20]="row.tone === 'secondary'"
+              [class.text-secondary]="row.tone === 'secondary'"
+            >
+              {{ row.outcome }}
+            </span>
+          </div>
         </div>
       }
     </div>
   </article>
 
   <article
-    class="mt-5 rounded-[28px] border border-[#b8f0d7] bg-white p-5 shadow-[0_18px_45px_rgba(53,55,191,0.08)] sm:p-6"
+    class="mt-6 card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl shadow-2xl rounded-[3rem] p-8"
   >
-    <div class="flex flex-wrap items-start gap-4">
+    <div class="flex flex-wrap items-start gap-6">
       <div
-        class="grid h-11 w-11 place-content-center rounded-full bg-[#0f8b66] text-white shadow-[0_12px_24px_rgba(15,139,102,0.18)]"
+        class="grid h-14 w-14 place-content-center rounded-2xl bg-accent/20 text-accent shadow-[0_0_20px_rgba(168,85,247,0.3)]"
       >
-        <i class="bi bi-stars text-[1.05rem]" aria-hidden="true"></i>
+        <i class="bi bi-stars text-2xl" aria-hidden="true"></i>
       </div>
 
       <div class="min-w-0 flex-1">
-        <p class="text-[0.92rem] font-semibold text-[#0f8b66]">Itera Mentor Analysis</p>
-        <p class="mt-2 max-w-[1000px] text-[0.95rem] leading-[1.7] text-[#52577a]">
-          {{ mentorSummary }}
+        <p class="text-xs font-black uppercase tracking-[0.25em] text-accent">Análisis del Mentor</p>
+        <p class="mt-3 max-w-[1000px] text-lg leading-relaxed text-white/70 font-medium italic">
+          "{{ mentorSummary }}"
         </p>
 
-        <div class="mt-5 flex flex-wrap gap-3">
+        <div class="mt-8 flex flex-wrap gap-4">
           <button
             type="button"
-            class="rounded-full border-0 bg-[#4046b8] px-5 py-3 text-[0.92rem] font-semibold text-white shadow-[0_14px_30px_rgba(64,70,184,0.24)]"
+            class="btn btn-primary rounded-2xl px-8 font-black uppercase tracking-widest border-none shadow-xl shadow-primary/20"
           >
-            Select Data Science
+            Elegir Ruta {{ options()[0]?.title }}
           </button>
           <button
             type="button"
-            class="rounded-full border border-[#e2e4f4] bg-white px-5 py-3 text-[0.92rem] font-semibold text-[#6f74a1]"
+            class="btn btn-ghost bg-white/[0.03] border-white/[0.05] hover:bg-white/[0.05] text-white/60 hover:text-white rounded-2xl px-8 font-bold"
           >
-            Simulate Third Path
+            Simular Otra Ruta
           </button>
         </div>
       </div>

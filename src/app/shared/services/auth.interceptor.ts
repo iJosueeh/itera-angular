@@ -7,7 +7,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // This tells the browser to include the HttpOnly cookie
   if (req.url.includes('/api/')) {
     const authReq = req.clone({
-      withCredentials: true
+      withCredentials: true,
+      setHeaders: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'Csrf-Token': 'nocheck'
+      }
     });
     return next(authReq);
   }

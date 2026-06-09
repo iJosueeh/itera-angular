@@ -16,6 +16,7 @@ export class RegisterFormComponent {
   readonly isSubmitting = input(false);
   readonly submitRegister = output<RegisterPayload>();
   readonly formError = signal<string | null>(null);
+  readonly showPassword = signal(false);
 
   protected readonly registerForm = this.formBuilder.nonNullable.group({
     fullName: ['', [Validators.required, Validators.minLength(3)]],

@@ -20,7 +20,6 @@ import { TopNavComponent } from '@shared/components/top-nav/top-nav.component';
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DashboardContentService],
 })
 export class HomePageComponent {
   private readonly dashboardContentService = inject(DashboardContentService);
@@ -29,6 +28,8 @@ export class HomePageComponent {
 
   protected readonly vm = this.dashboardContentService.vm;
   protected readonly career = this.dashboardContentService.careerSnapshot;
+  protected readonly marketSkills = this.dashboardContentService.marketSkills;
+  protected readonly readinessScore = this.dashboardContentService.readinessScore;
 
   protected handleSearch(query: string): void {
     if (!query) return;

@@ -6,7 +6,7 @@ interface ComparisonOption {
   label: string;
   title: string;
   subtitle: string;
-  accent: 'indigo' | 'emerald';
+  accent: 'primary' | 'secondary';
   salary: string;
   growth: string;
   stack: ReadonlyArray<string>;
@@ -18,7 +18,7 @@ interface MetricRow {
   optionA: string;
   optionB: string;
   outcome: string;
-  tone: 'neutral' | 'indigo' | 'emerald';
+  tone: 'neutral' | 'primary' | 'secondary';
 }
 
 @Component({
@@ -31,9 +31,9 @@ interface MetricRow {
 export class ComparisonComponent implements OnInit {
   private readonly marketApi = inject(MarketApiService);
   
-  protected readonly title = 'Path Comparator';
+  protected readonly title = 'Comparador de Rutas';
   protected readonly subtitle =
-    'A deep-dive analytical comparison between your top two potential career pivots. Leverage data-driven growth projections and cost-benefit analysis.';
+    'Un análisis técnico profundo entre tus dos mejores opciones de crecimiento. Basado en volúmenes de mercado y proyecciones de Itera AI.';
 
   readonly options = signal<ReadonlyArray<ComparisonOption>>([]);
   readonly metricRows = signal<ReadonlyArray<MetricRow>>([]);
@@ -45,31 +45,40 @@ export class ComparisonComponent implements OnInit {
         const m2 = metrics[1];
 
         const mappedOptions: ComparisonOption[] = [m1, m2].map((m, i) => ({
-          label: `Option ${i === 0 ? 'A' : 'B'}`,
+          label: `Opción ${i === 0 ? 'A' : 'B'}`,
           title: m.titulo_carrera,
-          subtitle: `Specializing in ${m.aprendizaje.habilidades_top.slice(0, 2).join(' & ')}.`,
-          accent: i === 0 ? 'indigo' : 'emerald',
-          salary: `$${m.salario_anual_usd.mediana.toLocaleString()}`,
+          subtitle: m.analisis_competitivo.top_empresas.length > 0 
+            ? `Demanda liderada por ${m.analisis_competitivo.top_empresas.slice(0, 2).join(' y ')}.`
+            : `Especialización en ${m.aprendizaje.habilidades_clave.slice(0, 2).join(' y ')}.`,
+          accent: i === 0 ? 'primary' : 'secondary',
+          salary: `$${(m.salario_anual_usd.promedio || 0).toLocaleString()}`,
           growth: m.demanda_mercado.tendencia === 'creciente' ? '+15%' : '+5%',
-          stack: m.aprendizaje.habilidades_top,
+          stack: m.aprendizaje.habilidades_clave,
           projectionBars: [15, 25, 40, 50, 60]
         }));
         this.options.set(mappedOptions);
 
         const mappedRows: MetricRow[] = [
           {
-            metric: 'Total Learning Time',
-            optionA: `${m1.aprendizaje.tiempo_estimado_upgrading_meses} Months`,
-            optionB: `${m2.aprendizaje.tiempo_estimado_upgrading_meses} Months`,
-            outcome: m1.aprendizaje.tiempo_estimado_upgrading_meses < m2.aprendizaje.tiempo_estimado_upgrading_meses ? 'Faster pivot' : 'Longer path',
-            tone: 'indigo',
+            metric: 'Tiempo de Preparación',
+            optionA: `${m1.aprendizaje.tiempo_estimado_upgrading_meses ?? 12} Meses`,
+            optionB: `${m2.aprendizaje.tiempo_estimado_upgrading_meses ?? 14} Meses`,
+            outcome: (m1.aprendizaje.tiempo_estimado_upgrading_meses ?? 12) < (m2.aprendizaje.tiempo_estimado_upgrading_meses ?? 14) ? 'Pivotaje Rápido' : 'Ruta Profunda',
+            tone: 'primary',
           },
           {
-            metric: 'Entry Difficulty',
-            optionA: `${m1.analisis_competitivo.dificultad_entrada}/10`,
-            optionB: `${m2.analisis_competitivo.dificultad_entrada}/10`,
-            outcome: m1.analisis_competitivo.dificultad_entrada < m2.analisis_competitivo.dificultad_entrada ? 'Lower barrier' : 'High barrier',
-            tone: 'emerald',
+            metric: 'Demanda de Mercado',
+            optionA: `${m1.demanda_mercado.volumen_total} Vacantes`,
+            optionB: `${m2.demanda_mercado.volumen_total} Vacantes`,
+            outcome: m1.demanda_mercado.volumen_total > m2.demanda_mercado.volumen_total ? 'Alta Demanda' : 'Nicho Técnico',
+            tone: 'secondary',
+          },
+          {
+            metric: 'Empresas Top',
+            optionA: m1.analisis_competitivo.top_empresas[0] ?? 'Varias',
+            optionB: m2.analisis_competitivo.top_empresas[0] ?? 'Varias',
+            outcome: 'Empresas Reales',
+            tone: 'neutral'
           }
         ];
         this.metricRows.set(mappedRows);
@@ -78,5 +87,5 @@ export class ComparisonComponent implements OnInit {
   }
 
   protected readonly mentorSummary =
-    'Based on the current market data, both paths offer significant growth. Option A provides a faster entry to the market with lower initial difficulty.';
+    'Basado en los datos actuales, ambas rutas ofrecen un crecimiento sólido. La Opción A permite un ingreso más rápido al mercado laboral con una curva de aprendizaje menor.';
 }

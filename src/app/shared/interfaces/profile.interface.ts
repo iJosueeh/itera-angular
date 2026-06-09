@@ -9,6 +9,7 @@ export interface StudentProfile {
   names: string;
   surnames: string;
   cycle: number;
+  academicGoal: string;
   institutionId?: string;
   photo?: string;
   experience: number;
@@ -33,7 +34,11 @@ export interface InitializeProfilePayload {
 
 export interface UpdateProfilePayload {
   userId: string;
-  photo?: string;
-  experience?: number;
+  names?: string;
+  surnames?: string;
+  institutionId?: string;
+  cycle?: number;
   skills?: Skill[];
+  photo?: string;
+  academicGoal?: string;
 }

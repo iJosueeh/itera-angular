@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal, computed } from '@angular/core';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
@@ -16,7 +16,6 @@ import { NavItem } from '@shared/interfaces/dashboard.interface';
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [DashboardContentService, ProfileContentService],
 })
 export class DashboardPageComponent implements OnInit {
   private readonly dashboardContentService = inject(DashboardContentService);
@@ -28,7 +27,20 @@ export class DashboardPageComponent implements OnInit {
   protected readonly skills = this.dashboardContentService.marketSkills;
   protected readonly profile = this.profileContentService.profile;
   protected readonly matchScore = this.profileContentService.matchScore;
+  protected readonly currentTheme = this.profileContentService.currentTheme;
   
+  protected readonly availableGoals = [
+    { id: 'General', label: 'General', icon: 'bi-grid' },
+    { id: 'Backend', label: 'Backend', icon: 'bi-database' },
+    { id: 'AI', label: 'IA & Data', icon: 'bi-cpu' },
+    { id: 'Cloud', label: 'Cloud', icon: 'bi-cloud' },
+    { id: 'Frontend', label: 'Frontend', icon: 'bi-window-sidebar' },
+  ];
+
+  protected updateGoal(goalId: string): void {
+    this.profileContentService.updateAcademicGoal(goalId);
+  }
+
   protected readonly feedbackSent = signal(false);
 
   protected handleFeedback(rating: number): void {
@@ -66,19 +78,19 @@ export class DashboardPageComponent implements OnInit {
   }
 
   protected readonly sidebarItems: ReadonlyArray<NavItem> = [
-    { label: 'Dashboard', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
-    { label: 'Job Explorer', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Audit Monitor', href: '/dashboard/audit', icon: 'bi-shield-check' },
-    { label: 'Demand', href: '#demand', icon: 'bi-bar-chart-line' },
-    { label: 'My Routes', href: '#routes', icon: 'bi-signpost-2' },
-    { label: 'Skills', href: '#skills', icon: 'bi-stars' },
-    { label: 'Comparison', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Progress', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
+    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
+    { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
+    { label: 'Monitor de Auditoría', href: '/dashboard/audit', icon: 'bi-shield-check' },
+    { label: 'Demanda', href: '/dashboard', fragment: 'demand', icon: 'bi-bar-chart-line' },
+    { label: 'Mis Rutas', href: '/dashboard', fragment: 'routes', icon: 'bi-signpost-2' },
+    { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
+    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
+    { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
   ];
 
   protected readonly topNavItems: ReadonlyArray<NavItem> = [
-    { label: 'Dashboard', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
-    { label: 'Comparison', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Skills', href: '/dashboard#skills', icon: 'bi-stars' },
+    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
+    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
+    { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
   ];
 }

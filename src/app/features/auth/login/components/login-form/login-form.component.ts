@@ -17,6 +17,7 @@ export class LoginFormComponent {
   readonly isSubmitting = input(false);
   readonly submitLogin = output<LoginPayload>();
   readonly formError = signal<string | null>(null);
+  readonly showPassword = signal(false);
 
   protected readonly loginForm = this.formBuilder.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],

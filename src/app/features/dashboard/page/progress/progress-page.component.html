@@ -1,52 +1,53 @@
 <itera-dashboard-shell
   [brand]="vm().brand"
+  [theme]="currentTheme()"
   [topNavItems]="topNavItems"
   [sidebarItems]="sidebarItems"
   [footerLinks]="vm().footerLinks"
 >
-  <div dashboard-main class="min-w-0 flex flex-1 flex-col gap-5 pb-4">
-    <section class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
+  <div dashboard-main class="min-w-0 flex flex-1 flex-col gap-6 pb-6">
+    <section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
       <article
-        class="rounded-[28px] border border-white/70 bg-white/70 p-5 shadow-[0_20px_50px_rgba(53,55,191,0.08)] backdrop-blur-xl sm:p-6"
+        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-6 shadow-2xl rounded-[3rem]"
       >
         <div class="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p class="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[#8a90b7]">
-              Your Learning Journey
+            <p class="text-[0.72rem] font-black uppercase tracking-[0.25em] text-white/30">
+              Tu Ruta de Aprendizaje
             </p>
             <h1
-              class="mt-2 text-[clamp(2rem,3.6vw,3.3rem)] font-semibold leading-[1.03] text-[#2f327d]"
+              class="mt-2 text-[clamp(2.5rem,4vw,3.5rem)] font-black leading-[1.03] text-white tracking-tighter"
             >
-              {{ profile()?.names }}'s Progress
+              Progreso de {{ profile()?.names }}<span class="text-primary">.</span>
             </h1>
           </div>
 
           <div
-            class="rounded-[24px] border border-[#dff4e9] bg-white px-4 py-3 shadow-[0_14px_28px_rgba(53,55,191,0.06)]"
+            class="rounded-3xl border border-white/[0.03] bg-white/[0.02] px-6 py-4 shadow-inner"
           >
-            <p class="text-[0.68rem] font-semibold uppercase tracking-[0.22em] text-[#8a90b7]">
-              Cycle
+            <p class="text-[0.68rem] font-black uppercase tracking-[0.25em] text-white/20">
+              Ciclo Académico
             </p>
-            <p class="mt-1 flex items-center gap-3 text-2xl font-semibold text-[#1f244c]">
+            <p class="mt-1 flex items-center gap-3 text-3xl font-black text-white">
               <span
-                class="grid h-10 w-10 place-content-center rounded-full bg-[#e8fff6] text-[#0ebd86]"
+                class="grid h-10 w-10 place-content-center rounded-2xl bg-primary/10 text-primary"
               >
                 <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
               </span>
-              Cycle {{ profile()?.cycle }}
+              Ciclo {{ profile()?.cycle }}
             </p>
           </div>
         </div>
 
-        <div class="mt-8 rounded-[24px] bg-white p-5 shadow-[0_14px_30px_rgba(53,55,191,0.06)]">
-          <div class="flex items-center justify-between gap-3">
-            <h2 class="text-[1.05rem] font-semibold text-[#2f327d]">Module Mastery</h2>
-            <a href="#badges" class="text-sm font-semibold text-[#6368d8] no-underline"
-              >View all +</a
+        <div class="mt-10 rounded-[2.5rem] bg-white/[0.02] border border-white/[0.03] p-8">
+          <div class="flex items-center justify-between gap-4 mb-8">
+            <h2 class="text-xl font-black text-white tracking-tight">Maestría de Módulos</h2>
+            <a href="#badges" class="text-xs font-black uppercase tracking-widest text-primary no-underline hover:text-white transition-colors"
+              >Ver Todo +</a
             >
           </div>
 
-          <div class="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             @for (card of masteryCards; track card.title) {
               <itera-mastery-card
                 [title]="card.title"
@@ -67,19 +68,19 @@
       </aside>
     </section>
 
-    <section id="badges" class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
+    <section id="badges" class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
       <article
-        class="rounded-[28px] border border-white/70 bg-white/70 p-5 shadow-[0_18px_45px_rgba(53,55,191,0.08)] backdrop-blur-xl sm:p-6"
+        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
       >
-        <div class="flex items-center justify-between gap-3">
-          <h2 class="text-[1.05rem] font-semibold text-[#2f327d]">Badge Gallery</h2>
+        <div class="flex items-center justify-between gap-4 mb-10">
+          <h2 class="text-xl font-black text-white tracking-tight">Galería de Insignias</h2>
           <span
-            class="rounded-full bg-[#f4f1ff] px-3 py-1 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#6d70c6]"
-            >12 / 40 Earned</span
+            class="badge badge-secondary border-none font-black uppercase text-[0.6rem] tracking-widest py-3 px-4 shadow-lg shadow-secondary/10"
+            >12 / 40 Ganadas</span
           >
         </div>
 
-        <div class="mt-5 flex flex-wrap gap-3">
+        <div class="flex flex-wrap gap-4">
           @for (badge of badges; track badge.label) {
             <itera-badge-item [label]="badge.label" [icon]="badge.icon" [earned]="badge.earned" />
           }
@@ -87,22 +88,22 @@
       </article>
 
       <aside
-        class="rounded-[24px] border border-white/70 bg-white p-5 shadow-[0_16px_35px_rgba(53,55,191,0.08)] sm:p-6"
+        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
       >
-        <h2 class="text-[1.05rem] font-semibold text-[#2f327d]">Next Milestones</h2>
-        <div class="mt-4 space-y-3">
+        <h2 class="text-lg font-black text-white tracking-tight mb-8">Siguientes Hitos</h2>
+        <div class="space-y-6">
           @for (milestone of milestones; track milestone.title; let index = $index) {
             <article
-              class="flex items-start gap-3 rounded-[18px] border border-[#eef0fb] bg-[#fafbff] p-3"
+              class="flex items-start gap-4 rounded-3xl bg-white/[0.02] border border-white/[0.03] p-5 group hover:bg-white/[0.05] transition-all"
             >
               <div
-                class="grid h-8 w-8 shrink-0 place-content-center rounded-full bg-[#eef0ff] text-[0.72rem] font-semibold text-[#666bdb]"
+                class="grid h-10 w-10 shrink-0 place-content-center rounded-2xl bg-primary/10 text-primary font-black text-sm shadow-lg shadow-primary/5"
               >
                 {{ index + 1 }}
               </div>
               <div>
-                <p class="font-semibold text-[#2f327d]">{{ milestone.title }}</p>
-                <p class="text-[0.8rem] text-[#7b7f9a]">{{ milestone.meta }}</p>
+                <p class="font-black text-white group-hover:text-primary transition-colors leading-snug">{{ milestone.title }}</p>
+                <p class="text-xs text-white/30 font-bold uppercase tracking-wider mt-2">{{ milestone.meta }}</p>
               </div>
             </article>
           }
@@ -110,41 +111,40 @@
       </aside>
     </section>
 
-    <section class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_300px]">
+    <section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
       <article
-        class="rounded-[28px] border border-white/70 bg-white/70 p-5 shadow-[0_18px_45px_rgba(53,55,191,0.08)] backdrop-blur-xl sm:p-6"
+        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
       >
-        <h2 class="text-[1.05rem] font-semibold text-[#2f327d]">Personalized Mentor Tip</h2>
+        <h2 class="text-xl font-black text-white tracking-tight mb-8">Consejo del Mentor IA</h2>
         <div
-          class="mt-4 rounded-[24px] border-l-4 border-l-[#46d8a1] bg-white p-4 shadow-[0_14px_32px_rgba(53,55,191,0.05)]"
+          class="rounded-[2.5rem] border-l-[6px] border-secondary bg-white/[0.02] p-8 shadow-inner"
         >
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-5">
             <div
-              class="grid h-12 w-12 place-content-center rounded-full bg-[#ececff] text-[#4046b8] font-semibold"
+              class="grid h-14 w-14 place-content-center rounded-2xl bg-primary text-white font-black text-xl shadow-xl shadow-primary/20"
             >
               AM
             </div>
             <div>
-              <p class="text-sm font-semibold text-[#2f327d]">AI Mentor Tip</p>
-              <p class="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#8a90b7]">
-                Personalized for you
+              <p class="text-base font-black text-white">Mentor IA</p>
+              <p class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-primary">
+                Personalizado para ti
               </p>
             </div>
           </div>
-          <p class="mt-4 text-[0.95rem] leading-[1.7] text-[#5f6384] italic">
-            “Try practicing list comprehensions tonight. You struggled a bit with them in
-            yesterday's quiz, and they are essential for your next module.”
+          <p class="mt-8 text-lg leading-relaxed text-white/60 italic font-medium">
+            “Intenta practicar 'list comprehensions' esta noche. Tuviste algunas dificultades en el quiz de ayer, y son esenciales para tu próximo módulo de optimización.”
           </p>
         </div>
       </article>
 
       <aside
-        class="rounded-[24px] border border-white/70 bg-white p-5 shadow-[0_16px_35px_rgba(53,55,191,0.08)] sm:p-6"
+        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
       >
-        <h2 class="text-[1.05rem] font-semibold text-[#2f327d]">Quick Stats</h2>
-        <div class="mt-4 space-y-4 text-sm">
-          <itera-stat-bar label="Weekly completion" [value]="72" color="#4046b8" />
-          <itera-stat-bar label="Quiz accuracy" [value]="88" color="#35d39b" />
+        <h2 class="text-lg font-black text-white tracking-tight mb-8">Estadísticas Rápidas</h2>
+        <div class="space-y-10">
+          <itera-stat-bar label="Cumplimiento Semanal" [value]="72" color="#6366f1" />
+          <itera-stat-bar label="Precisión en Quizzes" [value]="88" color="#a855f7" />
         </div>
       </aside>
     </section>

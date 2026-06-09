@@ -21,22 +21,18 @@ export interface CareerMetrics {
   salario_anual_usd: {
     min: number;
     max: number;
-    mediana: number;
-    moneda: string;
+    promedio: number;
   };
   demanda_mercado: {
-    nivel: 'bajo' | 'medio' | 'alto' | 'crítico';
+    volumen_total: number;
     tendencia: 'creciente' | 'estable' | 'decreciente';
-    vacantes_estimadas: number;
   };
   analisis_competitivo: {
-    dificultad_entrada: number; // 1-10
-    competencia_por_vacante: number;
+    top_empresas: string[];
   };
   aprendizaje: {
-    habilidades_top: string[];
-    certificaciones_valoradas: string[];
-    tiempo_estimado_upgrading_meses: number;
+    habilidades_clave: string[];
+    tiempo_estimado_upgrading_meses?: number;
   };
   ultima_actualizacion: string;
 }

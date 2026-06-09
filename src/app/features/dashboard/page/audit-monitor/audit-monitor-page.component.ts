@@ -41,10 +41,10 @@ export class AuditMonitorPageComponent implements OnInit {
 
   getStatusClass(status: string): string {
     switch (status) {
-      case 'completado': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
-      case 'iniciado': return 'bg-blue-50 text-blue-600 border-blue-100';
-      case 'error': return 'bg-rose-50 text-red-600 border-rose-100';
-      default: return 'bg-slate-50 text-slate-600 border-slate-100';
+      case 'completado': return 'bg-secondary/20 text-secondary border-none';
+      case 'iniciado': return 'bg-blue-500/20 text-blue-400 border-none';
+      case 'error': return 'bg-rose-500/20 text-red-400 border-none';
+      default: return 'bg-white/5 text-white/40 border-none';
     }
   }
 }

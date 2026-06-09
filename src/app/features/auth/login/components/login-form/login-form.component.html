@@ -1,99 +1,99 @@
-<section class="flex min-h-screen items-center bg-[#f5f5fa] px-6 py-10">
-  <div class="mx-auto w-full max-w-[430px]">
-    <h2 class="font-[Sora] text-5xl font-bold text-[#16162a]">{{ vm().formTitle }}</h2>
-    <p class="mt-4 text-lg text-[#7a7da5]">{{ vm().formSubtitle }}</p>
+<section class="flex min-h-screen items-center bg-[radial-gradient(circle_at_center,_#111222_0%,_#09090f_100%)] px-6 py-12">
+  <div class="mx-auto w-full max-w-[440px]">
+    <div class="card bg-neutral/40 backdrop-blur-xl border border-white/[0.03] shadow-2xl rounded-[3rem] p-8 md:p-10">
+      <h2 class="text-4xl font-black text-white tracking-tighter">{{ vm().formTitle }}<span class="text-primary">.</span></h2>
+      <p class="mt-4 text-base text-white/50 font-medium">{{ vm().formSubtitle }}</p>
 
-    <form class="mt-12 space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <div>
-        <label class="mb-3 block text-xs font-semibold uppercase tracking-[0.2em] text-[#4d5199]">{{
-          vm().emailLabel
-        }}</label>
-        <div class="relative">
-          <input
-            type="email"
-            formControlName="email"
-            class="w-full rounded-xl border border-transparent bg-[#eceef8] px-4 py-3 pr-10 outline-none ring-[#b6b9ef] focus:ring-2"
-            placeholder="nombre@empresa.com"
-          />
-          <i
-            class="bi bi-envelope-fill pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#9ea2c7]"
-            aria-hidden="true"
-          ></i>
+      <form class="mt-10 space-y-5" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-control">
+          <label class="label px-0">
+            <span class="label-text text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">{{ vm().emailLabel }}</span>
+          </label>
+          <div class="relative">
+            <input
+              type="email"
+              formControlName="email"
+              class="input w-full rounded-2xl bg-white/[0.03] border-white/[0.05] focus:border-primary focus:outline-none text-white pl-5 pr-12 h-14"
+              placeholder="nombre@empresa.com"
+            />
+            <i class="bi bi-envelope absolute right-5 top-1/2 -translate-y-1/2 text-white/20 text-lg"></i>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <div class="mb-3 flex items-center justify-between">
-          <label class="text-xs font-semibold uppercase tracking-[0.2em] text-[#4d5199]">{{
-            vm().passwordLabel
-          }}</label>
-          <a href="#" class="text-sm font-semibold text-[#2d33b8] no-underline hover:opacity-80">{{
-            vm().forgotPasswordText
-          }}</a>
+        <div class="form-control">
+          <label class="label px-0 flex justify-between">
+            <span class="label-text text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">{{ vm().passwordLabel }}</span>
+            <a href="#" class="text-[0.7rem] font-bold text-primary hover:text-white transition-colors">{{ vm().forgotPasswordText }}</a>
+          </label>
+          <div class="relative">
+            <input
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              class="input w-full rounded-2xl bg-[#0f0f16] border-white/[0.05] focus:border-primary focus:outline-none text-white pl-5 pr-14 h-14 shadow-inner"
+              placeholder="••••••••"
+            />
+            <button 
+              type="button" 
+              (click)="showPassword.set(!showPassword())"
+              class="absolute right-4 top-1/2 -translate-y-1/2 text-white/90 hover:text-primary transition-colors bg-transparent border-none p-2 cursor-pointer"
+            >
+              <i class="bi text-xl" [class.bi-eye]="!showPassword()" [class.bi-eye-slash]="showPassword()"></i>
+            </button>
+          </div>
         </div>
-        <div class="relative">
-          <input
-            type="password"
-            formControlName="password"
-            class="w-full rounded-xl border border-transparent bg-[#eceef8] px-4 py-3 pr-10 outline-none ring-[#b6b9ef] focus:ring-2"
-            placeholder="••••••••"
-          />
-          <i
-            class="bi bi-lock-fill pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#9ea2c7]"
-            aria-hidden="true"
-          ></i>
-        </div>
-      </div>
 
-      @if (formError()) {
-        <p class="rounded-lg border border-[#ffd3d9] bg-[#fff5f7] px-4 py-3 text-sm text-[#8f2440]">
-          {{ formError() }}
-        </p>
-      }
+        @if (formError()) {
+          <div class="alert bg-rose-500/10 border-none text-red-400 text-xs font-bold rounded-2xl mt-4">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>{{ formError() }}</span>
+          </div>
+        }
 
-      <button
-        type="submit"
-        class="mt-8 flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#3537bf] to-[#2b2e99] px-4 py-3 font-semibold text-white shadow-[0_12px_25px_rgba(53,55,191,0.3)] disabled:opacity-70 transition-all duration-200 hover:shadow-[0_16px_35px_rgba(53,55,191,0.4)]"
-        [disabled]="isSubmitting()"
-      >
-        {{ isSubmitting() ? 'Iniciando sesion...' : vm().primaryAction }}
-        <i class="bi bi-arrow-right" aria-hidden="true"></i>
-      </button>
-    </form>
-
-    <div class="my-10 flex items-center gap-3 text-xs uppercase tracking-[0.2em] text-[#8e90a9]">
-      <span class="h-px flex-1 bg-[#dbddee]"></span>
-      <span>O conectate con</span>
-      <span class="h-px flex-1 bg-[#dbddee]"></span>
-    </div>
-
-    <div class="grid grid-cols-2 gap-3">
-      @for (provider of vm().socialProviders; track provider.label) {
         <button
-          type="button"
-          class="flex items-center justify-center gap-2 rounded-xl border border-[#e1e3f1] bg-white px-3 py-3 font-semibold text-[#232648] hover:bg-[#f5f5fa] transition-colors"
+          type="submit"
+          class="btn btn-primary w-full rounded-2xl h-14 mt-6 text-base font-black uppercase tracking-widest border-none shadow-xl shadow-primary/20"
+          [disabled]="isSubmitting()"
         >
-          <i [class]="provider.icon" aria-hidden="true"></i>
-          {{ provider.label }}
+          @if (isSubmitting()) {
+            <span class="loading loading-spinner loading-sm"></span>
+            Iniciando...
+          } @else {
+            {{ vm().primaryAction }}
+            <i class="bi bi-chevron-right ml-1"></i>
+          }
         </button>
-      }
-    </div>
+      </form>
 
-    <p class="mt-10 text-center text-sm text-[#54577a]">
-      {{ vm().registerPrompt }}
-      <a
-        routerLink="/auth/register"
-        class="font-semibold text-[#2d33b8] no-underline hover:opacity-80"
-        >{{ vm().registerCta }}</a
-      >
-    </p>
+      <div class="divider my-10 before:bg-white/5 after:bg-white/5 text-[0.6rem] font-black uppercase tracking-[0.3em] text-white/20">O conectar con</div>
 
-    <div class="mt-12 flex flex-wrap justify-center gap-4 text-xs text-[#8e90a9]">
-      @for (link of vm().footerLinks; track link.label) {
-        <a [href]="link.href" class="no-underline hover:text-[#3537bf] transition-colors">{{
-          link.label
-        }}</a>
-      }
+      <div class="grid grid-cols-2 gap-4">
+        @for (provider of vm().socialProviders; track provider.label) {
+          <button
+            type="button"
+            class="btn btn-ghost bg-white/[0.02] border-white/[0.05] hover:bg-white/[0.05] rounded-2xl normal-case font-bold text-white/60"
+          >
+            <i [class]="provider.icon + ' text-lg'"></i>
+            {{ provider.label }}
+          </button>
+        }
+      </div>
+
+      <p class="mt-10 text-center text-sm font-medium text-white/40">
+        {{ vm().registerPrompt }}
+        <a
+          routerLink="/auth/register"
+          class="text-primary font-black hover:text-white transition-colors"
+          >{{ vm().registerCta }}</a
+        >
+      </p>
+
+      <div class="mt-12 flex flex-wrap justify-center gap-6 text-[0.65rem] font-bold uppercase tracking-widest text-white/10">
+        @for (link of vm().footerLinks; track link.label) {
+          <a [href]="link.href" class="no-underline hover:text-white transition-colors">{{
+            link.label
+          }}</a>
+        }
+      </div>
     </div>
   </div>
 </section>

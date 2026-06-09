@@ -30,17 +30,28 @@ export class AuthApiService {
   }
 
   signUp(payload: RegisterPayload): Observable<AuthResult> {
-    // Note: The backend expects { email, password } for now based on AuthCommands.scala
+    // Split fullName into names and surnames
+    const nameParts = payload.fullName.trim().split(' ');
+    const names = nameParts[0] || '';
+    const surnames = nameParts.slice(1).join(' ') || '-';
+
     const registerCmd = {
+      names,
+      surnames,
       email: payload.email,
       password: payload.password,
     };
 
     return this.http.post<any>(`${this.baseUrl}/register`, registerCmd).pipe(
-      map(() => ({
+      tap((response) => {
+        if (response.userId) {
+          this.authStorage.saveSession('', response.userId); // Save session immediately
+        }
+      }),
+      map((response) => ({
         success: true,
-        message: 'Cuenta creada exitosamente. Ya puedes iniciar sesión.',
-        redirectTo: '/login',
+        message: '¡Bienvenido! Tu cuenta ha sido creada.',
+        redirectTo: '/dashboard',
       })),
       catchError((error) => {
         const message = error.error?.message || 'Error al registrarse';

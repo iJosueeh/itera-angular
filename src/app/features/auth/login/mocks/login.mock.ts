@@ -3,7 +3,7 @@ import { LoginViewModel } from '@features/auth/interfaces/auth.interface';
 export const LOGIN_VIEW_MODEL_MOCK: LoginViewModel = {
   productName: 'Itera',
   visualTag: 'Itera AI',
-  visualTitle: 'Desbloquea tu siguiente nivel profesional.',
+  visualTitle: 'Desbloquea tu siguiente nivel profesional',
   visualSubtitle:
     'Mentoria inteligente basada en datos. Compara carreras, define objetivos y avanza con claridad.',
   visualBullets: [

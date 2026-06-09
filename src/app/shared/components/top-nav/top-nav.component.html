@@ -1,34 +1,29 @@
-<header class="sticky top-0 z-30 border-b border-[#e2e4f4] bg-white/85 backdrop-blur">
+<header class="sticky top-0 z-40 border-b border-white/[0.05] bg-base-100/60 backdrop-blur-xl">
   <div class="mx-auto flex min-h-[72px] max-w-[1100px] items-center justify-between gap-4 px-5">
     <a
       routerLink="/"
-      class="font-[Sora] text-[1.4rem] font-bold text-[#3537bf] no-underline"
+      class="font-[Sora] text-[1.5rem] font-extrabold text-white no-underline tracking-tighter"
       aria-label="Ir al inicio"
     >
-      {{ brand() }}
+      {{ brand() }}<span class="text-primary">.</span>
     </a>
 
     <nav aria-label="Navegación principal">
-      <ul class="m-0 flex list-none flex-wrap items-center gap-1 p-0 md:gap-3">
+      <ul class="m-0 flex list-none flex-wrap items-center gap-1 p-0 md:gap-2">
         @for (item of items(); track item.label) {
           <li>
             <a
               [routerLink]="item.href"
+              [fragment]="item.fragment"
               routerLinkActive="is-active"
               [routerLinkActiveOptions]="{ exact: item.active === true }"
-              class="group flex items-center gap-2 rounded-full border border-transparent px-2 py-2 text-[0.92rem] font-medium text-[#5e607f] no-underline transition-colors duration-200 hover:border-[#d9def8] hover:bg-[#f7f8ff] hover:text-[#3537bf] md:px-3"
-              [class.text-[#3537bf]]="item.active === true"
-              [class.border-[#3537bf]]="item.active === true"
-              [class.bg-[#f0f2ff]]="item.active === true"
-              [class.text-[#16162a]]="item.active !== true"
+              class="group flex items-center gap-2 rounded-full border border-transparent px-2 py-2 text-[0.92rem] font-semibold text-white/60 no-underline transition-all duration-200 hover:bg-white/5 hover:text-white md:px-4"
+              [class.text-white]="item.active === true"
+              [class.bg-white/10]="item.active === true"
+              [class.border-white/10]="item.active === true"
               [attr.aria-current]="item.active ? 'page' : null"
             >
-              <span
-                class="grid h-8 w-8 place-content-center rounded-full bg-[#ececfc] text-[#3537bf] transition-transform duration-200 group-hover:scale-105"
-                aria-hidden="true"
-              >
-                <i class="bi" [ngClass]="item.icon"></i>
-              </span>
+              <i class="bi opacity-70 group-hover:opacity-100 transition-opacity" [ngClass]="item.icon"></i>
               <span class="hidden md:inline">{{ item.label }}</span>
             </a>
           </li>
@@ -36,21 +31,33 @@
       </ul>
     </nav>
 
-    <div class="flex items-center gap-2" aria-label="Acciones del usuario">
-      <a
-        routerLink="/auth/login"
-        class="grid h-10 w-10 place-content-center rounded-full border border-[#e2e4f4] bg-white text-[#3537bf] no-underline transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#f7f8ff]"
-        aria-label="Ir a iniciar sesión"
-      >
-        <i class="bi bi-box-arrow-in-right text-[1.02rem]" aria-hidden="true"></i>
-      </a>
-      <a
-        routerLink="/auth/register"
-        class="grid h-10 w-10 place-content-center rounded-full border border-[#e2e4f4] bg-white text-[#3537bf] no-underline transition-transform duration-200 hover:-translate-y-0.5 hover:bg-[#f7f8ff]"
-        aria-label="Ir a registrarse"
-      >
-        <i class="bi bi-person-plus text-[1.02rem]" aria-hidden="true"></i>
-      </a>
+    <div class="flex items-center gap-4" aria-label="Acciones del usuario">
+      @if (isAuthenticated()) {
+        <button
+          (click)="logout()"
+          class="hidden sm:inline-flex btn btn-ghost btn-sm normal-case text-white/50 hover:text-white"
+        >
+          Cerrar Sesión
+        </button>
+        <div class="avatar placeholder">
+          <div class="bg-primary text-primary-content rounded-full w-9 h-9 flex items-center justify-center shadow-[0_0_15px_rgba(53,55,191,0.4)]">
+            <span class="text-[0.7rem] font-black tracking-tighter">ST</span>
+          </div>
+        </div>
+      } @else {
+        <a
+          routerLink="/auth/login"
+          class="hidden sm:inline-flex btn btn-ghost btn-sm normal-case text-white/80 hover:text-white"
+        >
+          Entrar
+        </a>
+        <a
+          routerLink="/auth/register"
+          class="btn btn-primary btn-sm rounded-xl px-5 font-bold shadow-lg shadow-primary/20 border-none"
+        >
+          Registrar
+        </a>
+      }
     </div>
   </div>
 </header>
