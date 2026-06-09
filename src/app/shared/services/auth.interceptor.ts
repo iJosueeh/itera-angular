@@ -10,8 +10,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       withCredentials: true,
       setHeaders: {
         'X-Requested-With': 'XMLHttpRequest',
-        'Csrf-Token': 'nocheck'
-      }
+        'Csrf-Token': 'nocheck',
+      },
     });
     return next(authReq);
   }

@@ -16,7 +16,7 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
     effect(() => {
       const roadmap = this.profileContentService.roadmap();
       // Re-render when roadmap or theme changes
-      this.profileContentService.currentTheme(); 
+      this.profileContentService.currentTheme();
       this.renderChart(roadmap);
     });
   }
@@ -37,7 +37,7 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
 
   private renderChart(realData?: any): void {
     const container = this.chartContainer.nativeElement;
-    container.innerHTML = ''; 
+    container.innerHTML = '';
     const width = container.clientWidth || 800;
     const height = 200;
 
@@ -50,7 +50,13 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
 
     let nodes = [
       { id: 'foundation', x: 80, y: 120, label: 'Fundamentos', status: 'completed' },
-      { id: 'logic', x: Math.min(240, width * 0.3), y: 70, label: 'Lógica Técnica', status: 'attention' },
+      {
+        id: 'logic',
+        x: Math.min(240, width * 0.3),
+        y: 70,
+        label: 'Lógica Técnica',
+        status: 'attention',
+      },
       {
         id: 'specialization',
         x: Math.min(420, width * 0.55),
@@ -68,13 +74,13 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
     ];
 
     if (realData && Array.isArray(realData)) {
-       nodes = realData.map((n, i) => ({
-         id: n.id || `node-${i}`,
-         x: 80 + (i * (width - 160) / (realData.length - 1 || 1)),
-         y: i % 2 === 0 ? 120 : 70,
-         label: n.name || n.label || 'Paso',
-         status: n.status || 'planned'
-       }));
+      nodes = realData.map((n, i) => ({
+        id: n.id || `node-${i}`,
+        x: 80 + (i * (width - 160)) / (realData.length - 1 || 1),
+        y: i % 2 === 0 ? 120 : 70,
+        label: n.name || n.label || 'Paso',
+        status: n.status || 'planned',
+      }));
     }
 
     const d = nodes.reduce((acc, p, i, arr) => {
@@ -106,10 +112,10 @@ export class InteractiveRoadmapComponent implements AfterViewInit {
 
       const circle = document.createElementNS(svgns, 'circle');
       circle.setAttribute('r', '26');
-      
-      let nodeColor = '#312e81'; 
+
+      let nodeColor = '#312e81';
       if (n.status === 'completed') nodeColor = primaryColor;
-      else if (n.status === 'attention') nodeColor = '#f43f5e'; 
+      else if (n.status === 'attention') nodeColor = '#f43f5e';
       else if (n.status === 'goal') nodeColor = secondaryColor;
       else nodeColor = 'rgba(255,255,255,0.05)';
 

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, signal, OnInit, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+  OnInit,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MarketApiService } from '@features/home/services/market-api.service';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
@@ -34,10 +41,11 @@ export class JobExplorerPageComponent implements OnInit {
   readonly filteredOffers = computed(() => {
     const query = this.searchQuery().toLowerCase();
     if (!query) return this.offers();
-    return this.offers().filter(o => 
-      o.puesto.toLowerCase().includes(query) || 
-      o.empresa.toLowerCase().includes(query) ||
-      o.habilidades_requeridas.some(s => s.toLowerCase().includes(query))
+    return this.offers().filter(
+      (o) =>
+        o.puesto.toLowerCase().includes(query) ||
+        o.empresa.toLowerCase().includes(query) ||
+        o.habilidades_requeridas.some((s) => s.toLowerCase().includes(query)),
     );
   });
 
@@ -59,26 +67,29 @@ export class JobExplorerPageComponent implements OnInit {
   loadOffers(): void {
     this.isLoading.set(true);
     const skip = this.currentPage() * this.pageSize;
-    
-    this.marketApi.getOffers(this.pageSize, skip).pipe(take(1)).subscribe({
-      next: (data) => {
-        this.offers.set(data);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      },
-      complete: () => this.isLoading.set(false)
-    });
+
+    this.marketApi
+      .getOffers(this.pageSize, skip)
+      .pipe(take(1))
+      .subscribe({
+        next: (data) => {
+          this.offers.set(data);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        },
+        complete: () => this.isLoading.set(false),
+      });
   }
 
   nextPage(): void {
     if (this.offers().length === this.pageSize) {
-      this.currentPage.update(p => p + 1);
+      this.currentPage.update((p) => p + 1);
       this.loadOffers();
     }
   }
 
   prevPage(): void {
     if (this.currentPage() > 0) {
-      this.currentPage.update(p => p - 1);
+      this.currentPage.update((p) => p - 1);
       this.loadOffers();
     }
   }
@@ -90,15 +101,17 @@ export class JobExplorerPageComponent implements OnInit {
 
   trackJobView(offer: JobOffer): void {
     const userId = this.authStorage.getUserId() || 'guest';
-    this.marketApi.sendTelemetry({
-      estudiante_id: userId,
-      accion: 'View External Job',
-      datos_contexto: { 
-        puesto: offer.puesto,
-        empresa: offer.empresa,
-        url: offer.url_origen
-      },
-      tiempo_permanencia_segundos: 0
-    }).subscribe();
+    this.marketApi
+      .sendTelemetry({
+        estudiante_id: userId,
+        accion: 'View External Job',
+        datos_contexto: {
+          puesto: offer.puesto,
+          empresa: offer.empresa,
+          url: offer.url_origen,
+        },
+        tiempo_permanencia_segundos: 0,
+      })
+      .subscribe();
   }
 }

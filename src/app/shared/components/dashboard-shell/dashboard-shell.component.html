@@ -9,11 +9,15 @@
       class="dashboard-sidebar hidden w-[260px] shrink-0 rounded-[3rem] bg-neutral/40 border border-white/[0.03] p-6 shadow-2xl backdrop-blur-2xl lg:flex lg:flex-col"
     >
       <div class="px-2 pt-1">
-        <p class="text-xs font-black uppercase tracking-[0.3em] text-primary mb-2">{{ sidebarTitle() }}</p>
+        <p class="text-xs font-black uppercase tracking-[0.3em] text-primary mb-2">
+          {{ sidebarTitle() }}
+        </p>
         <div
           class="flex items-center gap-2 text-[0.68rem] font-bold uppercase tracking-widest text-white/40"
         >
-          <span class="h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(99,102,241,0.6)]"></span>
+          <span
+            class="h-2 w-2 rounded-full bg-secondary shadow-[0_0_8px_rgba(99,102,241,0.6)]"
+          ></span>
           {{ sidebarStatus() }}
         </div>
       </div>
@@ -34,9 +38,11 @@
                   [class.hover:bg-white/5]="item.active !== true"
                   [class.hover:text-white]="item.active !== true"
                 >
-                  <i [class]="'bi text-lg transition-colors ' + item.icon" 
-                     [class.text-primary]="item.active === true"
-                     [class.opacity-50]="item.active !== true"></i>
+                  <i
+                    [class]="'bi text-lg transition-colors ' + item.icon"
+                    [class.text-primary]="item.active === true"
+                    [class.opacity-50]="item.active !== true"
+                  ></i>
                   {{ item.label }}
                 </a>
               </li>
@@ -53,7 +59,9 @@
 
   <!-- Mobile Bottom Nav -->
   @if (sidebarItems().length > 0) {
-    <nav class="fixed bottom-0 left-0 z-50 w-full border-t border-white/[0.03] bg-black/40 px-4 py-3 backdrop-blur-2xl lg:hidden">
+    <nav
+      class="fixed bottom-0 left-0 z-50 w-full border-t border-white/[0.03] bg-black/40 px-4 py-3 backdrop-blur-2xl lg:hidden"
+    >
       <ul class="flex justify-around items-center">
         @for (item of sidebarItems().slice(0, 4); track item.label) {
           <li>
@@ -65,7 +73,9 @@
               [class.text-white/30]="item.active !== true"
             >
               <i [class]="'bi ' + item.icon + ' text-2xl'"></i>
-              <span class="text-[0.6rem] font-black uppercase tracking-widest">{{ item.label }}</span>
+              <span class="text-[0.6rem] font-black uppercase tracking-widest">{{
+                item.label
+              }}</span>
             </a>
           </li>
         }

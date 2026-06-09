@@ -12,20 +12,25 @@
           >
             <i class="bi bi-cpu"></i>
           </span>
-          
-          <h2 class="card-title text-3xl font-black mb-3 tracking-tight">Preparación para tu Meta</h2>
+
+          <h2 class="card-title text-3xl font-black mb-3 tracking-tight">
+            Preparación para tu Meta
+          </h2>
           <p class="text-xl text-white/50 mb-8 leading-relaxed font-medium">
-            Motor de alineación basado en IA que mapea tu stack actual contra los estándares de la industria.
+            Motor de alineación basado en IA que mapea tu stack actual contra los estándares de la
+            industria.
           </p>
 
           <div class="mt-auto space-y-5" role="group">
-            <div class="flex justify-between items-center text-xs font-black uppercase tracking-[0.2em] text-white/40">
+            <div
+              class="flex justify-between items-center text-xs font-black uppercase tracking-[0.2em] text-white/40"
+            >
               <span>Nivel de Preparación</span>
               <span class="text-primary">{{ readinessScore() }}%</span>
             </div>
-            <progress 
-              class="progress progress-primary w-full h-3 bg-white/5 shadow-inner" 
-              [value]="readinessScore()" 
+            <progress
+              class="progress progress-primary w-full h-3 bg-white/5 shadow-inner"
+              [value]="readinessScore()"
               max="100"
             ></progress>
           </div>
@@ -43,14 +48,18 @@
           >
             <i class="bi bi-graph-up-arrow"></i>
           </span>
-          
+
           <h2 class="card-title text-3xl font-black mb-3 tracking-tight">Demanda y Tendencias</h2>
           <p class="text-xl text-white/50 mb-8 leading-relaxed font-medium">
-            Telemetría en tiempo real que monitorea cambios tecnológicos globales para priorizar habilidades de alto impacto.
+            Telemetría en tiempo real que monitorea cambios tecnológicos globales para priorizar
+            habilidades de alto impacto.
           </p>
 
           <div class="card-actions mt-auto">
-            <a href="#" class="btn btn-ghost p-0 min-h-0 h-auto hover:bg-transparent text-lg font-black uppercase tracking-widest text-accent group">
+            <a
+              href="#"
+              class="btn btn-ghost p-0 min-h-0 h-auto hover:bg-transparent text-lg font-black uppercase tracking-widest text-accent group"
+            >
               Analizar Mercado
               <i class="bi bi-arrow-right transition-transform group-hover:translate-x-3 ml-3"></i>
             </a>
@@ -58,7 +67,9 @@
 
           <div class="mt-8 flex flex-wrap gap-2">
             @for (skill of marketSkills().slice(0, 3); track skill.habilidad) {
-              <span class="badge badge-sm bg-white/5 border-none text-accent font-mono">#{{ skill.habilidad.replace(' ', '_') }}</span>
+              <span class="badge badge-sm bg-white/5 border-none text-accent font-mono"
+                >#{{ skill.habilidad.replace(' ', '_') }}</span
+              >
             }
           </div>
         </div>

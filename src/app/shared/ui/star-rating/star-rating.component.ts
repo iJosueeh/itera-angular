@@ -8,8 +8,8 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="flex items-center gap-1">
       @for (star of stars; track star) {
-        <button 
-          type="button" 
+        <button
+          type="button"
           (click)="rate(star)"
           (mouseenter)="hover(star)"
           (mouseleave)="hover(0)"
@@ -18,16 +18,26 @@ import { CommonModule } from '@angular/common';
           [class.text-slate-200]="star > (hovered() || value())"
           [disabled]="readonly()"
         >
-          <i class="bi" [class.bi-star-fill]="star <= (hovered() || value())" [class.bi-star]="star > (hovered() || value())"></i>
+          <i
+            class="bi"
+            [class.bi-star-fill]="star <= (hovered() || value())"
+            [class.bi-star]="star > (hovered() || value())"
+          ></i>
         </button>
       }
     </div>
   `,
-  styles: [`
-    button:not(:disabled) { cursor: pointer; }
-    button:not(:disabled):hover { transform: scale(1.2); }
-  `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styles: [
+    `
+      button:not(:disabled) {
+        cursor: pointer;
+      }
+      button:not(:disabled):hover {
+        transform: scale(1.2);
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StarRatingComponent {
   value = input<number>(0);

@@ -30,7 +30,7 @@ export class LoginPageComponent {
 
     try {
       const result = await firstValueFrom(this.loginContentService.signIn(payload));
-      
+
       if (result.success) {
         this.responseMessage.set(result.message);
         await this.router.navigateByUrl(result.redirectTo);

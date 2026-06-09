@@ -1,13 +1,22 @@
-<section class="flex min-h-screen items-center bg-[radial-gradient(circle_at_center,_#111222_0%,_#09090f_100%)] px-6 py-12">
+<section
+  class="flex min-h-screen items-center bg-[radial-gradient(circle_at_center,_#111222_0%,_#09090f_100%)] px-6 py-12"
+>
   <div class="mx-auto w-full max-w-[440px]">
-    <div class="card bg-neutral/40 backdrop-blur-xl border border-white/[0.03] shadow-2xl rounded-[3rem] p-8 md:p-10">
-      <h2 class="text-4xl font-black text-white tracking-tighter">{{ vm().formTitle }}<span class="text-primary">.</span></h2>
+    <div
+      class="card bg-neutral/40 backdrop-blur-xl border border-white/[0.03] shadow-2xl rounded-[3rem] p-8 md:p-10"
+    >
+      <h2 class="text-4xl font-black text-white tracking-tighter">
+        {{ vm().formTitle }}<span class="text-primary">.</span>
+      </h2>
       <p class="mt-4 text-base text-white/50 font-medium">{{ vm().formSubtitle }}</p>
 
       <form class="mt-10 space-y-5" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <div class="form-control">
           <label class="label px-0">
-            <span class="label-text text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">{{ vm().emailLabel }}</span>
+            <span
+              class="label-text text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30"
+              >{{ vm().emailLabel }}</span
+            >
           </label>
           <div class="relative">
             <input
@@ -16,14 +25,23 @@
               class="input w-full rounded-2xl bg-white/[0.03] border-white/[0.05] focus:border-primary focus:outline-none text-white pl-5 pr-12 h-14"
               placeholder="nombre@empresa.com"
             />
-            <i class="bi bi-envelope absolute right-5 top-1/2 -translate-y-1/2 text-white/20 text-lg"></i>
+            <i
+              class="bi bi-envelope absolute right-5 top-1/2 -translate-y-1/2 text-white/20 text-lg"
+            ></i>
           </div>
         </div>
 
         <div class="form-control">
           <label class="label px-0 flex justify-between">
-            <span class="label-text text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">{{ vm().passwordLabel }}</span>
-            <a href="#" class="text-[0.7rem] font-bold text-primary hover:text-white transition-colors">{{ vm().forgotPasswordText }}</a>
+            <span
+              class="label-text text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30"
+              >{{ vm().passwordLabel }}</span
+            >
+            <a
+              href="#"
+              class="text-[0.7rem] font-bold text-primary hover:text-white transition-colors"
+              >{{ vm().forgotPasswordText }}</a
+            >
           </label>
           <div class="relative">
             <input
@@ -32,18 +50,24 @@
               class="input w-full rounded-2xl bg-[#0f0f16] border-white/[0.05] focus:border-primary focus:outline-none text-white pl-5 pr-14 h-14 shadow-inner"
               placeholder="••••••••"
             />
-            <button 
-              type="button" 
+            <button
+              type="button"
               (click)="showPassword.set(!showPassword())"
               class="absolute right-4 top-1/2 -translate-y-1/2 text-white/90 hover:text-primary transition-colors bg-transparent border-none p-2 cursor-pointer"
             >
-              <i class="bi text-xl" [class.bi-eye]="!showPassword()" [class.bi-eye-slash]="showPassword()"></i>
+              <i
+                class="bi text-xl"
+                [class.bi-eye]="!showPassword()"
+                [class.bi-eye-slash]="showPassword()"
+              ></i>
             </button>
           </div>
         </div>
 
         @if (formError()) {
-          <div class="alert bg-rose-500/10 border-none text-red-400 text-xs font-bold rounded-2xl mt-4">
+          <div
+            class="alert bg-rose-500/10 border-none text-red-400 text-xs font-bold rounded-2xl mt-4"
+          >
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>{{ formError() }}</span>
           </div>
@@ -64,7 +88,11 @@
         </button>
       </form>
 
-      <div class="divider my-10 before:bg-white/5 after:bg-white/5 text-[0.6rem] font-black uppercase tracking-[0.3em] text-white/20">O conectar con</div>
+      <div
+        class="divider my-10 before:bg-white/5 after:bg-white/5 text-[0.6rem] font-black uppercase tracking-[0.3em] text-white/20"
+      >
+        O conectar con
+      </div>
 
       <div class="grid grid-cols-2 gap-4">
         @for (provider of vm().socialProviders; track provider.label) {
@@ -87,7 +115,9 @@
         >
       </p>
 
-      <div class="mt-12 flex flex-wrap justify-center gap-6 text-[0.65rem] font-bold uppercase tracking-widest text-white/10">
+      <div
+        class="mt-12 flex flex-wrap justify-center gap-6 text-[0.65rem] font-bold uppercase tracking-widest text-white/10"
+      >
         @for (link of vm().footerLinks; track link.label) {
           <a [href]="link.href" class="no-underline hover:text-white transition-colors">{{
             link.label

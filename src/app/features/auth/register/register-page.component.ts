@@ -30,7 +30,7 @@ export class RegisterPageComponent {
 
     try {
       const result = await firstValueFrom(this.registerContentService.signUp(payload));
-      
+
       if (result.success) {
         this.responseMessage.set(result.message);
         await this.router.navigateByUrl(result.redirectTo);

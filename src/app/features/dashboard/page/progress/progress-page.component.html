@@ -42,7 +42,9 @@
         <div class="mt-10 rounded-[2.5rem] bg-white/[0.02] border border-white/[0.03] p-8">
           <div class="flex items-center justify-between gap-4 mb-8">
             <h2 class="text-xl font-black text-white tracking-tight">Maestría de Módulos</h2>
-            <a href="#badges" class="text-xs font-black uppercase tracking-widest text-primary no-underline hover:text-white transition-colors"
+            <a
+              href="#badges"
+              class="text-xs font-black uppercase tracking-widest text-primary no-underline hover:text-white transition-colors"
               >Ver Todo +</a
             >
           </div>
@@ -102,8 +104,14 @@
                 {{ index + 1 }}
               </div>
               <div>
-                <p class="font-black text-white group-hover:text-primary transition-colors leading-snug">{{ milestone.title }}</p>
-                <p class="text-xs text-white/30 font-bold uppercase tracking-wider mt-2">{{ milestone.meta }}</p>
+                <p
+                  class="font-black text-white group-hover:text-primary transition-colors leading-snug"
+                >
+                  {{ milestone.title }}
+                </p>
+                <p class="text-xs text-white/30 font-bold uppercase tracking-wider mt-2">
+                  {{ milestone.meta }}
+                </p>
               </div>
             </article>
           }
@@ -133,7 +141,8 @@
             </div>
           </div>
           <p class="mt-8 text-lg leading-relaxed text-white/60 italic font-medium">
-            “Intenta practicar 'list comprehensions' esta noche. Tuviste algunas dificultades en el quiz de ayer, y son esenciales para tu próximo módulo de optimización.”
+            “Intenta practicar 'list comprehensions' esta noche. Tuviste algunas dificultades en el
+            quiz de ayer, y son esenciales para tu próximo módulo de optimización.”
           </p>
         </div>
       </article>

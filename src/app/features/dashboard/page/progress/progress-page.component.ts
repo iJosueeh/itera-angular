@@ -72,8 +72,18 @@ export class ProgressPageComponent implements OnInit {
   ];
 
   protected readonly masteryCards: ReadonlyArray<MasteryCard> = [
-    { title: 'Fundamentos de Python', subtitle: '4/5 Unidades Completadas', progress: 85, tone: 'indigo' },
-    { title: 'Pandas & NumPy', subtitle: '2/8 Unidades Completadas', progress: 35, tone: 'emerald' },
+    {
+      title: 'Fundamentos de Python',
+      subtitle: '4/5 Unidades Completadas',
+      progress: 85,
+      tone: 'indigo',
+    },
+    {
+      title: 'Pandas & NumPy',
+      subtitle: '2/8 Unidades Completadas',
+      progress: 35,
+      tone: 'emerald',
+    },
     { title: 'Visualización de Datos', subtitle: 'Módulo Bloqueado', progress: 0, tone: 'violet' },
     { title: 'Deep Learning', subtitle: 'Módulo Bloqueado', progress: 0, tone: 'indigo' },
   ];
@@ -91,7 +101,11 @@ export class ProgressPageComponent implements OnInit {
 
   protected readonly milestones: ReadonlyArray<MilestoneItem> = [
     { title: 'Maestría en Decoradores', meta: 'Estimado: 45 min', status: 'completed' },
-    { title: 'Manejo de Errores Pro', meta: 'Bloqueado hasta completar el anterior', status: 'in-progress' },
+    {
+      title: 'Manejo de Errores Pro',
+      meta: 'Bloqueado hasta completar el anterior',
+      status: 'in-progress',
+    },
     { title: 'Proyecto Final de Módulo', meta: 'Bloqueado', status: 'locked' },
   ];
 }

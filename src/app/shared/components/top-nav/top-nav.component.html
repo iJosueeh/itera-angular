@@ -23,7 +23,10 @@
               [class.border-white/10]="item.active === true"
               [attr.aria-current]="item.active ? 'page' : null"
             >
-              <i class="bi opacity-70 group-hover:opacity-100 transition-opacity" [ngClass]="item.icon"></i>
+              <i
+                class="bi opacity-70 group-hover:opacity-100 transition-opacity"
+                [ngClass]="item.icon"
+              ></i>
               <span class="hidden md:inline">{{ item.label }}</span>
             </a>
           </li>
@@ -40,7 +43,9 @@
           Cerrar Sesión
         </button>
         <div class="avatar placeholder">
-          <div class="bg-primary text-primary-content rounded-full w-9 h-9 flex items-center justify-center shadow-[0_0_15px_rgba(53,55,191,0.4)]">
+          <div
+            class="bg-primary text-primary-content rounded-full w-9 h-9 flex items-center justify-center shadow-[0_0_15px_rgba(53,55,191,0.4)]"
+          >
             <span class="text-[0.7rem] font-black tracking-tighter">ST</span>
           </div>
         </div>

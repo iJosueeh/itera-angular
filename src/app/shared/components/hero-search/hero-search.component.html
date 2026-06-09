@@ -1,22 +1,33 @@
 <section class="hero bg-transparent py-10 md:py-16" aria-labelledby="dashboard-title">
   <div class="hero-content text-center p-0 max-w-4xl flex-col">
     <div class="max-w-3xl">
-      <span class="badge badge-primary border-none text-white font-bold uppercase tracking-[0.25em] text-[0.6rem] py-3 px-4 mb-8 shadow-lg shadow-primary/20">
+      <span
+        class="badge badge-primary border-none text-white font-bold uppercase tracking-[0.25em] text-[0.6rem] py-3 px-4 mb-8 shadow-lg shadow-primary/20"
+      >
         {{ content().badge }}
       </span>
 
-      <h1 id="dashboard-title" class="text-4xl md:text-6xl lg:text-8xl font-black leading-[0.98] tracking-tighter text-white">
+      <h1
+        id="dashboard-title"
+        class="text-4xl md:text-6xl lg:text-8xl font-black leading-[0.98] tracking-tighter text-white"
+      >
         {{ content().titleLead }}
         <span class="text-primary block mt-1 drop-shadow-sm">{{ content().titleAccent }}</span>
       </h1>
 
-      <p class="py-8 text-lg md:text-2xl text-white/50 leading-relaxed max-w-2xl mx-auto font-medium">
+      <p
+        class="py-8 text-lg md:text-2xl text-white/50 leading-relaxed max-w-2xl mx-auto font-medium"
+      >
         {{ content().subtitle }}
       </p>
 
-      <div class="join w-full max-w-2xl shadow-3xl rounded-[2rem] overflow-hidden border border-white/5 bg-white/5 backdrop-blur-md">
+      <div
+        class="join w-full max-w-2xl shadow-3xl rounded-[2rem] overflow-hidden border border-white/5 bg-white/5 backdrop-blur-md"
+      >
         <div class="relative flex-1">
-          <i class="bi bi-search absolute left-6 top-1/2 -translate-y-1/2 text-white/30 text-xl"></i>
+          <i
+            class="bi bi-search absolute left-6 top-1/2 -translate-y-1/2 text-white/30 text-xl"
+          ></i>
           <input
             id="search-input"
             type="text"
@@ -36,7 +47,9 @@
       </div>
 
       <div class="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <span class="text-[0.65rem] font-black opacity-30 uppercase tracking-[0.2em] text-white">Demanda en Vivo:</span>
+        <span class="text-[0.65rem] font-black opacity-30 uppercase tracking-[0.2em] text-white"
+          >Demanda en Vivo:</span
+        >
         <div class="flex flex-wrap gap-2 justify-center">
           @for (trend of marketTrends().slice(0, 5); track trend.habilidad) {
             <button
@@ -47,7 +60,7 @@
               {{ trend.habilidad }}
             </button>
           } @empty {
-             @for (trend of content().trends; track trend.label) {
+            @for (trend of content().trends; track trend.label) {
               <button
                 type="button"
                 class="badge bg-white/5 border-white/5 text-white/60 hover:bg-primary hover:text-white transition-all cursor-pointer py-4 px-5 font-bold text-xs"

@@ -8,10 +8,10 @@
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
 @theme {
-  --color-primary: #3537bf;    /* Itera Indigo */
-  --color-secondary: #6366f1;  /* Tech Blue */
-  --color-accent: #a855f7;     /* Modern Purple */
-  --color-neutral: #1a1b26;    /* Deep navy for tech feel */
+  --color-primary: #3537bf; /* Itera Indigo */
+  --color-secondary: #6366f1; /* Tech Blue */
+  --color-accent: #a855f7; /* Modern Purple */
+  --color-neutral: #1a1b26; /* Deep navy for tech feel */
 }
 
 :root {

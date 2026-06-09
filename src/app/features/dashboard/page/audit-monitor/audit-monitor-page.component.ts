@@ -33,18 +33,25 @@ export class AuditMonitorPageComponent implements OnInit {
 
   loadAuditLogs(): void {
     this.isLoading.set(true);
-    this.marketApi.getScrapingAudit(50).pipe(take(1)).subscribe({
-      next: (data) => this.auditLogs.set(data),
-      complete: () => this.isLoading.set(false)
-    });
+    this.marketApi
+      .getScrapingAudit(50)
+      .pipe(take(1))
+      .subscribe({
+        next: (data) => this.auditLogs.set(data),
+        complete: () => this.isLoading.set(false),
+      });
   }
 
   getStatusClass(status: string): string {
     switch (status) {
-      case 'completado': return 'bg-secondary/20 text-secondary border-none';
-      case 'iniciado': return 'bg-blue-500/20 text-blue-400 border-none';
-      case 'error': return 'bg-rose-500/20 text-red-400 border-none';
-      default: return 'bg-white/5 text-white/40 border-none';
+      case 'completado':
+        return 'bg-secondary/20 text-secondary border-none';
+      case 'iniciado':
+        return 'bg-blue-500/20 text-blue-400 border-none';
+      case 'error':
+        return 'bg-rose-500/20 text-red-400 border-none';
+      default:
+        return 'bg-white/5 text-white/40 border-none';
     }
   }
 }

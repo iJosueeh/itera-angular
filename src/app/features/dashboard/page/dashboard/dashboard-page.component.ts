@@ -1,9 +1,19 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal, computed } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  OnInit,
+  signal,
+  computed,
+} from '@angular/core';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
 import { InteractiveRoadmapComponent } from '../../components/interactive-roadmap/interactive-roadmap.component';
-import { DemandChartComponent, ChartDataPoint } from '@shared/ui/demand-chart/demand-chart.component';
+import {
+  DemandChartComponent,
+  ChartDataPoint,
+} from '@shared/ui/demand-chart/demand-chart.component';
 import { StarRatingComponent } from '@shared/ui/star-rating/star-rating.component';
 import { MarketApiService } from '@features/home/services/market-api.service';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
@@ -12,7 +22,12 @@ import { NavItem } from '@shared/interfaces/dashboard.interface';
 @Component({
   selector: 'itera-dashboard-page',
   standalone: true,
-  imports: [DashboardShellComponent, InteractiveRoadmapComponent, DemandChartComponent, StarRatingComponent],
+  imports: [
+    DashboardShellComponent,
+    InteractiveRoadmapComponent,
+    DemandChartComponent,
+    StarRatingComponent,
+  ],
   templateUrl: './dashboard-page.component.html',
   styleUrl: './dashboard-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -28,7 +43,7 @@ export class DashboardPageComponent implements OnInit {
   protected readonly profile = this.profileContentService.profile;
   protected readonly matchScore = this.profileContentService.matchScore;
   protected readonly currentTheme = this.profileContentService.currentTheme;
-  
+
   protected readonly availableGoals = [
     { id: 'General', label: 'General', icon: 'bi-grid' },
     { id: 'Backend', label: 'Backend', icon: 'bi-database' },
@@ -45,22 +60,24 @@ export class DashboardPageComponent implements OnInit {
 
   protected handleFeedback(rating: number): void {
     const userId = this.authStorage.getUserId() || 'anonymous';
-    this.marketApi.sendFeedback({
-      estudiante_id: userId,
-      entidad_evaluada: 'MatchScore Analysis',
-      calificacion_estrellas: rating,
-      comentario: 'Submitted from Main Dashboard'
-    }).subscribe(() => {
-      this.feedbackSent.set(true);
-    });
+    this.marketApi
+      .sendFeedback({
+        estudiante_id: userId,
+        entidad_evaluada: 'MatchScore Analysis',
+        calificacion_estrellas: rating,
+        comentario: 'Submitted from Main Dashboard',
+      })
+      .subscribe(() => {
+        this.feedbackSent.set(true);
+      });
   }
-  
+
   protected readonly demandData = computed<ChartDataPoint[]>(() => {
     const demand = this.dashboardContentService.marketDemand();
     if (!demand || !demand.salary_distribution) return [];
     return demand.salary_distribution.map((d: any) => ({
       label: d.range_usd,
-      value: d.count
+      value: d.count,
     }));
   });
 
@@ -69,7 +86,7 @@ export class DashboardPageComponent implements OnInit {
     if (!demand || !demand.top_skills) return [];
     return demand.top_skills.map((d: any) => ({
       label: d.skill,
-      value: d.demand_count
+      value: d.demand_count,
     }));
   });
 

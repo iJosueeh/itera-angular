@@ -37,11 +37,13 @@ export class HomePageComponent {
 
     // RF-11: Record search telemetry
     const userId = this.authStorage.getUserId() || 'guest';
-    this.marketApi.sendTelemetry({
-      estudiante_id: userId,
-      accion: 'Hero Search',
-      datos_contexto: { query },
-      tiempo_permanencia_segundos: 0
-    }).subscribe();
+    this.marketApi
+      .sendTelemetry({
+        estudiante_id: userId,
+        accion: 'Hero Search',
+        datos_contexto: { query },
+        tiempo_permanencia_segundos: 0,
+      })
+      .subscribe();
   }
 }

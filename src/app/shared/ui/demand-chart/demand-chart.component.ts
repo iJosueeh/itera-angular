@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, AfterViewInit, input, effect, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  input,
+  effect,
+  inject,
+} from '@angular/core';
 import gsap from 'gsap';
 
 export interface ChartDataPoint {
@@ -14,16 +23,23 @@ export interface ChartDataPoint {
       <div #chart class="w-full h-full"></div>
     </div>
   `,
-  styles: [`
-    :host { display: block; width: 100%; }
-    .chart-container { position: relative; }
-  `],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  styles: [
+    `
+      :host {
+        display: block;
+        width: 100%;
+      }
+      .chart-container {
+        position: relative;
+      }
+    `,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DemandChartComponent implements AfterViewInit {
   data = input.required<ChartDataPoint[]>();
   color = input<string>('#4046b8');
-  
+
   @ViewChild('container') container!: ElementRef<HTMLDivElement>;
   @ViewChild('chart') chartElement!: ElementRef<HTMLDivElement>;
 
@@ -46,19 +62,19 @@ export class DemandChartComponent implements AfterViewInit {
     const width = container.clientWidth || 600;
     const height = 280;
     const padding = 40;
-    const barWidth = (width - (padding * 2)) / this.data().length;
+    const barWidth = (width - padding * 2) / this.data().length;
 
     const svgns = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(svgns, 'svg');
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', String(height));
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-    
-    const maxValue = Math.max(...this.data().map(d => d.value), 1);
+
+    const maxValue = Math.max(...this.data().map((d) => d.value), 1);
 
     this.data().forEach((point, i) => {
       const barHeight = (point.value / maxValue) * (height - padding * 2);
-      const x = padding + (i * barWidth);
+      const x = padding + i * barWidth;
       const y = height - padding - barHeight;
 
       const g = document.createElementNS(svgns, 'g');
@@ -99,7 +115,7 @@ export class DemandChartComponent implements AfterViewInit {
         y: height - padding,
         duration: 0.8,
         delay: i * 0.05,
-        ease: 'power2.out'
+        ease: 'power2.out',
       });
     });
 

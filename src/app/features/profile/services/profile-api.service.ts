@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { StudentProfile, InitializeProfilePayload, UpdateProfilePayload } from '@shared/interfaces/profile.interface';
+import {
+  StudentProfile,
+  InitializeProfilePayload,
+  UpdateProfilePayload,
+} from '@shared/interfaces/profile.interface';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileApiService {

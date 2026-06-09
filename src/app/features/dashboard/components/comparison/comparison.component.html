@@ -1,8 +1,4 @@
-<section
-  class="comparison-panel"
-  id="comparison"
-  aria-label="Comparador de carrera"
->
+<section class="comparison-panel" id="comparison" aria-label="Comparador de carrera">
   <div class="flex flex-wrap items-start justify-between gap-4 mb-10">
     <div>
       <p
@@ -10,7 +6,9 @@
       >
         AI Route Intelligence
       </p>
-      <h2 class="mt-4 text-[clamp(2.5rem,4vw,3.5rem)] font-black leading-[0.95] text-white tracking-tighter">
+      <h2
+        class="mt-4 text-[clamp(2.5rem,4vw,3.5rem)] font-black leading-[0.95] text-white tracking-tighter"
+      >
         {{ title }}<span class="text-primary">.</span>
       </h2>
       <p class="mt-4 max-w-[820px] text-lg leading-relaxed text-white/50 font-medium">
@@ -21,7 +19,9 @@
 
   <div class="mt-6 grid gap-6 xl:grid-cols-2">
     @for (option of options(); track option.title) {
-      <article class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl shadow-2xl rounded-[3rem] overflow-hidden">
+      <article
+        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl shadow-2xl rounded-[3rem] overflow-hidden"
+      >
         <div class="p-8 pb-0">
           <p class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/30">
             {{ option.label }}
@@ -44,7 +44,7 @@
               [class.text-primary]="option.accent === 'primary'"
               [class.text-secondary]="option.accent === 'secondary'"
             >
-              {{ (option.salary === '$0' ? 'En análisis...' : option.salary) }}
+              {{ option.salary === '$0' ? 'En análisis...' : option.salary }}
             </p>
           </div>
           <div class="rounded-3xl bg-white/[0.02] border border-white/[0.03] p-5 shadow-inner">
@@ -67,10 +67,9 @@
           </p>
           <div class="mt-4 flex flex-wrap gap-2">
             @for (tech of option.stack.slice(0, 5); track tech) {
-              <span
-                class="badge bg-white/5 border-none text-white/70 font-bold px-3 py-3"
-                >{{ tech }}</span
-              >
+              <span class="badge bg-white/5 border-none text-white/70 font-bold px-3 py-3">{{
+                tech
+              }}</span>
             }
           </div>
         </div>
@@ -79,7 +78,9 @@
           <p class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">
             Proyección de Demanda (5 años)
           </p>
-          <div class="mt-4 flex h-[70px] items-end gap-2 rounded-2xl bg-white/[0.02] border border-white/[0.02] px-4 py-3 shadow-inner">
+          <div
+            class="mt-4 flex h-[70px] items-end gap-2 rounded-2xl bg-white/[0.02] border border-white/[0.02] px-4 py-3 shadow-inner"
+          >
             @for (bar of option.projectionBars; track $index) {
               <div
                 class="flex-1 rounded-t-lg transition-all duration-700"
@@ -101,7 +102,9 @@
   >
     <h3 class="text-2xl font-black text-white tracking-tight">Comparación Directa</h3>
 
-    <div class="mt-8 overflow-hidden rounded-3xl border border-white/[0.03] bg-white/[0.02] shadow-inner">
+    <div
+      class="mt-8 overflow-hidden rounded-3xl border border-white/[0.03] bg-white/[0.02] shadow-inner"
+    >
       <div
         class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] gap-4 border-b border-white/[0.05] px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30"
       >
@@ -145,7 +148,9 @@
       </div>
 
       <div class="min-w-0 flex-1">
-        <p class="text-xs font-black uppercase tracking-[0.25em] text-accent">Análisis del Mentor</p>
+        <p class="text-xs font-black uppercase tracking-[0.25em] text-accent">
+          Análisis del Mentor
+        </p>
         <p class="mt-3 max-w-[1000px] text-lg leading-relaxed text-white/70 font-medium italic">
           "{{ mentorSummary }}"
         </p>

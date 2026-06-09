@@ -8,45 +8,77 @@
     <div
       class="rounded-[40px] bg-white/[0.02] px-4 py-6 shadow-[0_32px_80px_rgba(0,0,0,0.4)] backdrop-blur-2xl sm:px-10 sm:py-12 border border-white/[0.05]"
     >
-      <itera-hero-search 
-        [content]="vm().hero" 
+      <itera-hero-search
+        [content]="vm().hero"
         [marketTrends]="marketSkills()"
-        (explore)="handleSearch($event)" 
+        (explore)="handleSearch($event)"
       />
 
       @if (career()) {
         <div class="mt-8 animate-in fade-in slide-in-from-bottom-6 duration-700">
-          <div class="card bg-neutral text-neutral-content shadow-2xl rounded-[2.5rem] overflow-hidden border-none">
+          <div
+            class="card bg-neutral text-neutral-content shadow-2xl rounded-[2.5rem] overflow-hidden border-none"
+          >
             <div class="card-body p-8">
               <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <span class="badge badge-primary border-none text-primary-content badge-sm mb-2 font-bold tracking-widest uppercase shadow-sm">Resultado del Análisis</span>
-                  <h3 class="card-title text-3xl font-extrabold text-white">{{ career()?.career }}</h3>
+                  <span
+                    class="badge badge-primary border-none text-primary-content badge-sm mb-2 font-bold tracking-widest uppercase shadow-sm"
+                    >Resultado del Análisis</span
+                  >
+                  <h3 class="card-title text-3xl font-extrabold text-white">
+                    {{ career()?.career }}
+                  </h3>
                 </div>
                 <div class="flex items-center gap-3">
-                  <a routerLink="/auth/register" class="btn btn-primary rounded-2xl px-6 font-bold shadow-lg shadow-primary/20 border-none">
+                  <a
+                    routerLink="/auth/register"
+                    class="btn btn-primary rounded-2xl px-6 font-bold shadow-lg shadow-primary/20 border-none"
+                  >
                     Compara tu Perfil
                   </a>
                 </div>
               </div>
-              
-              <div class="stats stats-vertical md:stats-horizontal bg-white/5 w-full mt-8 rounded-3xl border-none text-neutral-content">
+
+              <div
+                class="stats stats-vertical md:stats-horizontal bg-white/5 w-full mt-8 rounded-3xl border-none text-neutral-content"
+              >
                 <div class="stat">
-                  <div class="stat-title text-[10px] uppercase tracking-widest font-bold opacity-60 text-neutral-content">Salario de Mercado</div>
+                  <div
+                    class="stat-title text-[10px] uppercase tracking-widest font-bold opacity-60 text-neutral-content"
+                  >
+                    Salario de Mercado
+                  </div>
                   <div class="stat-value text-3xl text-white">{{ career()?.annualSalaryUsd }}</div>
-                  <div class="stat-desc font-semibold text-secondary mt-1">{{ career()?.growthYoY }}</div>
+                  <div class="stat-desc font-semibold text-secondary mt-1">
+                    {{ career()?.growthYoY }}
+                  </div>
                 </div>
-                
+
                 <div class="stat border-white/10">
-                  <div class="stat-title text-[10px] uppercase tracking-widest font-bold opacity-60 text-neutral-content">Demanda Actual</div>
+                  <div
+                    class="stat-title text-[10px] uppercase tracking-widest font-bold opacity-60 text-neutral-content"
+                  >
+                    Demanda Actual
+                  </div>
                   <div class="stat-value text-3xl text-white">{{ career()?.demandLevel }}</div>
-                  <div class="stat-desc font-semibold opacity-60 mt-1">{{ career()?.demandMomentum }}</div>
+                  <div class="stat-desc font-semibold opacity-60 mt-1">
+                    {{ career()?.demandMomentum }}
+                  </div>
                 </div>
-                
+
                 <div class="stat border-white/10">
-                  <div class="stat-title text-[10px] uppercase tracking-widest font-bold opacity-60 text-neutral-content">Alineación de Perfil</div>
-                  <div class="stat-value text-xl text-primary leading-tight">{{ career()?.profileFit }}</div>
-                  <div class="stat-desc font-semibold opacity-60 mt-1">{{ career()?.alignmentDescription }}</div>
+                  <div
+                    class="stat-title text-[10px] uppercase tracking-widest font-bold opacity-60 text-neutral-content"
+                  >
+                    Alineación de Perfil
+                  </div>
+                  <div class="stat-value text-xl text-primary leading-tight">
+                    {{ career()?.profileFit }}
+                  </div>
+                  <div class="stat-desc font-semibold opacity-60 mt-1">
+                    {{ career()?.alignmentDescription }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -56,8 +88,8 @@
     </div>
   </section>
 
-  <itera-feature-highlights 
-    [cards]="vm().featureCards" 
+  <itera-feature-highlights
+    [cards]="vm().featureCards"
     [progress]="vm().progress"
     [marketSkills]="marketSkills()"
     [readinessScore]="readinessScore()"
