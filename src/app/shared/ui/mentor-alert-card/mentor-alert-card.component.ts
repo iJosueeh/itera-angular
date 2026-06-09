@@ -10,7 +10,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 export class MentorAlertCardComponent {
   title = input.required<string>();
   message = input.required<string>();
-  buttonText = input<string>('Continue Learning');
+  buttonText = input<string>('Continuar Aprendiendo');
 
   actionClick = output<void>();
 }

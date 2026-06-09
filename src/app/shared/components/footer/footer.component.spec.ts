@@ -24,7 +24,7 @@ describe('FooterComponent', () => {
     fixture.componentRef.setInput('brand', 'Footer Brand');
     fixture.detectChanges();
 
-    const brandElement = fixture.debugElement.query(By.css('p.font-bold')).nativeElement;
+    const brandElement = fixture.debugElement.query(By.css('p.font-black')).nativeElement;
     expect(brandElement.textContent).toContain('Footer Brand');
   });
   it('should render footer links', () => {
