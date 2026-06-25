@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoginPayload } from '@features/auth/interfaces/auth.interface';
 import { LoginFormComponent } from './components/login-form/login-form.component';
 import { LoginVisualComponent } from './components/login-visual/login-visual.component';
@@ -17,6 +17,7 @@ import { LoginContentService } from './services/login-content.service';
 export class LoginPageComponent {
   private readonly loginContentService = inject(LoginContentService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly vm = this.loginContentService.vm;
   protected readonly isSubmitting = signal(false);
@@ -33,7 +34,11 @@ export class LoginPageComponent {
 
       if (result.success) {
         this.responseMessage.set(result.message);
-        await this.router.navigateByUrl(result.redirectTo);
+
+        // Read returnUrl from query params; fall back to default redirect
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        const target = returnUrl || result.redirectTo;
+        await this.router.navigateByUrl(target);
       } else {
         this.responseError.set(result.message);
       }

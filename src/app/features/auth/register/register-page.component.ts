@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RegisterPayload } from '@features/auth/interfaces/auth.interface';
 import { RegisterFormComponent } from './components/register-form/register-form.component';
 import { RegisterVisualComponent } from './components/register-visual/register-visual.component';
@@ -17,6 +17,7 @@ import { RegisterContentService } from './services/register-content.service';
 export class RegisterPageComponent {
   private readonly registerContentService = inject(RegisterContentService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   protected readonly vm = this.registerContentService.vm;
   protected readonly isSubmitting = signal(false);
@@ -33,7 +34,11 @@ export class RegisterPageComponent {
 
       if (result.success) {
         this.responseMessage.set(result.message);
-        await this.router.navigateByUrl(result.redirectTo);
+
+        // Read returnUrl from query params; fall back to default redirect
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        const target = returnUrl || result.redirectTo;
+        await this.router.navigateByUrl(target);
       } else {
         this.responseError.set(result.message);
       }

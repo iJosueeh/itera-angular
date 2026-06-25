@@ -9,15 +9,52 @@ import {
   MatchResult,
 } from '@shared/interfaces/market.interface';
 
+export interface OfferFilters {
+  q?: string;
+  skill?: string;
+  modality?: string;
+  salary_min?: number;
+  salary_max?: number;
+}
+
+export interface SalaryByCareerResponse {
+  careers: Array<{
+    titulo_carrera: string;
+    salario_min: number;
+    salario_max: number;
+    salario_promedio: number;
+    volumen_total: number;
+    tendencia: string;
+    habilidades_clave: string[];
+  }>;
+  summary: {
+    total_offers: number;
+    avg_salary_weighted: number;
+    career_count: number;
+  };
+}
+
 @Injectable({ providedIn: 'root' })
 export class MarketApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/ia';
 
-  getOffers(limit = 10, skip = 0): Observable<JobOffer[]> {
-    return this.http.get<JobOffer[]>(`${this.baseUrl}/offers`, {
-      params: { limit, skip },
-    });
+  getOffers(
+    limit = 10,
+    skip = 0,
+    filters?: OfferFilters,
+  ): Observable<JobOffer[]> {
+    const params: Record<string, string | number> = { limit, skip };
+
+    if (filters) {
+      if (filters.q) params['q'] = filters.q;
+      if (filters.skill) params['skill'] = filters.skill;
+      if (filters.modality) params['modality'] = filters.modality;
+      if (filters.salary_min !== undefined) params['salary_min'] = filters.salary_min;
+      if (filters.salary_max !== undefined) params['salary_max'] = filters.salary_max;
+    }
+
+    return this.http.get<JobOffer[]>(`${this.baseUrl}/offers`, { params });
   }
 
   getCareerMetrics(): Observable<CareerMetrics[]> {
@@ -26,6 +63,10 @@ export class MarketApiService {
 
   getMarketDemand(): Observable<any> {
     return this.http.get<any>(`${this.baseUrl}/market/demand`);
+  }
+
+  getSalaryByCareer(): Observable<SalaryByCareerResponse> {
+    return this.http.get<SalaryByCareerResponse>(`${this.baseUrl}/market/salary-by-career`);
   }
 
   getMarketSkills(): Observable<MarketSkill[]> {

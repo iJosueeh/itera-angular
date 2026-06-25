@@ -2,16 +2,49 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProgressPageComponent } from './progress-page.component';
 import { By } from '@angular/platform-browser';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
+import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { provideRouter } from '@angular/router';
+import { signal } from '@angular/core';
+import { of } from 'rxjs';
 
 describe('ProgressPageComponent', () => {
   let component: ProgressPageComponent;
   let fixture: ComponentFixture<ProgressPageComponent>;
 
   beforeEach(async () => {
+    // Create a mock ProfileContentService that returns a profile with skills
+    const mockProfileService = {
+      isLoading: signal(false),
+      error: signal<string | null>(null),
+      currentTheme: signal('dim'),
+      profile: signal({
+        id: '1',
+        userId: 'user-1',
+        names: 'Test',
+        surnames: 'User',
+        cycle: 3,
+        academicGoal: 'Backend',
+        experience: 2,
+        skills: [
+          { name: 'Fundamentos de Python', level: 'advanced' },
+          { name: 'Pandas & NumPy', level: 'intermediate' },
+          { name: 'Visualización de Datos', level: 'beginner' },
+          { name: 'Deep Learning', level: 'beginner' },
+        ],
+        badges: [],
+        roadmap: [],
+      }),
+      loadProfile: () => {},
+      updateAcademicGoal: () => {},
+    };
+
     await TestBed.configureTestingModule({
       imports: [ProgressPageComponent],
-      providers: [DashboardContentService, provideRouter([])],
+      providers: [
+        DashboardContentService,
+        { provide: ProfileContentService, useValue: mockProfileService },
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProgressPageComponent);
@@ -23,7 +56,7 @@ describe('ProgressPageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should render 4 mastery cards', () => {
+  it('should render 4 mastery cards from profile skills', () => {
     const cards = fixture.debugElement.queryAll(By.css('itera-mastery-card'));
     expect(cards.length).toBe(4);
 
@@ -44,7 +77,7 @@ describe('ProgressPageComponent', () => {
     expect(mentorAlert).toBeTruthy();
 
     const title = mentorAlert.query(By.css('h2')).nativeElement.textContent.trim();
-    expect(title).toBe('Retoma tu ruta en Python');
+    expect(title).toBe('Retoma tu ruta');
 
     const button = mentorAlert.query(By.css('button'));
     expect(button.nativeElement.textContent).toContain('Continuar Aprendiendo');

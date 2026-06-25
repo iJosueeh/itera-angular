@@ -47,9 +47,8 @@ export interface MarketSkill {
 }
 
 export interface MatchRequest {
-  estudiante_id: string;
-  vector_perfil: number[];
-  objetivo: string;
+  student_id: string;
+  skills: string[];
 }
 
 export interface MatchResult {

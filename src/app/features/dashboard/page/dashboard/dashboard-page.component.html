@@ -64,24 +64,73 @@
             class="rounded-[2.5rem] bg-white/[0.02] border border-white/[0.03] p-6 shadow-inner"
           >
             <div class="flex h-full min-h-[260px] items-center justify-center">
-              <div class="w-full max-w-[180px] text-center">
+              <div class="w-full max-w-[200px] text-center">
                 <p class="text-[0.65rem] font-black uppercase tracking-[0.3em] text-white/30">
                   Skill Match Score
                 </p>
-                <div
-                  class="mx-auto mt-6 grid h-28 w-28 place-content-center rounded-full border-[10px] border-primary/10 text-primary shadow-[0_0_30px_rgba(53,55,191,0.15)] bg-primary/5"
-                >
-                  <span class="text-3xl font-black">{{ matchScore()?.score ?? 0 }}%</span>
-                </div>
-                <p class="mt-6 text-sm font-medium text-white/40 leading-relaxed">
-                  Te faltan
-                  <span class="text-white font-bold">{{
-                    matchScore()?.habilidades_faltantes?.length ?? 0
-                  }}</span>
-                  habilidades clave.
-                </p>
 
-                <div class="mt-8 pt-6 border-t border-white/[0.05]">
+                <!-- Score circle -->
+                <div
+                  class="mx-auto mt-6 grid h-28 w-28 place-content-center rounded-full border-[10px] text-primary shadow-[0_0_30px_rgba(53,55,191,0.15)] bg-primary/5"
+                  [class.border-primary/10]="displayScore() < 50"
+                  [class.border-secondary/20]="displayScore() >= 50"
+                >
+                  @if (isEvaluating()) {
+                    <span class="loading loading-spinner loading-sm text-primary"></span>
+                  } @else {
+                    <span class="text-3xl font-black">{{ displayScore() }}%</span>
+                  }
+                </div>
+
+                <!-- Skills gap bar -->
+                <div class="mt-6">
+                  <div class="flex justify-between text-[0.6rem] font-bold text-white/30 mb-1.5">
+                    <span>{{ skillsGapData().matched }} matched</span>
+                    <span>{{ skillsGapData().missing }} missing</span>
+                  </div>
+                  <div class="h-2 rounded-full bg-white/5 overflow-hidden">
+                    <div
+                      class="h-full rounded-full transition-all duration-700"
+                      [style.width.%]="skillsGapData().total > 0 ? (skillsGapData().matched / skillsGapData().total) * 100 : 0"
+                      [class.bg-secondary]="displayScore() >= 50"
+                      [class.bg-rose-500]="displayScore() < 50"
+                    ></div>
+                  </div>
+                </div>
+
+                <!-- Missing skills chips -->
+                @if (displayMissingSkills().length > 0) {
+                  <div class="mt-4">
+                    <p class="text-[0.55rem] font-black uppercase tracking-[0.2em] text-white/20 mb-2">
+                      Habilidades faltantes
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-1">
+                      @for (skill of displayMissingSkills().slice(0, 4); track skill) {
+                        <span class="text-[0.5rem] rounded bg-rose-500/10 text-rose-400 px-1.5 py-0.5 font-bold">
+                          {{ skill }}
+                        </span>
+                      }
+                      @if (displayMissingSkills().length > 4) {
+                        <span class="text-[0.5rem] text-white/20">+{{ displayMissingSkills().length - 4 }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+
+                <!-- Recommendation -->
+                @if (displayRecommendations().length > 0) {
+                  <div class="mt-6 pt-4 border-t border-white/[0.05]">
+                    <p class="text-[0.55rem] font-black uppercase tracking-[0.2em] text-white/20 mb-2">
+                      Recomendación
+                    </p>
+                    <p class="text-xs font-medium text-white/50 leading-relaxed">
+                      {{ displayRecommendations()[0] }}
+                    </p>
+                  </div>
+                }
+
+                <!-- Feedback -->
+                <div class="mt-6 pt-4 border-t border-white/[0.05]">
                   <p class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/20 mb-3">
                     ¿Es útil este análisis?
                   </p>
@@ -92,7 +141,11 @@
                       ¡Gracias por tu feedback!
                     </p>
                   } @else {
-                    <itera-star-rating (rated)="handleFeedback($event)"></itera-star-rating>
+                    <itera-star-rating
+                      [withComment]="true"
+                      (rated)="handleFeedback($event)"
+                      (feedbackSubmit)="handleFeedbackWithComment($event)"
+                    ></itera-star-rating>
                   }
                 </div>
               </div>
@@ -108,10 +161,21 @@
           <p class="text-[0.7rem] font-black uppercase tracking-[0.25em] text-white/50">
             Avg. Annual Salary
           </p>
-          <p class="mt-4 text-4xl font-black tracking-tighter text-white leading-none">$128,400</p>
+          <p class="mt-4 text-4xl font-black tracking-tighter text-white leading-none">
+            @if (dynamicAvgSalary(); as avg) {
+              ${{ avg | number:'1.0-0' }}
+            } @else {
+              <span class="text-white/30">--</span>
+            }
+          </p>
           <p class="mt-4 text-sm text-white/70 font-bold flex items-center gap-2">
-            <i class="bi bi-graph-up text-lg"></i>
-            +12% increase YoY
+            @if (salaryByCareer()?.summary) {
+              <i class="bi bi-graph-up text-lg"></i>
+              {{ salaryByCareer()!.summary.total_offers }} ofertas analizadas
+            } @else {
+              <i class="bi bi-hourglass-split text-lg"></i>
+              Cargando datos...
+            }
           </p>
         </article>
 
@@ -192,6 +256,71 @@
         <itera-demand-chart [data]="skillDemandData()" color="#a855f7"></itera-demand-chart>
       </div>
     </section>
+
+    <!-- Career Salary Comparison Section -->
+    @if (careerComparisonData().length > 0) {
+      <section class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-xl p-6 md:p-8 shadow-2xl rounded-[3rem]">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p class="text-[0.7rem] font-black uppercase tracking-[0.25em] text-white/30">
+              Career Comparison
+            </p>
+            <h2 class="mt-2 text-2xl font-black text-white tracking-tight">
+              Salary by Career Path
+            </h2>
+            <p class="mt-2 text-sm text-white/40 font-medium">
+              Comparación salarial promedio entre categorías de carrera.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-8">
+          <itera-demand-chart
+            [data]="careerComparisonData()"
+            color="#f59e0b"
+            (barClick)="handleChartDrillDown($event)"
+          ></itera-demand-chart>
+        </div>
+
+        <!-- Career Cards Grid -->
+        @if (topCareerDetails().length > 0) {
+          <div class="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            @for (career of topCareerDetails(); track career.title) {
+              <div
+                class="rounded-2xl bg-white/[0.03] border border-white/[0.05] p-4 hover:bg-white/[0.05] transition-colors cursor-pointer"
+                [class.ring-2]="selectedCareer() === career.title"
+                [class.ring-primary]="selectedCareer() === career.title"
+              >
+                <p class="text-xs font-black uppercase tracking-widest text-primary">{{ career.title }}</p>
+                <p class="mt-3 text-2xl font-black text-white">${{ career.avgSalary | number:'1.0-0' }}</p>
+                <p class="mt-1 text-xs font-medium text-white/40">
+                  ${{ career.minSalary | number:'1.0-0' }} — ${{ career.maxSalary | number:'1.0-0' }}
+                </p>
+                <div class="mt-3 flex items-center gap-2">
+                  <span
+                    class="badge border-none text-[0.55rem] font-black uppercase py-1 px-2"
+                    [class.bg-success/20]="career.trend === 'creciente'"
+                    [class.text-success]="career.trend === 'creciente'"
+                    [class.bg-white/10]="career.trend !== 'creciente'"
+                    [class.text-white/50]="career.trend !== 'creciente'"
+                  >
+                    {{ career.trend }}
+                  </span>
+                  <span class="text-[0.6rem] text-white/30">{{ career.volume }} ofertas</span>
+                </div>
+                @if (career.topSkills.length > 0) {
+                  <div class="mt-3 flex flex-wrap gap-1">
+                    @for (skill of career.topSkills; track skill) {
+                      <span class="text-[0.5rem] rounded bg-white/[0.06] px-1.5 py-0.5 text-white/40">{{ skill }}</span>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </section>
+    }
 
     <section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]" id="routes">
       <div

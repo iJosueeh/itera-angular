@@ -21,21 +21,119 @@
           ></i>
           <input
             type="text"
-            placeholder="Filtrar por rol, empresa o habilidad..."
+            placeholder="Buscar por rol, empresa o habilidad..."
             class="input w-full pl-14 py-7 bg-white/[0.03] border-white/[0.05] focus:border-primary focus:outline-none text-white rounded-2xl shadow-inner placeholder:text-white/20"
+            [value]="searchQuery()"
             (input)="onSearch($event)"
           />
         </div>
       </div>
     </header>
 
+    <!-- Skill Filter Chips -->
+    <section>
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20">
+          Habilidades:
+        </span>
+        @for (skill of popularSkills; track skill) {
+          <button
+            type="button"
+            class="badge border-none text-[0.7rem] font-bold px-4 py-3 transition-all cursor-pointer"
+            [class.bg-primary]="activeSkillFilter() === skill"
+            [class.text-white]="activeSkillFilter() === skill"
+            [class.shadow-lg]="activeSkillFilter() === skill"
+            [class.shadow-primary/20]="activeSkillFilter() === skill"
+            [class.bg-white/5]="activeSkillFilter() !== skill"
+            [class.text-white/50]="activeSkillFilter() !== skill"
+            [class.hover:bg-white/10]="activeSkillFilter() !== skill"
+            (click)="toggleSkillFilter(skill)"
+          >
+            {{ skill }}
+          </button>
+        }
+      </div>
+    </section>
+
+    <!-- Modality + Scraper Row -->
+    <section class="flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20">
+          Modalidad:
+        </span>
+        @for (mod of modalities; track mod.value) {
+          <button
+            type="button"
+            class="btn btn-sm rounded-xl border-none font-bold text-xs transition-all"
+            [class.btn-primary]="activeModalityFilter() === mod.value"
+            [class.bg-white/5]="activeModalityFilter() !== mod.value"
+            [class.text-white/40]="activeModalityFilter() !== mod.value"
+            [class.hover:bg-white/10]="activeModalityFilter() !== mod.value"
+            (click)="toggleModalityFilter(mod.value)"
+          >
+            <i [class]="'bi ' + mod.icon + ' mr-1'"></i>
+            {{ mod.label }}
+          </button>
+        }
+
+        @if (activeSkillFilter() || activeModalityFilter() || searchQuery()) {
+          <button
+            type="button"
+            class="btn btn-ghost btn-sm text-white/30 hover:text-white text-xs"
+            (click)="clearAllFilters()"
+          >
+            <i class="bi bi-x-lg mr-1"></i> Limpiar
+          </button>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline border-white/10 text-white/50 hover:text-white hover:border-primary rounded-xl font-bold text-xs"
+        [disabled]="isScraperRunning()"
+        (click)="triggerScraper()"
+      >
+        @if (isScraperRunning()) {
+          <span class="loading loading-spinner loading-xs"></span>
+        } @else {
+          <i class="bi bi-arrow-repeat mr-1"></i>
+        }
+        Actualizar Datos
+      </button>
+    </section>
+
+    <!-- Scraper Status Message -->
+    @if (scraperMessage()) {
+      <div
+        class="alert bg-primary/10 border-primary/20 text-white rounded-2xl text-sm font-medium"
+      >
+        <i class="bi bi-info-circle text-primary"></i>
+        <span>{{ scraperMessage() }}</span>
+      </div>
+    }
+
     @if (isLoading()) {
-      <div class="flex-1 grid place-content-center py-20">
-        <span class="loading loading-spinner loading-lg text-primary"></span>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        @for (i of [1,2,3,4,5,6]; track i) {
+          <article class="rounded-[2.5rem] bg-neutral/40 border border-white/[0.03] p-8 animate-pulse">
+            <div class="flex justify-between items-start mb-4">
+              <div class="h-6 w-16 rounded-full bg-white/[0.05]"></div>
+              <div class="h-6 w-20 rounded bg-white/[0.05]"></div>
+            </div>
+            <div class="h-5 w-3/4 rounded bg-white/[0.05] mb-2"></div>
+            <div class="h-3 w-1/2 rounded bg-white/[0.03] mb-4"></div>
+            <div class="flex gap-2 mb-8">
+              <div class="h-6 w-14 rounded bg-white/[0.04]"></div>
+              <div class="h-6 w-18 rounded bg-white/[0.04]"></div>
+              <div class="h-6 w-12 rounded bg-white/[0.04]"></div>
+            </div>
+            <div class="h-12 w-full rounded-2xl bg-white/[0.03]"></div>
+          </article>
+        }
       </div>
     } @else {
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        @for (offer of filteredOffers(); track offer.url_origen) {
+        @for (offer of offers(); track offer.url_origen) {
           <article
             class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-md shadow-2xl hover:bg-neutral/60 transition-all duration-500 group overflow-hidden rounded-[2.5rem]"
           >
@@ -58,9 +156,14 @@
               >
                 {{ offer.puesto }}
               </h3>
-              <p class="text-sm text-white/40 flex items-center gap-2 mb-6 font-medium">
+              <p class="text-sm text-white/40 flex items-center gap-2 mb-2 font-medium">
                 <i class="bi bi-building opacity-50"></i> {{ offer.empresa }}
               </p>
+              @if (offer.modalidad) {
+                <p class="text-xs text-white/25 font-bold uppercase tracking-widest mb-4">
+                  <i class="bi bi-geo-alt mr-1"></i> {{ offer.modalidad }}
+                </p>
+              }
 
               <div class="flex flex-wrap gap-2 mb-8">
                 @for (skill of offer.habilidades_requeridas.slice(0, 4); track skill) {
@@ -96,7 +199,7 @@
               No se encontraron ofertas
             </h3>
             <p class="text-white/10 font-medium mt-2 uppercase tracking-widest text-xs">
-              Intenta ajustar tu búsqueda
+              Intenta ajustar tu búsqueda o actualiza los datos
             </p>
           </div>
         }
