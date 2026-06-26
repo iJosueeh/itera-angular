@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   OnDestroy,
+  effect,
   signal,
   computed,
 } from '@angular/core';
@@ -595,6 +596,27 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   private readonly initialMatchEvaluated = signal(false);
 
+  constructor() {
+    // Reactively fire the initial match evaluation once the profile signal becomes available.
+    // This is more reliable than setTimeout polling because it fires as soon as the
+    // profile data arrives, regardless of network latency.
+    effect(() => {
+      // Track these signals so the effect re-runs when they change
+      const p = this.profile();
+      const inProgress = this.isUpdatingGoal();
+
+      // Only fire once: profile must be loaded, no goal change in progress,
+      // and we haven't evaluated yet.
+      if (!p || inProgress || this.initialMatchEvaluated()) return;
+
+      console.log(
+        `[Match] Initial evaluate → profile.academicGoal: "${p.academicGoal}", category: "${this.currentGoalCategory()}"`,
+      );
+      this.initialMatchEvaluated.set(true);
+      this.evaluateMatch();
+    });
+  }
+
   ngOnInit(): void {
     this.telemetry.startTracking('dashboard');
 
@@ -604,28 +626,6 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     this.marketApi.getSalaryByCareer().subscribe((data) => {
       this.salaryByCareer.set(data);
     });
-
-    // Wait for profile to load before evaluating match (avoid racing with async loadProfile)
-    // Use a delayed check since loadProfile is async and we need the profile loaded
-    const tryEvaluate = () => {
-      // Don't fire during a goal change — updateGoal() triggers evaluateMatch() via its own path
-      if (this.isUpdatingGoal()) return;
-      // Profile must exist (skills can be empty — API handles that)
-      const p = this.profile();
-      if (!p) return;
-      if (this.initialMatchEvaluated()) return;
-      console.log(
-        `[Match] Initial evaluate → profile.academicGoal: "${p.academicGoal}", category: "${this.currentGoalCategory()}"`,
-      );
-      this.initialMatchEvaluated.set(true);
-      this.evaluateMatch();
-    };
-    // Immediate attempt (in case profile already loaded synchronously)
-    tryEvaluate();
-    // Delayed attempts (profile loads async — add extra timeouts for slow connections)
-    setTimeout(tryEvaluate, 500);
-    setTimeout(tryEvaluate, 1500);
-    setTimeout(tryEvaluate, 3000);
 
     // Read ?q= query param from URL and trigger career search if present
     const query = this.route.snapshot.queryParamMap.get('q');
