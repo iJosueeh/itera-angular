@@ -611,8 +611,12 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       // Don't fire during a goal change — updateGoal() triggers evaluateMatch() via its own path
       if (this.isUpdatingGoal()) return;
       // Profile must exist (skills can be empty — API handles that)
-      if (!this.profile()) return;
+      const p = this.profile();
+      if (!p) return;
       if (this.initialMatchEvaluated()) return;
+      console.log(
+        `[Match] Initial evaluate → profile.academicGoal: "${p.academicGoal}", category: "${this.currentGoalCategory()}"`,
+      );
       this.initialMatchEvaluated.set(true);
       this.evaluateMatch();
     };
