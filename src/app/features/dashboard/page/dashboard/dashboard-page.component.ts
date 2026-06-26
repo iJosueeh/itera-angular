@@ -19,7 +19,10 @@ import {
   ChartDataPoint,
 } from '@shared/ui/demand-chart/demand-chart.component';
 import { StarRatingComponent } from '@shared/ui/star-rating/star-rating.component';
-import { MarketApiService, SalaryByCareerResponse } from '@features/home/services/market-api.service';
+import {
+  MarketApiService,
+  SalaryByCareerResponse,
+} from '@features/home/services/market-api.service';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
 import { PageTelemetryService } from '@shared/services/page-telemetry.service';
 import { NavItem } from '@shared/interfaces/dashboard.interface';
@@ -64,33 +67,50 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   // Loading states for skeleton rendering
   protected readonly isProfileLoading = this.profileContentService.isLoading;
   protected readonly isMatchLoading = computed(() => this.isEvaluating() || this.isGoalChanging());
-  protected readonly isSkillsLoading = computed(() => (this.skills().length === 0 && this.dashboardContentService.isLoading()) || this.isGoalChanging());
-  protected readonly isDemandLoading = computed(() => !this.dashboardContentService.marketDemand() && this.dashboardContentService.isLoading());
+  protected readonly isSkillsLoading = computed(
+    () =>
+      (this.skills().length === 0 && this.dashboardContentService.isLoading()) ||
+      this.isGoalChanging(),
+  );
+  protected readonly isDemandLoading = computed(
+    () => !this.dashboardContentService.marketDemand() && this.dashboardContentService.isLoading(),
+  );
 
   private readonly isGoalChanging = signal(false);
 
   // Filter out generic skills like "Analista" from trending
-  private static readonly GENERIC_SKILLS = new Set(['analista', 'análisis', 'office', 'microsoft office', 'excel', 'comunicación', 'devops']);
+  private static readonly GENERIC_SKILLS = new Set([
+    'analista',
+    'análisis',
+    'office',
+    'microsoft office',
+    'excel',
+    'comunicación',
+    'devops',
+  ]);
   protected readonly skillsTrending = computed(() => {
     const goalSkills = this.goalFilteredSkills();
     const useGoalFilter = this.isGoalFiltering() && goalSkills.length > 0;
     return this.skills()
-      .filter(s => !DashboardPageComponent.GENERIC_SKILLS.has(s.habilidad.toLowerCase()))
-      .filter(s => !useGoalFilter || goalSkills.some(g => g.toLowerCase() === s.habilidad.toLowerCase()))
+      .filter((s) => !DashboardPageComponent.GENERIC_SKILLS.has(s.habilidad.toLowerCase()))
+      .filter(
+        (s) =>
+          !useGoalFilter || goalSkills.some((g) => g.toLowerCase() === s.habilidad.toLowerCase()),
+      )
       .slice(0, 3);
   });
 
   // Current goal's career category for filtering
   protected readonly currentGoalCategory = computed(() => {
     const goal = this.profile()?.academicGoal || 'General';
-    const found = this.availableGoals.find(g => g.id === goal);
+    const found = this.availableGoals.find((g) => g.id === goal);
     return found?.category;
   });
 
   // Career names to filter market charts by goal
   protected readonly goalCareerNames = computed(() => {
     const goal = this.profile()?.academicGoal || 'General';
-    const found = this.availableGoals.find(g => g.id === goal);
+    const found = this.availableGoals.find((g) => g.id === goal);
     return found?.careerNames ?? [];
   });
 
@@ -115,40 +135,40 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   // Keys are lowercase normalized forms from the API; values are the display version.
   // Example: "vue" and "vue.js" both map to "Vue.js" so they don't appear as duplicates.
   private static readonly SKILL_DISPLAY_NAMES: Record<string, string> = {
-    'vue': 'Vue.js',
-    'vuejs': 'Vue.js',
-    'reactjs': 'React',
+    vue: 'Vue.js',
+    vuejs: 'Vue.js',
+    reactjs: 'React',
     'react.js': 'React',
-    'angularjs': 'Angular',
+    angularjs: 'Angular',
     'angular.js': 'Angular',
-    'node': 'Node.js',
-    'nodejs': 'Node.js',
-    'rest': 'REST API',
-    'restful': 'REST API',
+    node: 'Node.js',
+    nodejs: 'Node.js',
+    rest: 'REST API',
+    restful: 'REST API',
     'sql server': 'SQL Server',
     'spring boot': 'Spring Boot',
-    'spring': 'Spring Boot',
+    spring: 'Spring Boot',
     'c#': 'C#',
-    'csharp': 'C#',
+    csharp: 'C#',
     '.net': '.NET',
     'html/css': 'HTML/CSS',
-    'html5': 'HTML/CSS',
+    html5: 'HTML/CSS',
     'next.js': 'Next.js',
-    'nextjs': 'Next.js',
+    nextjs: 'Next.js',
     'tailwind css': 'Tailwind CSS',
-    'tailwind': 'Tailwind CSS',
+    tailwind: 'Tailwind CSS',
     'd3.js': 'D3.js',
     'ci/cd': 'CI/CD',
     'github actions': 'GitHub Actions',
     'gitlab ci': 'GitLab CI',
-    'k8s': 'Kubernetes',
-    'gcp': 'Google Cloud',
-    'js': 'JavaScript',
-    'ts': 'TypeScript',
-    'pyspark': 'Spark',
-    'ml': 'Machine Learning',
-    'dl': 'Deep Learning',
-    'powerbi': 'Power BI',
+    k8s: 'Kubernetes',
+    gcp: 'Google Cloud',
+    js: 'JavaScript',
+    ts: 'TypeScript',
+    pyspark: 'Spark',
+    ml: 'Machine Learning',
+    dl: 'Deep Learning',
+    powerbi: 'Power BI',
     'scikit-learn': 'Scikit-learn',
     'react native': 'React Native',
   };
@@ -169,13 +189,16 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         const rawKey = skill.toLowerCase().trim();
         // Use SKILL_DISPLAY_NAMES as the dedup key so variants (e.g. "node"/"node.js")
         // collapse into a single entry instead of appearing as duplicates.
-        const mappedKey = DashboardPageComponent.SKILL_DISPLAY_NAMES[rawKey]?.toLowerCase() || rawKey;
+        const mappedKey =
+          DashboardPageComponent.SKILL_DISPLAY_NAMES[rawKey]?.toLowerCase() || rawKey;
         if (!seen.has(mappedKey)) {
           seen.add(mappedKey);
           // Priority: 1) SKILL_DISPLAY_NAMES (explicit merge), 2) whitelist canonical, 3) simple capitalize
           const fromDisplayName = DashboardPageComponent.SKILL_DISPLAY_NAMES[rawKey];
           const fromWhitelist = canonical.get(rawKey);
-          result.push(fromDisplayName || fromWhitelist || skill.charAt(0).toUpperCase() + skill.slice(1));
+          result.push(
+            fromDisplayName || fromWhitelist || skill.charAt(0).toUpperCase() + skill.slice(1),
+          );
         }
       }
       return result;
@@ -228,7 +251,10 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     const goalSkills = this.goalFilteredSkills();
     const useGoalFilter = this.isGoalFiltering() && goalSkills.length > 0;
     return demand.top_skills
-      .filter((d: any) => !useGoalFilter || goalSkills.some(g => g.toLowerCase() === d.skill.toLowerCase()))
+      .filter(
+        (d: any) =>
+          !useGoalFilter || goalSkills.some((g) => g.toLowerCase() === d.skill.toLowerCase()),
+      )
       .map((d: any) => ({
         label: d.skill,
         value: d.demand_count,
@@ -236,19 +262,160 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   });
 
   protected readonly availableGoals = [
-    { id: 'General', label: 'General', icon: 'bi-grid', category: undefined as string | undefined, careerNames: [] as string[] },
-    { id: 'Backend', label: 'Backend', icon: 'bi-database', category: 'desarrollo-backend', careerNames: ['Desarrollo Backend'] as string[] },
-    { id: 'AI', label: 'IA & Data', icon: 'bi-cpu', category: 'ciencia-datos-ia', careerNames: ['Ciencia de Datos e IA', 'Datos y Business Intelligence', 'Ingeniería de Datos'] as string[] },
-    { id: 'Cloud', label: 'Cloud', icon: 'bi-cloud', category: 'devops-cloud', careerNames: ['Infraestructura y Cloud', 'Infraestructura y Sistemas', 'DevOps y Cloud'] as string[] },
-    { id: 'Frontend', label: 'Frontend', icon: 'bi-window-sidebar', category: 'desarrollo-frontend', careerNames: ['Desarrollo Frontend', 'Desarrollo Fullstack'] as string[] },
+    {
+      id: 'General',
+      label: 'General',
+      icon: 'bi-grid',
+      category: undefined as string | undefined,
+      careerNames: [] as string[],
+    },
+    {
+      id: 'Backend',
+      label: 'Backend',
+      icon: 'bi-database',
+      category: 'desarrollo-backend',
+      careerNames: ['Desarrollo Backend'] as string[],
+    },
+    {
+      id: 'AI',
+      label: 'IA & Data',
+      icon: 'bi-cpu',
+      category: 'ciencia-datos-ia',
+      careerNames: [
+        'Ciencia de Datos e IA',
+        'Datos y Business Intelligence',
+        'Ingeniería de Datos',
+      ] as string[],
+    },
+    {
+      id: 'Cloud',
+      label: 'Cloud',
+      icon: 'bi-cloud',
+      category: 'devops-cloud',
+      careerNames: [
+        'Infraestructura y Cloud',
+        'Infraestructura y Sistemas',
+        'DevOps y Cloud',
+      ] as string[],
+    },
+    {
+      id: 'Frontend',
+      label: 'Frontend',
+      icon: 'bi-window-sidebar',
+      category: 'desarrollo-frontend',
+      careerNames: ['Desarrollo Frontend', 'Desarrollo Fullstack'] as string[],
+    },
   ];
 
   // Canonical skills allowed per goal (based on career taxonomy keywords)
   private static readonly GOAL_SKILLS_WHITELIST: Record<string, string[]> = {
-    Backend: ['Java', 'Python', 'Node', 'Node.js', 'SQL', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'Docker', 'Django', 'Flask', 'FastAPI', 'Spring', 'Spring Boot', 'Laravel', 'PHP', 'Go', 'C#', '.NET', 'Git', 'REST API', 'Kubernetes', 'Linux', 'Oracle', 'SQL Server'],
-    AI: ['Python', 'Machine Learning', 'Deep Learning', 'SQL', 'TensorFlow', 'PyTorch', 'Spark', 'Airflow', 'dbt', 'Pandas', 'NumPy', 'Scikit-learn', 'NLP', 'AI Generativa', 'Snowflake', 'BigQuery', 'Databricks', 'ETL', 'Data Warehouse', 'Power BI', 'Tableau', 'R', 'Docker', 'AWS', 'Azure', 'PostgreSQL', 'MongoDB'],
-    Cloud: ['AWS', 'Azure', 'Google Cloud', 'Docker', 'Kubernetes', 'Terraform', 'Ansible', 'Jenkins', 'GitHub Actions', 'GitLab CI', 'Linux', 'Nginx', 'Prometheus', 'Grafana', 'Helm', 'CI/CD', 'Git', 'Python', 'Bash/Shell', 'CloudFormation', 'Pulumi', 'Serverless', 'Vault', 'Docker Swarm', 'OpenShift'],
-    Frontend: ['React', 'Angular', 'Vue.js', 'JavaScript', 'TypeScript', 'HTML/CSS', 'Next.js', 'Tailwind CSS', 'Redux', 'GraphQL', 'REST API', 'Svelte', 'Node.js', 'Python', 'Git', 'D3.js', 'Bootstrap', 'jQuery', 'SQL', 'PostgreSQL', 'MongoDB'],
+    Backend: [
+      'Java',
+      'Python',
+      'Node',
+      'Node.js',
+      'SQL',
+      'PostgreSQL',
+      'MySQL',
+      'MongoDB',
+      'Redis',
+      'Docker',
+      'Django',
+      'Flask',
+      'FastAPI',
+      'Spring',
+      'Spring Boot',
+      'Laravel',
+      'PHP',
+      'Go',
+      'C#',
+      '.NET',
+      'Git',
+      'REST API',
+      'Kubernetes',
+      'Linux',
+      'Oracle',
+      'SQL Server',
+    ],
+    AI: [
+      'Python',
+      'Machine Learning',
+      'Deep Learning',
+      'SQL',
+      'TensorFlow',
+      'PyTorch',
+      'Spark',
+      'Airflow',
+      'dbt',
+      'Pandas',
+      'NumPy',
+      'Scikit-learn',
+      'NLP',
+      'AI Generativa',
+      'Snowflake',
+      'BigQuery',
+      'Databricks',
+      'ETL',
+      'Data Warehouse',
+      'Power BI',
+      'Tableau',
+      'R',
+      'Docker',
+      'AWS',
+      'Azure',
+      'PostgreSQL',
+      'MongoDB',
+    ],
+    Cloud: [
+      'AWS',
+      'Azure',
+      'Google Cloud',
+      'Docker',
+      'Kubernetes',
+      'Terraform',
+      'Ansible',
+      'Jenkins',
+      'GitHub Actions',
+      'GitLab CI',
+      'Linux',
+      'Nginx',
+      'Prometheus',
+      'Grafana',
+      'Helm',
+      'CI/CD',
+      'Git',
+      'Python',
+      'Bash/Shell',
+      'CloudFormation',
+      'Pulumi',
+      'Serverless',
+      'Vault',
+      'Docker Swarm',
+      'OpenShift',
+    ],
+    Frontend: [
+      'React',
+      'Angular',
+      'Vue.js',
+      'JavaScript',
+      'TypeScript',
+      'HTML/CSS',
+      'Next.js',
+      'Tailwind CSS',
+      'Redux',
+      'GraphQL',
+      'REST API',
+      'Svelte',
+      'Node.js',
+      'Python',
+      'Git',
+      'D3.js',
+      'Bootstrap',
+      'jQuery',
+      'SQL',
+      'PostgreSQL',
+      'MongoDB',
+    ],
   };
 
   protected async updateGoal(goalId: string): Promise<void> {
@@ -265,7 +432,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     try {
       // 1. Update goal on backend — profileState is merged synchronously inside the service
       const updatedProfile = await firstValueFrom(
-        this.profileContentService.updateAcademicGoal(goalId)
+        this.profileContentService.updateAcademicGoal(goalId),
       );
 
       // 2. Use evaluateMatch() instead of a direct API call so that:
@@ -307,17 +474,21 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     this.activeMatchSub?.unsubscribe();
 
     this.isEvaluating.set(true);
-    const studentSkills = (profile.skills || []).map(s => s.name);
+    const studentSkills = (profile.skills || []).map((s) => s.name);
     const userId = this.authStorage.getUserId() || profile.userId;
     const category = this.currentGoalCategory();
 
-    console.log(`[Match] evaluateMatch → goal: "${profile.academicGoal}", category: "${category}", skills(${studentSkills.length}): [${studentSkills.join(', ')}]`);
+    console.log(
+      `[Match] evaluateMatch → goal: "${profile.academicGoal}", category: "${category}", skills(${studentSkills.length}): [${studentSkills.join(', ')}]`,
+    );
 
     this.activeMatchSub = this.marketApi
       .evaluateMatch({ student_id: userId, skills: studentSkills, career_category: category })
       .subscribe({
         next: (result) => {
-          console.log(`[Match] API response → score: ${result.score}, missing(${result.habilidades_faltantes.length}): [${result.habilidades_faltantes.join(', ')}]`);
+          console.log(
+            `[Match] API response → score: ${result.score}, missing(${result.habilidades_faltantes.length}): [${result.habilidades_faltantes.join(', ')}]`,
+          );
           this.realMatchScore.set(result);
           this.isEvaluating.set(false);
         },
@@ -339,7 +510,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
     // If filtering by goal, compute avg from matching careers only
     if (goalNames.length > 0 && data.careers.length > 0) {
-      const matching = data.careers.filter(c => goalNames.includes(c.titulo_carrera));
+      const matching = data.careers.filter((c) => goalNames.includes(c.titulo_carrera));
       if (matching.length > 0) {
         const totalW = matching.reduce((sum, c) => sum + (c.salario_promedio || 0), 0);
         return Math.round(totalW / matching.length);
@@ -355,11 +526,11 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     const data = this.salaryByCareer();
     const goalNames = this.goalCareerNames();
     if (!data?.careers?.length) return [];
-    let careers = data.careers.filter(c => c.salario_promedio > 0);
+    let careers = data.careers.filter((c) => c.salario_promedio > 0);
     if (goalNames.length > 0) {
-      careers = careers.filter(c => goalNames.includes(c.titulo_carrera));
+      careers = careers.filter((c) => goalNames.includes(c.titulo_carrera));
     }
-    return careers.map(c => ({
+    return careers.map((c) => ({
       label: c.titulo_carrera,
       value: c.salario_promedio,
     }));
@@ -371,9 +542,9 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     if (!data?.careers?.length) return [];
     let careers = data.careers;
     if (goalNames.length > 0) {
-      careers = careers.filter(c => goalNames.includes(c.titulo_carrera));
+      careers = careers.filter((c) => goalNames.includes(c.titulo_carrera));
     }
-    return careers.slice(0, 4).map(c => ({
+    return careers.slice(0, 4).map((c) => ({
       title: c.titulo_carrera,
       avgSalary: c.salario_promedio,
       minSalary: c.salario_min,
@@ -430,7 +601,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     this.profileContentService.loadProfile();
 
     // Load salary-by-career data for analytics
-    this.marketApi.getSalaryByCareer().subscribe(data => {
+    this.marketApi.getSalaryByCareer().subscribe((data) => {
       this.salaryByCareer.set(data);
     });
 

@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, computed, signal, effect } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  computed,
+  signal,
+  effect,
+} from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { MarketApiService } from './services/market-api.service';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
@@ -7,7 +14,10 @@ import { DashboardContentService } from './services/dashboard-content.service';
 import { TopNavComponent } from '@shared/components/top-nav/top-nav.component';
 import { SkillBarChartComponent } from '@shared/ui/skill-bar-chart/skill-bar-chart.component';
 import { CareerCardComponent } from '@shared/ui/career-card/career-card.component';
-import { TrustIndicatorsComponent, TrustMetric } from '@shared/ui/trust-indicators/trust-indicators.component';
+import {
+  TrustIndicatorsComponent,
+  TrustMetric,
+} from '@shared/ui/trust-indicators/trust-indicators.component';
 import { CareerDetailModalComponent } from '@shared/ui/career-detail-modal/career-detail-modal.component';
 import { NavItem } from '@shared/interfaces/dashboard.interface';
 import { CareerMetrics } from '@shared/interfaces/market.interface';

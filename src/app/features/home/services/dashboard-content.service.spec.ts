@@ -35,6 +35,11 @@ describe('DashboardContentService', () => {
         ] as CareerMetrics[]),
       getMarketSkills: () => of([]),
       getMarketDemand: () => of(null),
+      getTopCompanies: () => of({ min_tier: 1, total: 0, companies: [] }),
+      getSalaryByCareer: () =>
+        of({ careers: [], summary: { total_offers: 0, avg_salary_weighted: 0, career_count: 0 } }),
+      getCareersCategories: () => of({ total: 0, categories: [] }),
+      getOffers: () => of([]),
     };
 
     TestBed.configureTestingModule({
@@ -61,8 +66,8 @@ describe('DashboardContentService', () => {
     expect(vm.brand).toBe('Itera');
   });
 
-  it('should update careerSnapshot signal when getCareerSnapshot is called', () => {
-    service.getCareerSnapshot('Cloud');
+  it('should update careerSnapshot signal when searchCareers is called', () => {
+    service.searchCareers('Cloud');
 
     const snapshot = service.careerSnapshot();
     expect(snapshot).toBeTruthy();

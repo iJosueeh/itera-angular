@@ -9,13 +9,17 @@
 
   <div class="relative z-10 flex h-full flex-col">
     <!-- Badge -->
-    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-primary bg-primary/5 border border-primary/10 rounded-full w-fit">
+    <span
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-primary bg-primary/5 border border-primary/10 rounded-full w-fit"
+    >
       <i class="bi bi-stars text-[10px]"></i>
       {{ vm().visualTag }}
     </span>
 
     <!-- Title -->
-    <h1 class="mt-10 max-w-md text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-[1.1]">
+    <h1
+      class="mt-10 max-w-md text-4xl md:text-5xl font-bold text-slate-900 tracking-tight leading-[1.1]"
+    >
       {{ vm().visualTitle }}<span class="text-primary">.</span>
     </h1>
 
@@ -27,7 +31,9 @@
     <!-- Stats cards -->
     <div class="mt-12 space-y-3">
       @for (bullet of vm().visualBullets; track bullet.title) {
-        <div class="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all duration-300">
+        <div
+          class="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-4 shadow-sm hover:shadow-md transition-all duration-300"
+        >
           <div class="w-10 h-10 rounded-lg bg-primary/5 flex items-center justify-center shrink-0">
             <i [class]="'text-lg text-primary ' + bullet.icon" aria-hidden="true"></i>
           </div>
@@ -45,9 +51,7 @@
         {{ vm().mentorName }}
       </p>
       <div class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-        <p class="m-0 text-sm leading-relaxed text-slate-600 italic">
-          "{{ vm().mentorQuote }}"
-        </p>
+        <p class="m-0 text-sm leading-relaxed text-slate-600 italic">"{{ vm().mentorQuote }}"</p>
       </div>
     </div>
   </div>

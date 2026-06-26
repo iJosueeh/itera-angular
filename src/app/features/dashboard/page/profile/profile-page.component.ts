@@ -17,22 +17,47 @@ import { Skill } from '@shared/interfaces/profile.interface';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
 
 const AVAILABLE_SKILLS: ReadonlyArray<string> = [
-  'Python', 'JavaScript', 'TypeScript', 'React', 'Angular', 'Vue.js',
-  'Node.js', 'Django', 'FastAPI', 'Spring Boot', 'PostgreSQL', 'MongoDB',
-  'Docker', 'Kubernetes', 'AWS', 'Azure', 'GCP', 'Git', 'CI/CD',
-  'HTML/CSS', 'Tailwind', 'REST APIs', 'GraphQL', 'Java', 'Go',
-  'Machine Learning', 'Data Analysis', 'SQL', 'Redis', 'Microservices',
+  'Python',
+  'JavaScript',
+  'TypeScript',
+  'React',
+  'Angular',
+  'Vue.js',
+  'Node.js',
+  'Django',
+  'FastAPI',
+  'Spring Boot',
+  'PostgreSQL',
+  'MongoDB',
+  'Docker',
+  'Kubernetes',
+  'AWS',
+  'Azure',
+  'GCP',
+  'Git',
+  'CI/CD',
+  'HTML/CSS',
+  'Tailwind',
+  'REST APIs',
+  'GraphQL',
+  'Java',
+  'Go',
+  'Machine Learning',
+  'Data Analysis',
+  'SQL',
+  'Redis',
+  'Microservices',
 ];
 
 const BADGE_ICON_MAP: Record<string, string> = {
-  'Iniciado': 'bi-award',
-  'Explorador': 'bi-compass',
-  'Analista': 'bi-stars',
-  'Constructor': 'bi-box-seam',
-  'Mentor': 'bi-lightbulb',
-  'Arquitecto': 'bi-diagram-3',
-  'Lanzamiento': 'bi-rocket',
-  'Maestro': 'bi-trophy',
+  Iniciado: 'bi-award',
+  Explorador: 'bi-compass',
+  Analista: 'bi-stars',
+  Constructor: 'bi-box-seam',
+  Mentor: 'bi-lightbulb',
+  Arquitecto: 'bi-diagram-3',
+  Lanzamiento: 'bi-rocket',
+  Maestro: 'bi-trophy',
 };
 
 const ACADEMIC_GOALS_LIST: ReadonlyArray<{ value: string; label: string; icon: string }> = [
@@ -87,8 +112,8 @@ export class ProfilePageComponent implements OnInit {
   // Filtered available skills (not already added)
   protected readonly availableSkills = computed(() => {
     const current = this.editSkills();
-    const currentNames = new Set(current.map(s => s.name.toLowerCase()));
-    return AVAILABLE_SKILLS.filter(s => !currentNames.has(s.toLowerCase()));
+    const currentNames = new Set(current.map((s) => s.name.toLowerCase()));
+    return AVAILABLE_SKILLS.filter((s) => !currentNames.has(s.toLowerCase()));
   });
 
   // Filtered available skills for search
@@ -96,7 +121,7 @@ export class ProfilePageComponent implements OnInit {
     const search = this.newSkillName().toLowerCase();
     const skills = this.availableSkills();
     if (!search) return skills.slice(0, 8);
-    return skills.filter(s => s.toLowerCase().includes(search)).slice(0, 8);
+    return skills.filter((s) => s.toLowerCase().includes(search)).slice(0, 8);
   });
 
   // Profile stats
@@ -127,8 +152,8 @@ export class ProfilePageComponent implements OnInit {
     }));
   });
 
-  protected readonly earnedBadgeCount = computed(() =>
-    this.badges().filter(b => b.earned).length
+  protected readonly earnedBadgeCount = computed(
+    () => this.badges().filter((b) => b.earned).length,
   );
 
   ngOnInit(): void {
@@ -206,7 +231,7 @@ export class ProfilePageComponent implements OnInit {
     if (!name.trim()) return;
 
     const current = this.editSkills();
-    if (current.some(s => s.name.toLowerCase() === name.toLowerCase())) return;
+    if (current.some((s) => s.name.toLowerCase() === name.toLowerCase())) return;
 
     this.editSkills.set([...current, { name: name.trim(), level: this.newSkillLevel() }]);
     this.newSkillName.set('');

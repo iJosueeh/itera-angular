@@ -24,9 +24,9 @@ export class SkillBarChartComponent {
 
   protected readonly chartData = computed<SkillBarData[]>(() => {
     const items = this.skills().slice(0, this.maxItems());
-    const maxValue = Math.max(...items.map(s => s.demanda_actual), 1);
+    const maxValue = Math.max(...items.map((s) => s.demanda_actual), 1);
 
-    return items.map(skill => ({
+    return items.map((skill) => ({
       label: skill.habilidad,
       value: skill.demanda_actual,
       maxValue,

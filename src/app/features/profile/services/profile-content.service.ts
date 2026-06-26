@@ -42,25 +42,27 @@ export class ProfileContentService {
 
     this.isLoading.set(true);
     this.error.set(null);
-    return this.profileApi.updateProfile({
-      userId: current.userId,
-      academicGoal: goal,
-    }).pipe(
-      tap({
-        next: () => {
-          // Merge new goal directly into current profile — no GET needed.
-          // This avoids a race condition where getProfile() might return
-          // stale data from a goals table that hasn't committed yet.
-          this.profileState.set({ ...current, academicGoal: goal });
-        },
-        error: (err) => {
-          console.error('Error updating goal:', err);
-          this.error.set('No se pudo actualizar el objetivo académico.');
-        },
-      }),
-      finalize(() => this.isLoading.set(false)),
-      map(() => ({ ...current, academicGoal: goal })),
-      take(1),
-    );
+    return this.profileApi
+      .updateProfile({
+        userId: current.userId,
+        academicGoal: goal,
+      })
+      .pipe(
+        tap({
+          next: () => {
+            // Merge new goal directly into current profile — no GET needed.
+            // This avoids a race condition where getProfile() might return
+            // stale data from a goals table that hasn't committed yet.
+            this.profileState.set({ ...current, academicGoal: goal });
+          },
+          error: (err) => {
+            console.error('Error updating goal:', err);
+            this.error.set('No se pudo actualizar el objetivo académico.');
+          },
+        }),
+        finalize(() => this.isLoading.set(false)),
+        map(() => ({ ...current, academicGoal: goal })),
+        take(1),
+      );
   }
 }

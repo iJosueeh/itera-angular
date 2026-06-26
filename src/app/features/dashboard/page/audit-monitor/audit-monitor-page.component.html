@@ -19,7 +19,11 @@
         [class.bg-white/5]="!autoRefresh()"
         [class.text-white/40]="!autoRefresh()"
       >
-        <i class="bi" [class.bi-pause-fill]="autoRefresh()" [class.bi-play-fill]="!autoRefresh()"></i>
+        <i
+          class="bi"
+          [class.bi-pause-fill]="autoRefresh()"
+          [class.bi-play-fill]="!autoRefresh()"
+        ></i>
         {{ autoRefresh() ? 'Auto-Refresh ON' : 'Auto-Refresh OFF' }}
         @if (autoRefresh()) {
           <span class="loading loading-spinner loading-xs"></span>
@@ -30,7 +34,9 @@
     <!-- Filters -->
     <div class="flex flex-wrap items-center gap-4">
       <div class="flex items-center gap-2">
-        <span class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/30">Source:</span>
+        <span class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/30"
+          >Source:</span
+        >
         @for (source of sources; track source) {
           <button
             type="button"
@@ -81,7 +87,9 @@
     </div>
 
     @if (isLoading()) {
-      <div class="overflow-x-auto bg-neutral/40 rounded-[2.5rem] border border-white/[0.03] backdrop-blur-md shadow-2xl animate-pulse">
+      <div
+        class="overflow-x-auto bg-neutral/40 rounded-[2.5rem] border border-white/[0.03] backdrop-blur-md shadow-2xl animate-pulse"
+      >
         <table class="table w-full border-none">
           <thead>
             <tr class="bg-white/[0.02] border-b border-white/[0.03]">
@@ -94,7 +102,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-white/[0.02]">
-            @for (i of [1,2,3,4,5]; track i) {
+            @for (i of [1, 2, 3, 4, 5]; track i) {
               <tr>
                 <td class="px-6 py-5"><div class="h-4 w-4 rounded bg-white/[0.05]"></div></td>
                 <td class="px-6 py-5"><div class="h-4 w-32 rounded bg-white/[0.05]"></div></td>
@@ -114,20 +122,32 @@
         <table class="table w-full border-none">
           <thead>
             <tr class="bg-white/[0.02] border-b border-white/[0.03]">
-              <th class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20 w-8"></th>
-              <th class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20">
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20 w-8"
+              ></th>
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
                 Execution Date
               </th>
-              <th class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20">
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
                 Source
               </th>
-              <th class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20">
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
                 Status
               </th>
-              <th class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20">
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
                 Extracted
               </th>
-              <th class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20">
+              <th
+                class="px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20"
+              >
                 Discarded
               </th>
             </tr>
@@ -186,32 +206,62 @@
               @if (expandedRowId() === log._id) {
                 <tr class="bg-white/[0.01]">
                   <td colspan="6" class="px-6 py-4">
-                    <div class="ml-8 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 space-y-4">
+                    <div
+                      class="ml-8 rounded-2xl bg-white/[0.02] border border-white/[0.05] p-5 space-y-4"
+                    >
                       <div class="grid gap-4 sm:grid-cols-3">
                         <div>
-                          <p class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/20 mb-1">Execution ID</p>
+                          <p
+                            class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/20 mb-1"
+                          >
+                            Execution ID
+                          </p>
                           <p class="text-xs font-mono text-white/60 break-all">{{ log._id }}</p>
                         </div>
                         <div>
-                          <p class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/20 mb-1">Total Processed</p>
-                          <p class="text-sm font-bold text-white/80">{{ log.ofertas_extraidas + log.ofertas_descartadas }}</p>
+                          <p
+                            class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/20 mb-1"
+                          >
+                            Total Processed
+                          </p>
+                          <p class="text-sm font-bold text-white/80">
+                            {{ log.ofertas_extraidas + log.ofertas_descartadas }}
+                          </p>
                         </div>
                         <div>
-                          <p class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/20 mb-1">Success Rate</p>
-                          <p class="text-sm font-bold" [class.text-secondary]="log.ofertas_extraidas > 0" [class.text-white/40]="log.ofertas_extraidas === 0">
-                            {{ log.ofertas_extraidas + log.ofertas_descartadas > 0
-                              ? ((log.ofertas_extraidas / (log.ofertas_extraidas + log.ofertas_descartadas)) * 100 | number:'1.0-1')
-                              : '0' }}%
+                          <p
+                            class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/20 mb-1"
+                          >
+                            Success Rate
+                          </p>
+                          <p
+                            class="text-sm font-bold"
+                            [class.text-secondary]="log.ofertas_extraidas > 0"
+                            [class.text-white/40]="log.ofertas_extraidas === 0"
+                          >
+                            {{
+                              log.ofertas_extraidas + log.ofertas_descartadas > 0
+                                ? ((log.ofertas_extraidas /
+                                    (log.ofertas_extraidas + log.ofertas_descartadas)) *
+                                    100 | number: '1.0-1')
+                                : '0'
+                            }}%
                           </p>
                         </div>
                       </div>
 
                       @if (log.errores_detectados && log.errores_detectados.length > 0) {
                         <div>
-                          <p class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/20 mb-2">Errors Detected</p>
+                          <p
+                            class="text-[0.6rem] font-black uppercase tracking-[0.2em] text-white/20 mb-2"
+                          >
+                            Errors Detected
+                          </p>
                           <div class="space-y-2">
                             @for (error of log.errores_detectados; track $index) {
-                              <div class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3">
+                              <div
+                                class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-3"
+                              >
                                 <p class="text-xs font-bold text-red-400">
                                   <i class="bi bi-exclamation-triangle-fill mr-2"></i>
                                   {{ error.mensaje || error.message || error }}

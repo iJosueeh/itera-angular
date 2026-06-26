@@ -2,12 +2,16 @@
   @for (item of chartData(); track item.label; let i = $index) {
     <div class="skill-row group">
       <div class="flex items-center justify-between mb-1.5">
-        <span class="skill-label text-sm font-medium text-white/80 group-hover:text-white transition-colors">
+        <span
+          class="skill-label text-sm font-medium text-white/80 group-hover:text-white transition-colors"
+        >
           {{ item.label }}
         </span>
         @if (showValues()) {
-          <span class="skill-value text-xs font-mono font-medium text-white/50 group-hover:text-primary transition-colors">
-            {{ item.value | number:'1.0-0' }}
+          <span
+            class="skill-value text-xs font-mono font-medium text-white/50 group-hover:text-primary transition-colors"
+          >
+            {{ item.value | number: '1.0-0' }}
           </span>
         }
       </div>

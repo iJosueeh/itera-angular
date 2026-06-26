@@ -116,9 +116,7 @@
 
     <!-- Scraper Status Message -->
     @if (scraperMessage()) {
-      <div
-        class="alert bg-primary/10 border-primary/20 text-white rounded-2xl text-sm font-medium"
-      >
+      <div class="alert bg-primary/10 border-primary/20 text-white rounded-2xl text-sm font-medium">
         <i class="bi bi-info-circle text-primary"></i>
         <span>{{ scraperMessage() }}</span>
       </div>
@@ -131,8 +129,8 @@
       >
         <i class="bi bi-person-badge text-primary"></i>
         <span>
-          <strong class="text-white">Compara tu perfil</strong> con estas oportunidades para
-          obtener un Match Score personalizado.
+          <strong class="text-white">Compara tu perfil</strong> con estas oportunidades para obtener
+          un Match Score personalizado.
         </span>
         <a
           routerLink="/auth/login"
@@ -146,8 +144,10 @@
 
     @if (isLoading()) {
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        @for (i of [1,2,3,4,5,6]; track i) {
-          <article class="rounded-[2.5rem] bg-neutral/40 border border-white/[0.03] p-8 animate-pulse">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <article
+            class="rounded-[2.5rem] bg-neutral/40 border border-white/[0.03] p-8 animate-pulse"
+          >
             <div class="flex justify-between items-start mb-4">
               <div class="h-6 w-16 rounded-full bg-white/[0.05]"></div>
               <div class="h-6 w-20 rounded bg-white/[0.05]"></div>

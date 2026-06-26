@@ -54,7 +54,9 @@ export class CareerCardComponent {
   });
 
   protected readonly trendIcon = computed(() => {
-    return this.career().demanda_mercado.tendencia === 'creciente' ? 'bi-arrow-up-right' : 'bi-dash';
+    return this.career().demanda_mercado.tendencia === 'creciente'
+      ? 'bi-arrow-up-right'
+      : 'bi-dash';
   });
 
   onCardClick(): void {

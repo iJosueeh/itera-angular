@@ -25,7 +25,8 @@ export class PageTelemetryService {
     // Track scroll depth
     const scrollHandler = () => {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const docHeight =
+        document.documentElement.scrollHeight - document.documentElement.clientHeight;
       this.scrollDepth = docHeight > 0 ? Math.round((scrollTop / docHeight) * 100) : 0;
       this.maxScrollDepth = Math.max(this.maxScrollDepth, this.scrollDepth);
     };
@@ -69,9 +70,7 @@ export class PageTelemetryService {
           page: this.currentPage,
           ...context,
         },
-        tiempo_permanencia_segundos: Math.round(
-          (Date.now() - this.pageEntryTime) / 1000
-        ),
+        tiempo_permanencia_segundos: Math.round((Date.now() - this.pageEntryTime) / 1000),
       })
       .subscribe({ error: () => {} });
   }

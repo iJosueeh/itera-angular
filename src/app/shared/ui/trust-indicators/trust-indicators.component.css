@@ -27,23 +27,23 @@
 }
 
 /* Light theme variant */
-:host-context([data-theme="light"]) .trust-item:hover {
+:host-context([data-theme='light']) .trust-item:hover {
   background: rgba(0, 0, 0, 0.02);
 }
 
-:host-context([data-theme="light"]) .trust-value {
+:host-context([data-theme='light']) .trust-value {
   color: #0f172a !important;
 }
 
-:host-context([data-theme="light"]) .trust-label {
+:host-context([data-theme='light']) .trust-label {
   color: #64748b !important;
 }
 
-:host-context([data-theme="light"]) .trust-icon-bg {
+:host-context([data-theme='light']) .trust-icon-bg {
   background-color: #f1f5f9 !important;
 }
 
-:host-context([data-theme="light"]) .trust-icon-bg:hover {
+:host-context([data-theme='light']) .trust-icon-bg:hover {
   background-color: rgba(0, 161, 129, 0.1) !important;
 }
 

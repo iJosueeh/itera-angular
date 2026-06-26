@@ -63,7 +63,12 @@ export class AuditMonitorPageComponent implements OnInit, OnDestroy {
   protected readonly sidebarItems: ReadonlyArray<NavItem> = [
     { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
     { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Monitor de Auditoría', href: '/dashboard/audit', icon: 'bi-shield-check', active: true },
+    {
+      label: 'Monitor de Auditoría',
+      href: '/dashboard/audit',
+      icon: 'bi-shield-check',
+      active: true,
+    },
     { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
     { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
     { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
@@ -99,9 +104,12 @@ export class AuditMonitorPageComponent implements OnInit, OnDestroy {
   private startAutoRefresh(): void {
     this.autoRefresh.set(true);
     this.refreshSub = interval(30000).subscribe(() => {
-      this.marketApi.getScrapingAudit(50).pipe(take(1)).subscribe({
-        next: (data) => this.auditLogs.set(data),
-      });
+      this.marketApi
+        .getScrapingAudit(50)
+        .pipe(take(1))
+        .subscribe({
+          next: (data) => this.auditLogs.set(data),
+        });
     });
   }
 

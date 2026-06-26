@@ -32,7 +32,9 @@
   background: rgba(30, 41, 59, 0.8);
   border-color: rgba(0, 161, 129, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 161, 129, 0.15), 0 2px 8px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    0 8px 24px rgba(0, 161, 129, 0.15),
+    0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .career-card.clickable:hover .accent-bar {
@@ -45,56 +47,56 @@
 }
 
 /* === Light theme === */
-:host-context([data-theme="light"]) .career-card {
+:host-context([data-theme='light']) .career-card {
   background: white;
   border-color: #e2e8f0;
 }
 
-:host-context([data-theme="light"]) .career-card.clickable:hover {
+:host-context([data-theme='light']) .career-card.clickable:hover {
   background: white;
   border-color: rgba(0, 161, 129, 0.25);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-:host-context([data-theme="light"]) .career-card.clickable:hover .accent-bar {
+:host-context([data-theme='light']) .career-card.clickable:hover .accent-bar {
   opacity: 1;
 }
 
 /* === Dark theme (ponytail: explicit overrides) === */
-:host-context([data-theme="dark"]) .career-card {
+:host-context([data-theme='dark']) .career-card {
   background: rgba(30, 41, 59, 0.6) !important;
   border-color: rgba(255, 255, 255, 0.08) !important;
 }
 
-:host-context([data-theme="dark"]) .career-card .career-title {
+:host-context([data-theme='dark']) .career-card .career-title {
   color: white !important;
 }
 
-:host-context([data-theme="dark"]) .career-card .text-slate-400 {
+:host-context([data-theme='dark']) .career-card .text-slate-400 {
   color: rgba(255, 255, 255, 0.45) !important;
 }
 
-:host-context([data-theme="dark"]) .career-card .text-slate-700,
-:host-context([data-theme="dark"]) .career-card .text-slate-800 {
+:host-context([data-theme='dark']) .career-card .text-slate-700,
+:host-context([data-theme='dark']) .career-card .text-slate-800 {
   color: white !important;
 }
 
-:host-context([data-theme="dark"]) .skill-tag {
+:host-context([data-theme='dark']) .skill-tag {
   background: rgba(0, 161, 129, 0.15) !important;
   color: #34d399 !important;
 }
 
-:host-context([data-theme="dark"]) .trend-badge {
+:host-context([data-theme='dark']) .trend-badge {
   background: rgba(16, 185, 129, 0.12) !important;
   color: #34d399 !important;
   border-color: rgba(16, 185, 129, 0.2) !important;
 }
 
-:host-context([data-theme="dark"]) .salary-box {
+:host-context([data-theme='dark']) .salary-box {
   background: transparent !important;
 }
 
-:host-context([data-theme="dark"]) .salary-box .text-primary {
+:host-context([data-theme='dark']) .salary-box .text-primary {
   color: #34d399 !important;
 }

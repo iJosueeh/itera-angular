@@ -19,20 +19,20 @@
 }
 
 /* Light theme variant */
-:host-context([data-theme="light"]) .skill-row:hover {
+:host-context([data-theme='light']) .skill-row:hover {
   background-color: rgba(0, 0, 0, 0.02);
 }
 
 /* Light theme text colors */
-:host-context([data-theme="light"]) .skill-label {
+:host-context([data-theme='light']) .skill-label {
   color: #334155;
 }
 
-:host-context([data-theme="light"]) .skill-value {
+:host-context([data-theme='light']) .skill-value {
   color: #64748b;
 }
 
-:host-context([data-theme="light"]) .bar-bg {
+:host-context([data-theme='light']) .bar-bg {
   background-color: #e2e8f0;
 }
 
