@@ -1,8 +1,8 @@
-<header class="sticky top-0 z-40 border-b border-white/[0.05] bg-base-100/60 backdrop-blur-xl">
+<header class="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur-xl">
   <div class="mx-auto flex min-h-[72px] max-w-[1100px] items-center justify-between gap-4 px-5">
     <a
       routerLink="/"
-      class="font-[Sora] text-[1.5rem] font-extrabold text-white no-underline tracking-tighter"
+      class="brand-link font-display text-[1.5rem] font-extrabold text-slate-900 no-underline tracking-tighter"
       aria-label="Ir al inicio"
     >
       {{ brand() }}<span class="text-primary">.</span>
@@ -17,10 +17,10 @@
               [fragment]="item.fragment"
               routerLinkActive="is-active"
               [routerLinkActiveOptions]="{ exact: item.active === true }"
-              class="group flex items-center gap-2 rounded-full border border-transparent px-2 py-2 text-[0.92rem] font-semibold text-white/60 no-underline transition-all duration-200 hover:bg-white/5 hover:text-white md:px-4"
-              [class.text-white]="item.active === true"
-              [class.bg-white/10]="item.active === true"
-              [class.border-white/10]="item.active === true"
+              class="nav-link group flex items-center gap-2 rounded-full border border-transparent px-2 py-2 text-[0.92rem] font-semibold text-slate-500 no-underline transition-all duration-200 hover:bg-slate-100 hover:text-slate-800 md:px-4"
+              [class.text-primary]="item.active === true"
+              [class.bg-primary/10]="item.active === true"
+              [class.border-primary/20]="item.active === true"
               [attr.aria-current]="item.active ? 'page' : null"
             >
               <i
@@ -38,13 +38,13 @@
       @if (isAuthenticated()) {
         <button
           (click)="logout()"
-          class="hidden sm:inline-flex btn btn-ghost btn-sm normal-case text-white/50 hover:text-white"
+          class="hidden sm:inline-flex btn btn-ghost btn-sm normal-case text-slate-400 hover:text-slate-700"
         >
           Cerrar Sesión
         </button>
         <div class="avatar placeholder">
           <div
-            class="bg-primary text-primary-content rounded-full w-9 h-9 flex items-center justify-center shadow-[0_0_15px_rgba(53,55,191,0.4)]"
+            class="bg-primary text-primary-content rounded-full w-9 h-9 flex items-center justify-center shadow-[0_0_15px_rgba(0,161,129,0.3)]"
           >
             <span class="text-[0.7rem] font-black tracking-tighter">ST</span>
           </div>
@@ -52,7 +52,7 @@
       } @else {
         <a
           routerLink="/auth/login"
-          class="hidden sm:inline-flex btn btn-ghost btn-sm normal-case text-white/80 hover:text-white"
+          class="auth-link hidden sm:inline-flex btn btn-ghost btn-sm normal-case text-slate-500 hover:text-slate-800"
         >
           Entrar
         </a>

@@ -66,10 +66,13 @@ export class DemandChartComponent implements AfterViewInit {
     container.innerHTML = '';
     this.activeTooltip = null;
 
+    const data = this.data();
+    if (!data || data.length === 0) return;
+
     const width = container.clientWidth || 600;
     const height = 280;
     const padding = 40;
-    const barWidth = (width - padding * 2) / this.data().length;
+    const barWidth = Math.max(10, (width - padding * 2) / data.length);
 
     const svgns = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(svgns, 'svg');
@@ -77,10 +80,10 @@ export class DemandChartComponent implements AfterViewInit {
     svg.setAttribute('height', String(height));
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
 
-    const maxValue = Math.max(...this.data().map((d) => d.value), 1);
+    const maxValue = Math.max(...data.map((d) => d.value), 1);
 
-    this.data().forEach((point, i) => {
-      const barHeight = (point.value / maxValue) * (height - padding * 2);
+    data.forEach((point, i) => {
+      const barHeight = Math.max(0, (point.value / maxValue) * (height - padding * 2));
       const x = padding + i * barWidth;
       const y = height - padding - barHeight;
 
@@ -89,8 +92,8 @@ export class DemandChartComponent implements AfterViewInit {
       const rect = document.createElementNS(svgns, 'rect');
       rect.setAttribute('x', String(x + 5));
       rect.setAttribute('y', String(y));
-      rect.setAttribute('width', String(barWidth - 10));
-      rect.setAttribute('height', String(barHeight));
+      rect.setAttribute('width', String(Math.max(0, barWidth - 10)));
+      rect.setAttribute('height', String(Math.max(0, barHeight)));
       rect.setAttribute('fill', this.color());
       rect.setAttribute('rx', '8');
       rect.style.cursor = 'pointer';

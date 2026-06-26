@@ -63,6 +63,14 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'dashboard/profile',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/dashboard/page/profile/profile-page.component').then(
+        (m) => m.ProfilePageComponent,
+      ),
+  },
+  {
     path: '**',
     loadComponent: () =>
       import('./shared/components/not-found-page/not-found-page.component').then(

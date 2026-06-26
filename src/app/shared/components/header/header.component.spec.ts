@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { HeaderComponent } from './header.component';
 import { provideRouter } from '@angular/router';
 import { By } from '@angular/platform-browser';

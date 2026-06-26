@@ -8,7 +8,7 @@ import {
   computed,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MarketApiService, OfferFilters } from '@features/home/services/market-api.service';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
@@ -21,7 +21,7 @@ import { take } from 'rxjs';
 @Component({
   selector: 'itera-job-explorer-page',
   standalone: true,
-  imports: [CommonModule, DashboardShellComponent],
+  imports: [CommonModule, DashboardShellComponent, RouterModule],
   templateUrl: './job-explorer-page.component.html',
   styleUrl: './job-explorer-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -45,6 +45,9 @@ export class JobExplorerPageComponent implements OnInit, OnDestroy {
   // Scraper state
   readonly isScraperRunning = signal(false);
   readonly scraperMessage = signal<string | null>(null);
+
+  // Auth state
+  readonly isAuthenticated = computed(() => this.authStorage.isAuthenticated());
 
   // Pagination state
   readonly currentPage = signal(0);
@@ -81,6 +84,7 @@ export class JobExplorerPageComponent implements OnInit, OnDestroy {
     { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
     { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
     { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
+    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
   ];
 
   ngOnInit(): void {
@@ -220,6 +224,18 @@ export class JobExplorerPageComponent implements OnInit, OnDestroy {
         tiempo_permanencia_segundos: 0,
       })
       .subscribe();
+  }
+
+  onCompareProfile(): void {
+    if (this.authStorage.isAuthenticated()) {
+      // Authenticated: go directly to dashboard
+      this.router.navigate(['/dashboard']);
+    } else {
+      // Guest: redirect to login, then back to dashboard
+      this.router.navigate(['/auth/login'], {
+        queryParams: { returnUrl: '/dashboard' },
+      });
+    }
   }
 
   ngOnDestroy(): void {

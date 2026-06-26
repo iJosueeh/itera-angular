@@ -1,7 +1,7 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { ProfileApiService } from './profile-api.service';
 import { StudentProfile } from '@shared/interfaces/profile.interface';
-import { take } from 'rxjs';
+import { take, of, Observable, tap, finalize, map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileContentService {
@@ -17,21 +17,7 @@ export class ProfileContentService {
   readonly matchScore = computed(() => this.profileState()?.matchScore);
   readonly recommendations = computed(() => this.profileState()?.recommendations);
 
-  readonly currentTheme = computed(() => {
-    const goal = this.profileState()?.academicGoal || 'General';
-    switch (goal) {
-      case 'AI':
-        return 'synthwave'; // Purple/Violet
-      case 'Cloud':
-        return 'night'; // Deep Blue
-      case 'Frontend':
-        return 'luxury'; // High contrast / Gold
-      case 'Backend':
-        return 'dim'; // Standard Deep Tech
-      default:
-        return 'dim';
-    }
-  });
+  readonly currentTheme = computed(() => 'light');
 
   loadProfile(): void {
     this.isLoading.set(true);
@@ -50,26 +36,31 @@ export class ProfileContentService {
       });
   }
 
-  updateAcademicGoal(goal: string): void {
+  updateAcademicGoal(goal: string): Observable<StudentProfile> {
     const current = this.profileState();
-    if (!current) return;
+    if (!current) return of(null as any);
 
     this.isLoading.set(true);
-    this.profileApi
-      .updateProfile({
-        userId: current.userId,
-        academicGoal: goal,
-      })
-      .pipe(take(1))
-      .subscribe({
+    this.error.set(null);
+    return this.profileApi.updateProfile({
+      userId: current.userId,
+      academicGoal: goal,
+    }).pipe(
+      tap({
         next: () => {
-          // Refresh profile to get updated analytics for the new goal
-          this.loadProfile();
+          // Merge new goal directly into current profile — no GET needed.
+          // This avoids a race condition where getProfile() might return
+          // stale data from a goals table that hasn't committed yet.
+          this.profileState.set({ ...current, academicGoal: goal });
         },
-        error: () => {
+        error: (err) => {
+          console.error('Error updating goal:', err);
           this.error.set('No se pudo actualizar el objetivo académico.');
-          this.isLoading.set(false);
         },
-      });
+      }),
+      finalize(() => this.isLoading.set(false)),
+      map(() => ({ ...current, academicGoal: goal })),
+      take(1),
+    );
   }
 }

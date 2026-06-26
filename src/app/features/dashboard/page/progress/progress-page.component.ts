@@ -209,5 +209,6 @@ export class ProgressPageComponent implements OnInit {
     { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
     { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
     { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow', active: true },
+    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
   ];
 }

@@ -1,0 +1,30 @@
+@if (variant() === 'card') {
+  <div class="skeleton-card">
+    <div class="skeleton skeleton-header"></div>
+    <div class="skeleton skeleton-title"></div>
+    <div class="skeleton skeleton-text"></div>
+    <div class="skeleton skeleton-text short"></div>
+    <div class="skeleton-footer">
+      <div class="skeleton skeleton-badge"></div>
+      <div class="skeleton skeleton-badge"></div>
+    </div>
+  </div>
+} @else if (variant() === 'bar') {
+  <div class="skeleton-bar">
+    <div class="skeleton skeleton-bar-label"></div>
+    <div class="skeleton skeleton-bar-track">
+      <div class="skeleton skeleton-bar-fill"></div>
+    </div>
+  </div>
+} @else {
+  @for (item of skeletonItems(); track item) {
+    <div
+      class="skeleton"
+      [style.width]="width()"
+      [style.height]="height()"
+      [style.border-radius]="rounded()"
+      [class.skeleton-circle]="variant() === 'circle'"
+      [class.skeleton-rect]="variant() === 'rect'"
+    ></div>
+  }
+}

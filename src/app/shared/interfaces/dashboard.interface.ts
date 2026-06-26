@@ -61,6 +61,26 @@ export interface CareerSnapshot {
   alignmentDescription: string;
 }
 
+export interface CareerSearchMatch {
+  category: string;
+  /** career metrics if available in DB */
+  metrics?: {
+    annualSalaryUsd?: { min: number; max: number; promedio: number };
+    demandVolume?: number;
+    demandTrend?: string;
+    topSkills?: string[];
+  };
+}
+
+export interface CareerSearchResult {
+  /** Original search keyword */
+  query: string;
+  /** All matching career categories */
+  matches: CareerSearchMatch[];
+  /** The currently selected career snapshot (or first match) */
+  snapshot: CareerSnapshot | null;
+}
+
 export interface DashboardViewModel {
   brand: string;
   navItems: ReadonlyArray<NavItem>;

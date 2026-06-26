@@ -8,7 +8,8 @@ import {
   computed,
 } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { firstValueFrom, Subscription } from 'rxjs';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
@@ -44,6 +45,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   private readonly marketApi = inject(MarketApiService);
   private readonly authStorage = inject(AuthStorageService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly telemetry = inject(PageTelemetryService);
 
   protected readonly vm = this.dashboardContentService.vm;
@@ -54,6 +56,54 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   protected readonly realMatchScore = signal<MatchResult | null>(null);
   protected readonly isEvaluating = signal(false);
+  protected readonly isUpdatingGoal = signal(false);
+
+  // Track in-flight match evaluation to cancel race conditions
+  private activeMatchSub: Subscription | null = null;
+
+  // Loading states for skeleton rendering
+  protected readonly isProfileLoading = this.profileContentService.isLoading;
+  protected readonly isMatchLoading = computed(() => this.isEvaluating() || this.isGoalChanging());
+  protected readonly isSkillsLoading = computed(() => (this.skills().length === 0 && this.dashboardContentService.isLoading()) || this.isGoalChanging());
+  protected readonly isDemandLoading = computed(() => !this.dashboardContentService.marketDemand() && this.dashboardContentService.isLoading());
+
+  private readonly isGoalChanging = signal(false);
+
+  // Filter out generic skills like "Analista" from trending
+  private static readonly GENERIC_SKILLS = new Set(['analista', 'análisis', 'office', 'microsoft office', 'excel', 'comunicación', 'devops']);
+  protected readonly skillsTrending = computed(() => {
+    const goalSkills = this.goalFilteredSkills();
+    const useGoalFilter = this.isGoalFiltering() && goalSkills.length > 0;
+    return this.skills()
+      .filter(s => !DashboardPageComponent.GENERIC_SKILLS.has(s.habilidad.toLowerCase()))
+      .filter(s => !useGoalFilter || goalSkills.some(g => g.toLowerCase() === s.habilidad.toLowerCase()))
+      .slice(0, 3);
+  });
+
+  // Current goal's career category for filtering
+  protected readonly currentGoalCategory = computed(() => {
+    const goal = this.profile()?.academicGoal || 'General';
+    const found = this.availableGoals.find(g => g.id === goal);
+    return found?.category;
+  });
+
+  // Career names to filter market charts by goal
+  protected readonly goalCareerNames = computed(() => {
+    const goal = this.profile()?.academicGoal || 'General';
+    const found = this.availableGoals.find(g => g.id === goal);
+    return found?.careerNames ?? [];
+  });
+
+  // Whether a specific goal filter is active (not "General")
+  protected readonly isGoalFiltering = computed(() => this.goalCareerNames().length > 0);
+
+  // Goal-specific skills from career taxonomy whitelist
+  private readonly goalFilteredSkills = computed(() => {
+    const goal = this.profile()?.academicGoal || 'General';
+    const whitelist = DashboardPageComponent.GOAL_SKILLS_WHITELIST[goal];
+    if (!whitelist) return []; // General = no filter
+    return whitelist;
+  });
 
   protected readonly displayScore = computed(() => {
     const real = this.realMatchScore();
@@ -61,16 +111,91 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     return this.matchScore()?.score ?? 0;
   });
 
+  // Merges variant/lowercase names from the backend into canonical display names.
+  // Keys are lowercase normalized forms from the API; values are the display version.
+  // Example: "vue" and "vue.js" both map to "Vue.js" so they don't appear as duplicates.
+  private static readonly SKILL_DISPLAY_NAMES: Record<string, string> = {
+    'vue': 'Vue.js',
+    'vuejs': 'Vue.js',
+    'reactjs': 'React',
+    'react.js': 'React',
+    'angularjs': 'Angular',
+    'angular.js': 'Angular',
+    'node': 'Node.js',
+    'nodejs': 'Node.js',
+    'rest': 'REST API',
+    'restful': 'REST API',
+    'sql server': 'SQL Server',
+    'spring boot': 'Spring Boot',
+    'spring': 'Spring Boot',
+    'c#': 'C#',
+    'csharp': 'C#',
+    '.net': '.NET',
+    'html/css': 'HTML/CSS',
+    'html5': 'HTML/CSS',
+    'next.js': 'Next.js',
+    'nextjs': 'Next.js',
+    'tailwind css': 'Tailwind CSS',
+    'tailwind': 'Tailwind CSS',
+    'd3.js': 'D3.js',
+    'ci/cd': 'CI/CD',
+    'github actions': 'GitHub Actions',
+    'gitlab ci': 'GitLab CI',
+    'k8s': 'Kubernetes',
+    'gcp': 'Google Cloud',
+    'js': 'JavaScript',
+    'ts': 'TypeScript',
+    'pyspark': 'Spark',
+    'ml': 'Machine Learning',
+    'dl': 'Deep Learning',
+    'powerbi': 'Power BI',
+    'scikit-learn': 'Scikit-learn',
+    'react native': 'React Native',
+  };
+
   protected readonly displayMissingSkills = computed(() => {
     const real = this.realMatchScore();
-    if (real) return real.habilidades_faltantes;
-    return this.matchScore()?.habilidades_faltantes ?? [];
+    if (real) {
+      // Build canonical lookup: lowercase -> proper-cased name (from current goal whitelist)
+      const goalSkills = this.goalFilteredSkills();
+      const canonical = new Map<string, string>();
+      for (const s of goalSkills) {
+        canonical.set(s.toLowerCase(), s);
+      }
+
+      const seen = new Set<string>();
+      const result: string[] = [];
+      for (const skill of real.habilidades_faltantes) {
+        const rawKey = skill.toLowerCase().trim();
+        // Use SKILL_DISPLAY_NAMES as the dedup key so variants (e.g. "node"/"node.js")
+        // collapse into a single entry instead of appearing as duplicates.
+        const mappedKey = DashboardPageComponent.SKILL_DISPLAY_NAMES[rawKey]?.toLowerCase() || rawKey;
+        if (!seen.has(mappedKey)) {
+          seen.add(mappedKey);
+          // Priority: 1) SKILL_DISPLAY_NAMES (explicit merge), 2) whitelist canonical, 3) simple capitalize
+          const fromDisplayName = DashboardPageComponent.SKILL_DISPLAY_NAMES[rawKey];
+          const fromWhitelist = canonical.get(rawKey);
+          result.push(fromDisplayName || fromWhitelist || skill.charAt(0).toUpperCase() + skill.slice(1));
+        }
+      }
+      return result;
+    }
+    // Fallback to cached profile data when NOT evaluating (shows initial data
+    // during the brief window before tryEvaluate fires).
+    // Once evaluation starts, the skeleton takes over and this fallback is hidden.
+    if (!this.isEvaluating()) {
+      return this.matchScore()?.habilidades_faltantes ?? [];
+    }
+    return [];
   });
 
   protected readonly displayRecommendations = computed(() => {
     const real = this.realMatchScore();
     if (real) return real.recomendaciones;
-    return this.matchScore()?.recomendaciones ?? [];
+    if (!this.isEvaluating()) {
+      return this.matchScore()?.recomendaciones ?? [];
+    }
+    return [];
   });
 
   protected readonly matchedSkillCount = computed(() => {
@@ -100,42 +225,104 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   protected readonly skillDemandData = computed<ChartDataPoint[]>(() => {
     const demand = this.dashboardContentService.marketDemand();
     if (!demand || !demand.top_skills) return [];
-    return demand.top_skills.map((d: any) => ({
-      label: d.skill,
-      value: d.demand_count,
-    }));
+    const goalSkills = this.goalFilteredSkills();
+    const useGoalFilter = this.isGoalFiltering() && goalSkills.length > 0;
+    return demand.top_skills
+      .filter((d: any) => !useGoalFilter || goalSkills.some(g => g.toLowerCase() === d.skill.toLowerCase()))
+      .map((d: any) => ({
+        label: d.skill,
+        value: d.demand_count,
+      }));
   });
 
   protected readonly availableGoals = [
-    { id: 'General', label: 'General', icon: 'bi-grid' },
-    { id: 'Backend', label: 'Backend', icon: 'bi-database' },
-    { id: 'AI', label: 'IA & Data', icon: 'bi-cpu' },
-    { id: 'Cloud', label: 'Cloud', icon: 'bi-cloud' },
-    { id: 'Frontend', label: 'Frontend', icon: 'bi-window-sidebar' },
+    { id: 'General', label: 'General', icon: 'bi-grid', category: undefined as string | undefined, careerNames: [] as string[] },
+    { id: 'Backend', label: 'Backend', icon: 'bi-database', category: 'desarrollo-backend', careerNames: ['Desarrollo Backend'] as string[] },
+    { id: 'AI', label: 'IA & Data', icon: 'bi-cpu', category: 'ciencia-datos-ia', careerNames: ['Ciencia de Datos e IA', 'Datos y Business Intelligence', 'Ingeniería de Datos'] as string[] },
+    { id: 'Cloud', label: 'Cloud', icon: 'bi-cloud', category: 'devops-cloud', careerNames: ['Infraestructura y Cloud', 'Infraestructura y Sistemas', 'DevOps y Cloud'] as string[] },
+    { id: 'Frontend', label: 'Frontend', icon: 'bi-window-sidebar', category: 'desarrollo-frontend', careerNames: ['Desarrollo Frontend', 'Desarrollo Fullstack'] as string[] },
   ];
 
-  protected updateGoal(goalId: string): void {
-    this.profileContentService.updateAcademicGoal(goalId);
-    // Re-evaluate match score after goal change
-    setTimeout(() => this.evaluateMatch(), 500);
+  // Canonical skills allowed per goal (based on career taxonomy keywords)
+  private static readonly GOAL_SKILLS_WHITELIST: Record<string, string[]> = {
+    Backend: ['Java', 'Python', 'Node', 'Node.js', 'SQL', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'Docker', 'Django', 'Flask', 'FastAPI', 'Spring', 'Spring Boot', 'Laravel', 'PHP', 'Go', 'C#', '.NET', 'Git', 'REST API', 'Kubernetes', 'Linux', 'Oracle', 'SQL Server'],
+    AI: ['Python', 'Machine Learning', 'Deep Learning', 'SQL', 'TensorFlow', 'PyTorch', 'Spark', 'Airflow', 'dbt', 'Pandas', 'NumPy', 'Scikit-learn', 'NLP', 'AI Generativa', 'Snowflake', 'BigQuery', 'Databricks', 'ETL', 'Data Warehouse', 'Power BI', 'Tableau', 'R', 'Docker', 'AWS', 'Azure', 'PostgreSQL', 'MongoDB'],
+    Cloud: ['AWS', 'Azure', 'Google Cloud', 'Docker', 'Kubernetes', 'Terraform', 'Ansible', 'Jenkins', 'GitHub Actions', 'GitLab CI', 'Linux', 'Nginx', 'Prometheus', 'Grafana', 'Helm', 'CI/CD', 'Git', 'Python', 'Bash/Shell', 'CloudFormation', 'Pulumi', 'Serverless', 'Vault', 'Docker Swarm', 'OpenShift'],
+    Frontend: ['React', 'Angular', 'Vue.js', 'JavaScript', 'TypeScript', 'HTML/CSS', 'Next.js', 'Tailwind CSS', 'Redux', 'GraphQL', 'REST API', 'Svelte', 'Node.js', 'Python', 'Git', 'D3.js', 'Bootstrap', 'jQuery', 'SQL', 'PostgreSQL', 'MongoDB'],
+  };
+
+  protected async updateGoal(goalId: string): Promise<void> {
+    if (this.isUpdatingGoal()) return;
+    if (this.profile()?.academicGoal === goalId) return;
+
+    this.isUpdatingGoal.set(true);
+    this.isGoalChanging.set(true);
+    this.isEvaluating.set(true);
+    this.realMatchScore.set(null); // Clear old match data
+
+    let calledEvaluateMatch = false;
+
+    try {
+      // 1. Update goal on backend — profileState is merged synchronously inside the service
+      const updatedProfile = await firstValueFrom(
+        this.profileContentService.updateAcademicGoal(goalId)
+      );
+
+      // 2. Use evaluateMatch() instead of a direct API call so that:
+      //    - activeMatchSub properly cancels any in-flight evaluation from ngOnInit
+      //    - Only ONE code path sets realMatchScore, avoiding race conditions
+      const profileToUse = updatedProfile || this.profile();
+      if (profileToUse) {
+        calledEvaluateMatch = true;
+        // Profile state is already updated with the new goal (service merges synchronously).
+        // evaluateMatch() reads this.profile()?.academicGoal → correct category.
+        // Skills can be empty — the API handles that gracefully.
+        this.evaluateMatch();
+      }
+    } catch (err) {
+      console.error('Error al actualizar goal o evaluar match:', err);
+      this.isEvaluating.set(false);
+    } finally {
+      this.isUpdatingGoal.set(false);
+      this.isGoalChanging.set(false);
+      // Only reset isEvaluating here if evaluateMatch() was NOT called,
+      // because evaluateMatch() handles its own isEvaluating state via the subscription callbacks.
+      if (!calledEvaluateMatch) {
+        this.isEvaluating.set(false);
+      }
+    }
+  }
+
+  protected continueLearning(): void {
+    this.router.navigate(['/dashboard/progress']);
   }
 
   protected evaluateMatch(): void {
     const profile = this.profile();
-    if (!profile?.skills?.length) return;
+    // Profile is needed (skills can be empty — the API handles that gracefully)
+    if (!profile) return;
+
+    // Cancel any in-flight evaluation to prevent race conditions
+    // (ngOnInit's initial call must not overwrite a goal-specific result)
+    this.activeMatchSub?.unsubscribe();
 
     this.isEvaluating.set(true);
-    const studentSkills = profile.skills.map(s => s.name);
+    const studentSkills = (profile.skills || []).map(s => s.name);
     const userId = this.authStorage.getUserId() || profile.userId;
+    const category = this.currentGoalCategory();
 
-    this.marketApi
-      .evaluateMatch({ student_id: userId, skills: studentSkills })
+    console.log(`[Match] evaluateMatch → goal: "${profile.academicGoal}", category: "${category}", skills(${studentSkills.length}): [${studentSkills.join(', ')}]`);
+
+    this.activeMatchSub = this.marketApi
+      .evaluateMatch({ student_id: userId, skills: studentSkills, career_category: category })
       .subscribe({
         next: (result) => {
+          console.log(`[Match] API response → score: ${result.score}, missing(${result.habilidades_faltantes.length}): [${result.habilidades_faltantes.join(', ')}]`);
           this.realMatchScore.set(result);
           this.isEvaluating.set(false);
         },
-        error: () => {
+        error: (err) => {
+          console.error('[Match] API error:', err);
           this.isEvaluating.set(false);
         },
       });
@@ -147,29 +334,46 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   protected readonly dynamicAvgSalary = computed(() => {
     const data = this.salaryByCareer();
-    if (!data?.summary?.avg_salary_weighted) {
-      const demand = this.dashboardContentService.marketDemand();
-      if (!demand?.metrics?.offers_with_salary_data) return null;
+    const goalNames = this.goalCareerNames();
+    if (!data?.careers?.length) return null;
+
+    // If filtering by goal, compute avg from matching careers only
+    if (goalNames.length > 0 && data.careers.length > 0) {
+      const matching = data.careers.filter(c => goalNames.includes(c.titulo_carrera));
+      if (matching.length > 0) {
+        const totalW = matching.reduce((sum, c) => sum + (c.salario_promedio || 0), 0);
+        return Math.round(totalW / matching.length);
+      }
       return null;
     }
+
+    if (!data?.summary?.avg_salary_weighted) return null;
     return data.summary.avg_salary_weighted;
   });
 
   protected readonly careerComparisonData = computed<ChartDataPoint[]>(() => {
     const data = this.salaryByCareer();
+    const goalNames = this.goalCareerNames();
     if (!data?.careers?.length) return [];
-    return data.careers
-      .filter(c => c.salario_promedio > 0)
-      .map(c => ({
-        label: c.titulo_carrera,
-        value: c.salario_promedio,
-      }));
+    let careers = data.careers.filter(c => c.salario_promedio > 0);
+    if (goalNames.length > 0) {
+      careers = careers.filter(c => goalNames.includes(c.titulo_carrera));
+    }
+    return careers.map(c => ({
+      label: c.titulo_carrera,
+      value: c.salario_promedio,
+    }));
   });
 
   protected readonly topCareerDetails = computed(() => {
     const data = this.salaryByCareer();
+    const goalNames = this.goalCareerNames();
     if (!data?.careers?.length) return [];
-    return data.careers.slice(0, 4).map(c => ({
+    let careers = data.careers;
+    if (goalNames.length > 0) {
+      careers = careers.filter(c => goalNames.includes(c.titulo_carrera));
+    }
+    return careers.slice(0, 4).map(c => ({
       title: c.titulo_carrera,
       avgSalary: c.salario_promedio,
       minSalary: c.salario_min,
@@ -218,6 +422,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       });
   }
 
+  private readonly initialMatchEvaluated = signal(false);
+
   ngOnInit(): void {
     this.telemetry.startTracking('dashboard');
 
@@ -228,13 +434,28 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       this.salaryByCareer.set(data);
     });
 
-    // Evaluate real match score from Python backend
-    this.evaluateMatch();
+    // Wait for profile to load before evaluating match (avoid racing with async loadProfile)
+    // Use a delayed check since loadProfile is async and we need the profile loaded
+    const tryEvaluate = () => {
+      // Don't fire during a goal change — updateGoal() triggers evaluateMatch() via its own path
+      if (this.isUpdatingGoal()) return;
+      // Profile must exist (skills can be empty — API handles that)
+      if (!this.profile()) return;
+      if (this.initialMatchEvaluated()) return;
+      this.initialMatchEvaluated.set(true);
+      this.evaluateMatch();
+    };
+    // Immediate attempt (in case profile already loaded synchronously)
+    tryEvaluate();
+    // Delayed attempts (profile loads async — add extra timeouts for slow connections)
+    setTimeout(tryEvaluate, 500);
+    setTimeout(tryEvaluate, 1500);
+    setTimeout(tryEvaluate, 3000);
 
     // Read ?q= query param from URL and trigger career search if present
     const query = this.route.snapshot.queryParamMap.get('q');
     if (query) {
-      this.dashboardContentService.getCareerSnapshot(query);
+      this.dashboardContentService.searchCareers(query);
     }
   }
 
@@ -247,6 +468,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
     { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
     { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
+    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
   ];
 
   protected readonly topNavItems: ReadonlyArray<NavItem> = [
@@ -256,6 +478,7 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   ];
 
   ngOnDestroy(): void {
+    this.activeMatchSub?.unsubscribe();
     this.telemetry.stopTracking();
   }
 }

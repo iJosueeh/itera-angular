@@ -61,11 +61,12 @@ export class AuditMonitorPageComponent implements OnInit, OnDestroy {
   });
 
   protected readonly sidebarItems: ReadonlyArray<NavItem> = [
-    { label: 'Dashboard', href: '/dashboard', icon: 'bi-grid-1x2' },
-    { label: 'Job Explorer', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Audit Monitor', href: '/dashboard/audit', icon: 'bi-shield-check', active: true },
-    { label: 'Comparison', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Progress', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
+    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
+    { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
+    { label: 'Monitor de Auditoría', href: '/dashboard/audit', icon: 'bi-shield-check', active: true },
+    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
+    { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
+    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
   ];
 
   ngOnInit(): void {

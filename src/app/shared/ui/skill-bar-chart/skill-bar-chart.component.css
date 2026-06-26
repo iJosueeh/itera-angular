@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.skill-bar-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem; /* ponytail: tighter spacing */
+}
+
+.skill-row {
+  padding: 0.25rem; /* ponytail: minimal padding, chart data is the focus */
+  border-radius: 0.5rem;
+  transition: background-color 200ms ease;
+}
+
+.skill-row:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Light theme variant */
+:host-context([data-theme="light"]) .skill-row:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Light theme text colors */
+:host-context([data-theme="light"]) .skill-label {
+  color: #334155;
+}
+
+:host-context([data-theme="light"]) .skill-value {
+  color: #64748b;
+}
+
+:host-context([data-theme="light"]) .bar-bg {
+  background-color: #e2e8f0;
+}
+
+@keyframes barGrow {
+  from {
+    width: 0%;
+  }
+}
+
+.animate-bar {
+  animation: barGrow 700ms ease-out forwards;
+}

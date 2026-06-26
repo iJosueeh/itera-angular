@@ -1,23 +1,27 @@
-import { ChangeDetectionStrategy, Component, inject, computed } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, computed, signal, effect } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { MarketApiService } from './services/market-api.service';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
-import { FeatureHighlightsComponent } from '@shared/components/feature-highlights/feature-highlights.component';
-import { HeroSearchComponent } from '@shared/components/hero-search/hero-search.component';
-import { MentorBannerComponent } from '@shared/components/mentor-banner/mentor-banner.component';
 import { FooterComponent } from '@shared/components/footer/footer.component';
 import { DashboardContentService } from './services/dashboard-content.service';
 import { TopNavComponent } from '@shared/components/top-nav/top-nav.component';
+import { SkillBarChartComponent } from '@shared/ui/skill-bar-chart/skill-bar-chart.component';
+import { CareerCardComponent } from '@shared/ui/career-card/career-card.component';
+import { TrustIndicatorsComponent, TrustMetric } from '@shared/ui/trust-indicators/trust-indicators.component';
+import { CareerDetailModalComponent } from '@shared/ui/career-detail-modal/career-detail-modal.component';
 import { NavItem } from '@shared/interfaces/dashboard.interface';
+import { CareerMetrics } from '@shared/interfaces/market.interface';
 
 @Component({
   selector: 'itera-home-page',
   imports: [
     TopNavComponent,
-    HeroSearchComponent,
-    FeatureHighlightsComponent,
-    MentorBannerComponent,
     FooterComponent,
+    RouterModule,
+    SkillBarChartComponent,
+    CareerCardComponent,
+    TrustIndicatorsComponent,
+    CareerDetailModalComponent,
   ],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
@@ -33,8 +37,73 @@ export class HomePageComponent {
   protected readonly career = this.dashboardContentService.careerSnapshot;
   protected readonly marketSkills = this.dashboardContentService.marketSkills;
   protected readonly readinessScore = this.dashboardContentService.readinessScore;
+  protected readonly topCareers = this.dashboardContentService.topCareers;
+  protected readonly totalOffers = this.dashboardContentService.totalOffers;
+  protected readonly avgSalary = this.dashboardContentService.avgSalary;
+  protected readonly topCompanies = this.dashboardContentService.topCompanies;
+  protected readonly careerCategories = this.dashboardContentService.careerCategories;
+  protected readonly searchResults = this.dashboardContentService.searchResults;
+  protected readonly selectedSearchMatch = this.dashboardContentService.selectedSearchMatch;
+  protected readonly isLoadingMarket = signal(true);
+  // ponytail: modal state
+  protected readonly selectedCareer = signal<CareerMetrics | null>(null);
+  protected readonly isAuthenticated = this.authStorage.isAuthenticated;
 
-  /** Auth-aware nav items: hide auth links for guests, show dashboard for authenticated */
+  constructor() {
+    effect(() => {
+      if (this.marketSkills().length > 0) {
+        this.isLoadingMarket.set(false);
+      }
+    });
+  }
+
+  // Trust indicators data
+  protected readonly trustMetrics = computed<TrustMetric[]>(() => [
+    {
+      icon: 'bi-briefcase',
+      value: this.totalOffers(),
+      label: 'Ofertas analizadas',
+    },
+    {
+      icon: 'bi-cash-stack',
+      value: this.avgSalary(),
+      label: 'Salario promedio',
+      prefix: '$',
+    },
+    {
+      icon: 'bi-graph-up-arrow',
+      value: 89,
+      label: 'Match promedio',
+      suffix: '%',
+    },
+  ]);
+
+  // How it works steps
+  protected readonly howItWorks = [
+    {
+      step: '01',
+      icon: 'bi-search',
+      title: 'Explora',
+      description: 'Busca carreras en tech y descubre qué habilidades demanda el mercado.',
+      link: '/dashboard/jobs',
+    },
+    {
+      step: '02',
+      icon: 'bi-bar-chart-line',
+      title: 'Compara',
+      description: 'Ve cómo tu perfil se alinea con las ofertas laborales actuales.',
+      link: '/dashboard',
+    },
+    {
+      step: '03',
+      icon: 'bi-rocket-takeoff',
+      title: 'Conecta',
+      description: 'Postula con confianza sabiendo que tienes las habilidades correctas.',
+      link: '/dashboard/jobs',
+    },
+  ];
+
+  /** Auth-aware nav items */
   protected readonly navItems = computed<ReadonlyArray<NavItem>>(() => {
     const authenticated = this.authStorage.isAuthenticated();
     const items: NavItem[] = [{ label: 'Inicio', href: '/', icon: 'bi-house-door', active: true }];
@@ -52,9 +121,6 @@ export class HomePageComponent {
   protected handleSearch(query: string): void {
     if (!query) return;
 
-    const encoded = encodeURIComponent(query);
-
-    // RF-11: Record search telemetry
     const userId = this.authStorage.getUserId() || 'guest';
     this.marketApi
       .sendTelemetry({
@@ -66,13 +132,28 @@ export class HomePageComponent {
       .subscribe();
 
     if (this.authStorage.isAuthenticated()) {
-      // Authenticated: go directly to dashboard with query param
       this.router.navigate(['/dashboard'], { queryParams: { q: query } });
     } else {
-      // Guest: redirect to login with returnUrl carrying the query
-      this.router.navigate(['/auth/login'], {
-        queryParams: { returnUrl: `/dashboard?q=${encoded}` },
-      });
+      this.dashboardContentService.searchCareers(query);
     }
+  }
+
+  /** Select a different career from search results */
+  protected selectMatch(category: string): void {
+    this.dashboardContentService.selectSearchMatch(category);
+  }
+
+  /** Clear search results */
+  protected clearSearch(): void {
+    this.dashboardContentService.clearSearch();
+  }
+
+  // ponytail: career card click → open modal
+  protected openCareerModal(career: CareerMetrics): void {
+    this.selectedCareer.set(career);
+  }
+
+  protected closeCareerModal(): void {
+    this.selectedCareer.set(null);
   }
 }

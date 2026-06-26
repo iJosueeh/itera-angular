@@ -33,6 +33,7 @@ export class ComparisonPageComponent {
       active: true,
     },
     { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
+    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
   ];
 
   protected readonly topNavItems: ReadonlyArray<NavItem> = [

@@ -41,4 +41,5 @@ export interface UpdateProfilePayload {
   skills?: Skill[];
   photo?: string;
   academicGoal?: string;
+  experience?: number;
 }

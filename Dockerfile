@@ -17,8 +17,8 @@ FROM nginx:stable-alpine
 # The directory name inside dist depends on the project name in angular.json ("itera")
 COPY --from=build /app/dist/itera/browser /usr/share/nginx/html
 
-# Copy custom nginx configuration if needed (optional)
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy custom nginx configuration for API proxying
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

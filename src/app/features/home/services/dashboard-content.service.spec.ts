@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { DashboardContentService } from './dashboard-content.service';
 import { DashboardApiMockService } from './dashboard-api.mock.service';
 import { MarketApiService } from './market-api.service';

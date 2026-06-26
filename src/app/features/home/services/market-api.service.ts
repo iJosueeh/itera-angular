@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import {
   JobOffer,
@@ -7,6 +7,8 @@ import {
   MarketSkill,
   MatchRequest,
   MatchResult,
+  TopCompany,
+  CareerCategory,
 } from '@shared/interfaces/market.interface';
 
 export interface OfferFilters {
@@ -109,5 +111,50 @@ export class MarketApiService {
     return this.http.get<any[]>(`${this.baseUrl}/audit/scraping`, {
       params: { limit },
     });
+  }
+
+  /** GET /companies/top - List top companies by tier */
+  getTopCompanies(
+    minTier: number = 2,
+    limit: number = 20,
+  ): Observable<{ min_tier: number; total: number; companies: TopCompany[] }> {
+    let params = new HttpParams()
+      .set('min_tier', minTier.toString())
+      .set('limit', limit.toString());
+    return this.http.get<any>(`${this.baseUrl}/companies/top`, { params });
+  }
+
+  /** GET /careers/categories - List all career categories */
+  getCareersCategories(): Observable<{ total: number; categories: CareerCategory[] }> {
+    return this.http.get<any>(`${this.baseUrl}/careers/categories`);
+  }
+
+  /** POST /analytics/backfill - Re-enrich legacy offers (admin) */
+  runBackfill(
+    dryRun: boolean = true,
+    useAi: boolean = false,
+    limit: number = 200,
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('dry_run', dryRun.toString())
+      .set('use_ai', useAi.toString())
+      .set('limit', limit.toString());
+    return this.http.post(`${this.baseUrl}/analytics/backfill`, {}, { params });
+  }
+
+  /** POST /companies/cleanup - Clean dirty company names (admin) */
+  cleanupCompanyNames(
+    dryRun: boolean = true,
+    limit: number = 500,
+  ): Observable<any> {
+    let params = new HttpParams()
+      .set('dry_run', dryRun.toString())
+      .set('limit', limit.toString());
+    return this.http.post(`${this.baseUrl}/companies/cleanup`, {}, { params });
+  }
+
+  /** POST /analytics/refresh - Refresh market metrics */
+  refreshAnalytics(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/analytics/refresh`, {});
   }
 }

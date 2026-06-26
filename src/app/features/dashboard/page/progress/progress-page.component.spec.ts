@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { ProgressPageComponent } from './progress-page.component';
 import { By } from '@angular/platform-browser';
-import { DashboardContentService } from '@features/home/services/dashboard-content.service';
-import { ProfileContentService } from '@features/profile/services/profile-content.service';
+import { DashboardContentService } from '../../home/services/dashboard-content.service';
+import { ProfileContentService } from '../../../profile/services/profile-content.service';
 import { provideRouter } from '@angular/router';
 import { signal } from '@angular/core';
 import { of } from 'rxjs';

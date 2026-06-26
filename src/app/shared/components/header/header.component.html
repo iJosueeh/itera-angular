@@ -1,8 +1,8 @@
-<header class="sticky top-0 z-30 border-b border-[#e2e4f4] bg-white/85 backdrop-blur">
-  <div class="mx-auto flex min-h-[72px] max-w-[1100px] items-center justify-between gap-4 px-5">
+<header class="sticky top-0 z-30 border-b border-white/[0.05] bg-base-100/85 backdrop-blur-xl">
+  <div class="mx-auto flex min-h-[72px] max-w-[1200px] items-center justify-between gap-4 px-5">
     <a
       href="/"
-      class="font-[Sora] text-[1.4rem] font-bold text-[#3537bf] no-underline"
+      class="font-display text-[1.4rem] font-bold text-primary no-underline"
       aria-label="Ir al inicio"
     >
       {{ brand() }}
@@ -15,10 +15,10 @@
             <li>
               <a
                 [href]="item.href"
-                class="border-b-2 border-transparent pb-2 font-medium text-[#5e607f] no-underline transition-colors duration-200"
-                [class.text-[#3537bf]]="item.active === true"
-                [class.border-[#3537bf]]="item.active === true"
-                [class.text-[#16162a]]="item.active !== true"
+                class="border-b-2 border-transparent pb-2 font-medium text-white/50 no-underline transition-colors duration-200 hover:text-white"
+                [class.text-primary]="item.active === true"
+                [class.border-primary]="item.active === true"
+                [class.text-white]="item.active !== true"
                 [attr.aria-current]="item.active ? 'page' : null"
               >
                 {{ item.label }}
@@ -33,14 +33,14 @@
       <div class="flex items-center gap-2" aria-label="Acciones del usuario">
         <button
           type="button"
-          class="grid h-9 w-9 cursor-pointer place-content-center rounded-full border-0 bg-[#ececfc] text-[#3537bf]"
+          class="grid h-9 w-9 cursor-pointer place-content-center rounded-full border-0 bg-white/5 text-primary hover:bg-white/10 transition-colors"
           aria-label="Notificaciones"
         >
           <i class="bi bi-bell-fill" aria-hidden="true"></i>
         </button>
         <button
           type="button"
-          class="grid h-9 w-9 cursor-pointer place-content-center rounded-full border-0 bg-[#ececfc] text-[#3537bf]"
+          class="grid h-9 w-9 cursor-pointer place-content-center rounded-full border-0 bg-white/5 text-primary hover:bg-white/10 transition-colors"
           aria-label="Perfil"
         >
           <i class="bi bi-person-circle" aria-hidden="true"></i>
