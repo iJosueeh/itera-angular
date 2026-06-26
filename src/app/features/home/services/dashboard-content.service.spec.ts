@@ -36,7 +36,8 @@ describe('DashboardContentService', () => {
       getMarketSkills: () => of([]),
       getMarketDemand: () => of(null),
       getTopCompanies: () => of({ min_tier: 1, total: 0, companies: [] }),
-      getSalaryByCareer: () => of({ careers: [], summary: { total_offers: 0, avg_salary_weighted: 0, career_count: 0 } }),
+      getSalaryByCareer: () =>
+        of({ careers: [], summary: { total_offers: 0, avg_salary_weighted: 0, career_count: 0 } }),
       getCareersCategories: () => of({ total: 0, categories: [] }),
       getOffers: () => of([]),
     };
