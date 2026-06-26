@@ -509,6 +509,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   protected readonly selectedYear = signal<number | null>(null);
 
+  protected readonly isSalaryLoading = signal(false);
+
   protected readonly availableYears = computed(() => {
     return this.salarySnapshots()?.available_years ?? [];
   });
@@ -642,7 +644,13 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   }
 
   protected selectYear(year: number | null): void {
-    this.selectedYear.set(year);
+    if (this.selectedYear() === year) return;
+    this.isSalaryLoading.set(true);
+    // Brief delay to show skeleton during transition
+    setTimeout(() => {
+      this.selectedYear.set(year);
+      this.isSalaryLoading.set(false);
+    }, 150);
   }
 
   protected handleFeedback(rating: number): void {
