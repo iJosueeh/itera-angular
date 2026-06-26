@@ -429,6 +429,41 @@
           </div>
         </div>
 
+        <!-- Year Selector Toggle -->
+        @if (availableYears().length > 0) {
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <span class="text-xs font-semibold text-slate-500">Ver por año:</span>
+            <button
+              type="button"
+              (click)="selectYear(null)"
+              class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all"
+              [class.bg-primary]="selectedYear() === null"
+              [class.text-white]="selectedYear() === null"
+              [class.border-primary]="selectedYear() === null"
+              [class.bg-slate-50]="selectedYear() !== null"
+              [class.text-slate-600]="selectedYear() !== null"
+              [class.border-slate-200]="selectedYear() !== null"
+            >
+              Actual
+            </button>
+            @for (year of availableYears(); track year) {
+              <button
+                type="button"
+                (click)="selectYear(year)"
+                class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all"
+                [class.bg-primary]="selectedYear() === year"
+                [class.text-white]="selectedYear() === year"
+                [class.border-primary]="selectedYear() === year"
+                [class.bg-slate-50]="selectedYear() !== year"
+                [class.text-slate-600]="selectedYear() !== year"
+                [class.border-slate-200]="selectedYear() !== year"
+              >
+                {{ year }}
+              </button>
+            }
+          </div>
+        }
+
         <div class="mt-6">
           <itera-demand-chart
             [data]="careerComparisonData()"

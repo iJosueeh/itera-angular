@@ -36,6 +36,22 @@ export interface SalaryByCareerResponse {
   };
 }
 
+export interface SalarySnapshotResponse {
+  snapshots: Record<
+    string,
+    Array<{
+      year: number;
+      salario_promedio: number;
+      salario_min: number;
+      salario_max: number;
+      volumen_total: number;
+    }>
+  >;
+  available_years: number[];
+  total_careers: number;
+  year_range: { from: number; to: number };
+}
+
 @Injectable({ providedIn: 'root' })
 export class MarketApiService {
   private readonly http = inject(HttpClient);
@@ -65,6 +81,14 @@ export class MarketApiService {
 
   getSalaryByCareer(): Observable<SalaryByCareerResponse> {
     return this.http.get<SalaryByCareerResponse>(`${this.baseUrl}/market/salary-by-career`);
+  }
+
+  getSalarySnapshots(career?: string, years = 2): Observable<SalarySnapshotResponse> {
+    let params: Record<string, string | number> = { years };
+    if (career) params['career'] = career;
+    return this.http.get<SalarySnapshotResponse>(`${this.baseUrl}/market/salary-snapshots`, {
+      params,
+    });
   }
 
   getMarketSkills(): Observable<MarketSkill[]> {

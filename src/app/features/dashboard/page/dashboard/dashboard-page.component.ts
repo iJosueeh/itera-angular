@@ -23,6 +23,7 @@ import { StarRatingComponent } from '@shared/ui/star-rating/star-rating.componen
 import {
   MarketApiService,
   SalaryByCareerResponse,
+  SalarySnapshotResponse,
 } from '@features/home/services/market-api.service';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
 import { PageTelemetryService } from '@shared/services/page-telemetry.service';
@@ -504,6 +505,18 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   protected readonly salaryByCareer = signal<SalaryByCareerResponse | null>(null);
 
+  protected readonly salarySnapshots = signal<SalarySnapshotResponse | null>(null);
+
+  protected readonly selectedYear = signal<number | null>(null);
+
+  protected readonly availableYears = computed(() => {
+    return this.salarySnapshots()?.available_years ?? [];
+  });
+
+  protected readonly isHistoricalMode = computed(() => {
+    return this.selectedYear() !== null && this.availableYears().length > 0;
+  });
+
   protected readonly dynamicAvgSalary = computed(() => {
     const data = this.salaryByCareer();
     const goalNames = this.goalCareerNames();
@@ -524,22 +537,50 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   });
 
   protected readonly careerComparisonData = computed<ChartDataPoint[]>(() => {
-    const data = this.salaryByCareer();
+    const year = this.selectedYear();
+    const snapshots = this.salarySnapshots();
     const goalNames = this.goalCareerNames();
+
+    // Historical mode: use snapshot data for selected year
+    if (year !== null && snapshots?.snapshots) {
+      const result: ChartDataPoint[] = [];
+      for (const [careerName, yearData] of Object.entries(snapshots.snapshots)) {
+        // Find data for selected year
+        const yearEntry = yearData.find((y) => y.year === year);
+        if (!yearEntry) continue;
+        if (goalNames.length > 0 && !goalNames.includes(careerName)) continue;
+
+        const shortLabel = this.shortenCareerName(careerName);
+        const formattedValue = this.formatSalary(yearEntry.salario_promedio);
+        result.push({
+          label: `${shortLabel} ${year}`,
+          value: yearEntry.salario_promedio,
+          metadata: {
+            fullLabel: `${careerName} (${year})`,
+            formattedValue,
+            minSalary: yearEntry.salario_min,
+            maxSalary: yearEntry.salario_max,
+            volume: yearEntry.volumen_total,
+            trend: undefined,
+          },
+        });
+      }
+      return result.sort((a, b) => b.value - a.value);
+    }
+
+    // Current mode: use salary-by-career data
+    const data = this.salaryByCareer();
     if (!data?.careers?.length) return [];
     let careers = data.careers.filter((c) => c.salario_promedio > 0);
     if (goalNames.length > 0) {
       careers = careers.filter((c) => goalNames.includes(c.titulo_carrera));
     }
     return careers.map((c) => {
-      // Shorten career names for better chart readability
       const shortLabel = this.shortenCareerName(c.titulo_carrera);
-      // Format salary as "$30k" for clarity
       const formattedValue = this.formatSalary(c.salario_promedio);
       return {
         label: shortLabel,
         value: c.salario_promedio,
-        // Store full data for tooltip
         metadata: {
           fullLabel: c.titulo_carrera,
           formattedValue,
@@ -598,6 +639,10 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   protected handleChartDrillDown(point: ChartDataPoint): void {
     // Use fullLabel from metadata if available (shortened labels for chart display)
     this.selectedCareer.set(point.metadata?.fullLabel || point.label);
+  }
+
+  protected selectYear(year: number | null): void {
+    this.selectedYear.set(year);
   }
 
   protected handleFeedback(rating: number): void {
@@ -663,6 +708,15 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     // Load salary-by-career data for analytics
     this.marketApi.getSalaryByCareer().subscribe((data) => {
       this.salaryByCareer.set(data);
+    });
+
+    // Load salary snapshots for historical comparison
+    this.marketApi.getSalarySnapshots().subscribe((data) => {
+      this.salarySnapshots.set(data);
+      // Auto-select most recent year if snapshots available
+      if (data.available_years.length > 0) {
+        this.selectedYear.set(data.available_years[0]);
+      }
     });
 
     // Read ?q= query param from URL and trigger career search if present
