@@ -1,8 +1,8 @@
-<footer class="mt-12 border-t border-white/[0.05] bg-black/20 backdrop-blur-md">
+<footer>
   <div
     class="mx-auto grid min-h-[80px] max-w-[1100px] grid-cols-1 items-center gap-6 px-5 py-8 text-center lg:grid-cols-[auto_1fr_auto] lg:text-left"
   >
-    <p class="m-0 font-[Sora] font-black text-white text-xl tracking-tighter">
+    <p class="brand-text m-0 font-display font-black text-slate-800 text-xl tracking-tighter">
       {{ brand() }}<span class="text-primary">.</span>
     </p>
 
@@ -15,7 +15,7 @@
           <li>
             <a
               [href]="link.href"
-              class="text-[0.8rem] font-bold uppercase tracking-widest text-white/30 no-underline hover:text-primary transition-colors"
+              class="footer-link text-[0.8rem] font-bold uppercase tracking-widest text-slate-400 no-underline hover:text-primary transition-colors"
               >{{ link.label }}</a
             >
           </li>
@@ -23,6 +23,6 @@
       </ul>
     }
 
-    <p class="m-0 text-[0.8rem] font-medium text-white/20">{{ copyright() }}</p>
+    <p class="copyright-text m-0 text-[0.8rem] font-medium text-slate-400">{{ copyright() }}</p>
   </div>
 </footer>

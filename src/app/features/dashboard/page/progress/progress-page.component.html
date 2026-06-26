@@ -6,156 +6,173 @@
   [footerLinks]="vm().footerLinks"
 >
   <div dashboard-main class="min-w-0 flex flex-1 flex-col gap-6 pb-6">
-    <section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-      <article
-        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-6 shadow-2xl rounded-[3rem]"
-      >
-        <div class="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p class="text-[0.72rem] font-black uppercase tracking-[0.25em] text-white/30">
-              Tu Ruta de Aprendizaje
-            </p>
-            <h1
-              class="mt-2 text-[clamp(2.5rem,4vw,3.5rem)] font-black leading-[1.03] text-white tracking-tighter"
-            >
-              Progreso de {{ profile()?.names }}<span class="text-primary">.</span>
-            </h1>
-          </div>
-
-          <div
-            class="rounded-3xl border border-white/[0.03] bg-white/[0.02] px-6 py-4 shadow-inner"
-          >
-            <p class="text-[0.68rem] font-black uppercase tracking-[0.25em] text-white/20">
-              Ciclo Académico
-            </p>
-            <p class="mt-1 flex items-center gap-3 text-3xl font-black text-white">
-              <span
-                class="grid h-10 w-10 place-content-center rounded-2xl bg-primary/10 text-primary"
-              >
-                <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
-              </span>
-              Ciclo {{ profile()?.cycle }}
-            </p>
-          </div>
+    @if (isLoading()) {
+      <div class="flex-1 grid place-content-center py-20">
+        <span class="loading loading-spinner loading-lg text-primary"></span>
+        <p class="mt-4 text-sm text-white/40 font-medium text-center">Cargando tu progreso...</p>
+      </div>
+    } @else if (error()) {
+      <div class="flex-1 grid place-content-center py-20">
+        <div class="text-center">
+          <div class="text-6xl mb-6 opacity-20">⚠️</div>
+          <h3 class="text-xl font-black text-white/40 tracking-tighter">{{ error() }}</h3>
+          <p class="mt-2 text-sm text-white/20 font-medium">
+            Verifica tu sesión e intenta nuevamente.
+          </p>
         </div>
-
-        <div class="mt-10 rounded-[2.5rem] bg-white/[0.02] border border-white/[0.03] p-8">
-          <div class="flex items-center justify-between gap-4 mb-8">
-            <h2 class="text-xl font-black text-white tracking-tight">Maestría de Módulos</h2>
-            <a
-              href="#badges"
-              class="text-xs font-black uppercase tracking-widest text-primary no-underline hover:text-white transition-colors"
-              >Ver Todo +</a
-            >
-          </div>
-
-          <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            @for (card of masteryCards; track card.title) {
-              <itera-mastery-card
-                [title]="card.title"
-                [subtitle]="card.subtitle"
-                [progress]="card.progress"
-                [tone]="card.tone"
-              />
-            }
-          </div>
-        </div>
-      </article>
-
-      <aside class="flex flex-col gap-4">
-        <itera-mentor-alert-card
-          title="Retoma tu ruta en Python"
-          message="Has estado ausente 2 días. El módulo de iteraciones profundizadas está esperando para alcanzar tu meta semanal."
-        />
-      </aside>
-    </section>
-
-    <section id="badges" class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-      <article
-        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
-      >
-        <div class="flex items-center justify-between gap-4 mb-10">
-          <h2 class="text-xl font-black text-white tracking-tight">Galería de Insignias</h2>
-          <span
-            class="badge badge-secondary border-none font-black uppercase text-[0.6rem] tracking-widest py-3 px-4 shadow-lg shadow-secondary/10"
-            >12 / 40 Ganadas</span
-          >
-        </div>
-
-        <div class="flex flex-wrap gap-4">
-          @for (badge of badges; track badge.label) {
-            <itera-badge-item [label]="badge.label" [icon]="badge.icon" [earned]="badge.earned" />
-          }
-        </div>
-      </article>
-
-      <aside
-        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
-      >
-        <h2 class="text-lg font-black text-white tracking-tight mb-8">Siguientes Hitos</h2>
-        <div class="space-y-6">
-          @for (milestone of milestones; track milestone.title; let index = $index) {
-            <article
-              class="flex items-start gap-4 rounded-3xl bg-white/[0.02] border border-white/[0.03] p-5 group hover:bg-white/[0.05] transition-all"
-            >
-              <div
-                class="grid h-10 w-10 shrink-0 place-content-center rounded-2xl bg-primary/10 text-primary font-black text-sm shadow-lg shadow-primary/5"
-              >
-                {{ index + 1 }}
-              </div>
-              <div>
-                <p
-                  class="font-black text-white group-hover:text-primary transition-colors leading-snug"
-                >
-                  {{ milestone.title }}
-                </p>
-                <p class="text-xs text-white/30 font-bold uppercase tracking-wider mt-2">
-                  {{ milestone.meta }}
-                </p>
-              </div>
-            </article>
-          }
-        </div>
-      </aside>
-    </section>
-
-    <section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
-      <article
-        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
-      >
-        <h2 class="text-xl font-black text-white tracking-tight mb-8">Consejo del Mentor IA</h2>
-        <div
-          class="rounded-[2.5rem] border-l-[6px] border-secondary bg-white/[0.02] p-8 shadow-inner"
+      </div>
+    } @else {
+      <section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+        <article
+          class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-6 shadow-2xl rounded-[3rem]"
         >
-          <div class="flex items-center gap-5">
-            <div
-              class="grid h-14 w-14 place-content-center rounded-2xl bg-primary text-white font-black text-xl shadow-xl shadow-primary/20"
-            >
-              AM
-            </div>
+          <div class="flex flex-wrap items-start justify-between gap-4">
             <div>
-              <p class="text-base font-black text-white">Mentor IA</p>
-              <p class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-primary">
-                Personalizado para ti
+              <p class="text-[0.72rem] font-black uppercase tracking-[0.25em] text-white/30">
+                Tu Ruta de Aprendizaje
+              </p>
+              <h1
+                class="mt-2 text-[clamp(2.5rem,4vw,3.5rem)] font-black leading-[1.03] text-white tracking-tighter"
+              >
+                Progreso de {{ profile()?.names }}<span class="text-primary">.</span>
+              </h1>
+            </div>
+
+            <div
+              class="rounded-3xl border border-white/[0.03] bg-white/[0.02] px-6 py-4 shadow-inner"
+            >
+              <p class="text-[0.68rem] font-black uppercase tracking-[0.25em] text-white/20">
+                Ciclo Académico
+              </p>
+              <p class="mt-1 flex items-center gap-3 text-3xl font-black text-white">
+                <span
+                  class="grid h-10 w-10 place-content-center rounded-2xl bg-primary/10 text-primary"
+                >
+                  <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
+                </span>
+                Ciclo {{ profile()?.cycle }}
               </p>
             </div>
           </div>
-          <p class="mt-8 text-lg leading-relaxed text-white/60 italic font-medium">
-            “Intenta practicar 'list comprehensions' esta noche. Tuviste algunas dificultades en el
-            quiz de ayer, y son esenciales para tu próximo módulo de optimización.”
-          </p>
-        </div>
-      </article>
 
-      <aside
-        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
-      >
-        <h2 class="text-lg font-black text-white tracking-tight mb-8">Estadísticas Rápidas</h2>
-        <div class="space-y-10">
-          <itera-stat-bar label="Cumplimiento Semanal" [value]="72" color="#6366f1" />
-          <itera-stat-bar label="Precisión en Quizzes" [value]="88" color="#a855f7" />
-        </div>
-      </aside>
-    </section>
+          <div class="mt-10 rounded-[2.5rem] bg-white/[0.02] border border-white/[0.03] p-8">
+            <div class="flex items-center justify-between gap-4 mb-8">
+              <h2 class="text-xl font-black text-white tracking-tight">Maestría de Módulos</h2>
+              <a
+                href="#badges"
+                class="text-xs font-black uppercase tracking-widest text-primary no-underline hover:text-white transition-colors"
+                >Ver Todo +</a
+              >
+            </div>
+
+            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              @for (card of masteryCards(); track card.title) {
+                <itera-mastery-card
+                  [title]="card.title"
+                  [subtitle]="card.subtitle"
+                  [progress]="card.progress"
+                  [tone]="card.tone"
+                />
+              }
+            </div>
+          </div>
+        </article>
+
+        <aside class="flex flex-col gap-4">
+          <itera-mentor-alert-card
+            title="Retoma tu ruta"
+            message="Mantén tu ritmo de aprendizaje. Cada día cuenta para alcanzar tu meta académica."
+          />
+        </aside>
+      </section>
+
+      <section id="badges" class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <article
+          class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
+        >
+          <div class="flex items-center justify-between gap-4 mb-10">
+            <h2 class="text-xl font-black text-white tracking-tight">Galería de Insignias</h2>
+            <span
+              class="badge badge-secondary border-none font-black uppercase text-[0.6rem] tracking-widest py-3 px-4 shadow-lg shadow-secondary/10"
+              >{{ earnedBadgeCount() }} / {{ badges().length }} Ganadas</span
+            >
+          </div>
+
+          <div class="flex flex-wrap gap-4">
+            @for (badge of badges(); track badge.label) {
+              <itera-badge-item [label]="badge.label" [icon]="badge.icon" [earned]="badge.earned" />
+            }
+          </div>
+        </article>
+
+        <aside
+          class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
+        >
+          <h2 class="text-lg font-black text-white tracking-tight mb-8">Siguientes Hitos</h2>
+          <div class="space-y-6">
+            @for (milestone of milestones(); track milestone.title; let index = $index) {
+              <article
+                class="flex items-start gap-4 rounded-3xl bg-white/[0.02] border border-white/[0.03] p-5 group hover:bg-white/[0.05] transition-all"
+              >
+                <div
+                  class="grid h-10 w-10 shrink-0 place-content-center rounded-2xl bg-primary/10 text-primary font-black text-sm shadow-lg shadow-primary/5"
+                >
+                  {{ index + 1 }}
+                </div>
+                <div>
+                  <p
+                    class="font-black text-white group-hover:text-primary transition-colors leading-snug"
+                  >
+                    {{ milestone.title }}
+                  </p>
+                  <p class="text-xs text-white/30 font-bold uppercase tracking-wider mt-2">
+                    {{ milestone.meta }}
+                  </p>
+                </div>
+              </article>
+            }
+          </div>
+        </aside>
+      </section>
+
+      <section class="grid gap-6 xl:grid-cols-[minmax(0,1fr)_340px]">
+        <article
+          class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
+        >
+          <h2 class="text-xl font-black text-white tracking-tight mb-8">Consejo del Mentor IA</h2>
+          <div
+            class="rounded-[2.5rem] border-l-[6px] border-secondary bg-white/[0.02] p-8 shadow-inner"
+          >
+            <div class="flex items-center gap-5">
+              <div
+                class="grid h-14 w-14 place-content-center rounded-2xl bg-primary text-white font-black text-xl shadow-xl shadow-primary/20"
+              >
+                AM
+              </div>
+              <div>
+                <p class="text-base font-black text-white">Mentor IA</p>
+                <p class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-primary">
+                  Personalizado para ti
+                </p>
+              </div>
+            </div>
+            <p class="mt-8 text-lg leading-relaxed text-white/60 italic font-medium">
+              "Mantén tu ritmo de aprendizaje. Revisa tus habilidades pendientes y enfócate en las
+              que tienen mayor demanda en el mercado laboral actual."
+            </p>
+          </div>
+        </article>
+
+        <aside
+          class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl p-8 shadow-2xl rounded-[3rem]"
+        >
+          <h2 class="text-lg font-black text-white tracking-tight mb-8">Estadísticas Rápidas</h2>
+          <div class="space-y-10">
+            <itera-stat-bar label="Cumplimiento Semanal" [value]="72" color="#6366f1" />
+            <itera-stat-bar label="Precisión en Quizzes" [value]="88" color="#a855f7" />
+          </div>
+        </aside>
+      </section>
+    }
   </div>
 </itera-dashboard-shell>

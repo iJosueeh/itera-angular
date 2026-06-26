@@ -1,0 +1,54 @@
+:host {
+  display: block;
+}
+
+.trust-indicators {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .trust-indicators {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+.trust-item {
+  text-align: center;
+  padding: 0.75rem 0.5rem; /* ponytail: reduced padding */
+  border-radius: 1rem;
+  transition: all 200ms ease;
+}
+
+.trust-item:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Light theme variant */
+:host-context([data-theme="light"]) .trust-item:hover {
+  background: rgba(0, 0, 0, 0.02);
+}
+
+:host-context([data-theme="light"]) .trust-value {
+  color: #0f172a !important;
+}
+
+:host-context([data-theme="light"]) .trust-label {
+  color: #64748b !important;
+}
+
+:host-context([data-theme="light"]) .trust-icon-bg {
+  background-color: #f1f5f9 !important;
+}
+
+:host-context([data-theme="light"]) .trust-icon-bg:hover {
+  background-color: rgba(0, 161, 129, 0.1) !important;
+}
+
+@media (min-width: 768px) {
+  .trust-item {
+    padding: 1rem 0.75rem; /* ponytail: kept reduced */
+  }
+}

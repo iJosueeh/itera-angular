@@ -11,6 +11,25 @@ export interface JobOffer {
   salario_normalizado_usd?: number;
   habilidades_requeridas: string[];
   fecha_expiracion?: string;
+  // Phase 4 enriched fields
+  categoria_carrera?: string;
+  categoria_carrera_nombre?: string;
+  company_tier?: number;
+  skill_extraction_method?: string;
+}
+
+export interface TopCompany {
+  name: string;
+  offer_count: number;
+  tier: number;
+  tier_name: string;
+  avg_salary_usd: number;
+}
+
+export interface CareerCategory {
+  id: string;
+  name: string;
+  description: string;
 }
 
 export interface CareerMetrics {
@@ -47,9 +66,9 @@ export interface MarketSkill {
 }
 
 export interface MatchRequest {
-  estudiante_id: string;
-  vector_perfil: number[];
-  objetivo: string;
+  student_id: string;
+  skills: string[];
+  career_category?: string;
 }
 
 export interface MatchResult {

@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './shared/guards/auth.guard';
+import { guestGuard } from './shared/guards/guest.guard';
 
 export const routes: Routes = [
   {
@@ -8,11 +10,13 @@ export const routes: Routes = [
   },
   {
     path: 'auth/login',
+    canActivate: [guestGuard],
     loadComponent: () =>
       import('./features/auth/login/login-page.component').then((m) => m.LoginPageComponent),
   },
   {
     path: 'auth/register',
+    canActivate: [guestGuard],
     loadComponent: () =>
       import('./features/auth/register/register-page.component').then(
         (m) => m.RegisterPageComponent,
@@ -20,6 +24,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/dashboard/page/dashboard/dashboard-page.component').then(
         (m) => m.DashboardPageComponent,
@@ -27,6 +32,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard/comparison',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/dashboard/page/comparison/comparison-page.component').then(
         (m) => m.ComparisonPageComponent,
@@ -34,6 +40,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard/progress',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/dashboard/page/progress/progress-page.component').then(
         (m) => m.ProgressPageComponent,
@@ -41,6 +48,7 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard/jobs',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/dashboard/page/job-explorer/job-explorer-page.component').then(
         (m) => m.JobExplorerPageComponent,
@@ -48,9 +56,18 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard/audit',
+    canActivate: [authGuard],
     loadComponent: () =>
       import('./features/dashboard/page/audit-monitor/audit-monitor-page.component').then(
         (m) => m.AuditMonitorPageComponent,
+      ),
+  },
+  {
+    path: 'dashboard/profile',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/dashboard/page/profile/profile-page.component').then(
+        (m) => m.ProfilePageComponent,
       ),
   },
   {

@@ -1,3 +1,36 @@
 :host {
   display: block;
 }
+
+footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+/* Light theme variant */
+:host-context([data-theme="light"]) footer {
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  backdrop-filter: none;
+}
+
+:host-context([data-theme="light"]) .brand-text {
+  color: #0f172a;
+}
+
+:host-context([data-theme="light"]) .brand-text .text-primary {
+  color: #00a181;
+}
+
+:host-context([data-theme="light"]) .footer-link {
+  color: #64748b;
+}
+
+:host-context([data-theme="light"]) .footer-link:hover {
+  color: #00a181;
+}
+
+:host-context([data-theme="light"]) .copyright-text {
+  color: #94a3b8;
+}

@@ -2,42 +2,38 @@ import { LoginViewModel } from '@features/auth/interfaces/auth.interface';
 
 export const LOGIN_VIEW_MODEL_MOCK: LoginViewModel = {
   productName: 'Itera',
-  visualTag: 'Itera AI',
-  visualTitle: 'Desbloquea tu siguiente nivel profesional',
+  visualTag: 'Impulsado por IA',
+  visualTitle: 'Encuentra tu carrera ideal en tech',
   visualSubtitle:
-    'Mentoria inteligente basada en datos. Compara carreras, define objetivos y avanza con claridad.',
+    'Analizamos miles de ofertas laborales para mostrarte las habilidades que realmente demandan las empresas.',
   visualBullets: [
     {
-      title: 'Mapa Cognitivo Adaptativo',
-      description:
-        'La plataforma ajusta recomendaciones segun tus fortalezas y brechas de habilidades.',
-      icon: 'bi bi-lightbulb-fill',
+      title: '129 ofertas analizadas',
+      description: 'Datos reales del mercado tech peruano actualizados diariamente.',
+      icon: 'bi bi-briefcase-fill',
     },
     {
-      title: 'Rutas Predictivas de Aprendizaje',
-      description:
-        'Recibe un plan por etapas para alcanzar tu rol objetivo con eficiencia probada.',
-      icon: 'bi bi-graph-up-arrow',
+      title: '17 carreras tech',
+      description: 'Desde Desarrollo Backend hasta Ciencia de Datos e IA.',
+      icon: 'bi bi-grid-3x3-gap-fill',
+    },
+    {
+      title: '62 empresas TOP',
+      description: 'Google, Amazon, BBVA, Globant, Mercado Libre y más.',
+      icon: 'bi bi-building-check',
     },
   ],
   mentorQuote:
-    'Tu mentor IA te acompana para comparar carreras por salario, demanda y crecimiento antes de elegir.',
-  mentorName: 'Mentor Itera',
-  formTitle: 'Bienvenido de Vuelta',
-  formSubtitle: 'Continua tu evolucion profesional con Itera AI.',
-  emailLabel: 'Correo Electronico',
+    'Comparar carreras por salario, demanda y crecimiento antes de elegir te ahorra meses de incertidumbre.',
+  mentorName: 'Itera AI',
+  formTitle: 'Bienvenido',
+  formSubtitle: 'Continúa tu exploración profesional.',
+  emailLabel: 'Correo electrónico',
   passwordLabel: 'Contraseña',
   forgotPasswordText: '¿Olvidaste tu contraseña?',
-  primaryAction: 'Iniciar Sesion',
-  socialProviders: [
-    { label: 'Google', icon: 'bi bi-google' },
-    { label: 'LinkedIn', icon: 'bi bi-linkedin' },
-  ],
-  registerPrompt: '¿Eres nuevo?',
-  registerCta: 'Crea una cuenta',
-  footerLinks: [
-    { label: 'Política de Privacidad', href: '#' },
-    { label: 'Términos de Servicio', href: '#' },
-    { label: 'Configuración de Cookies', href: '#' },
-  ],
+  primaryAction: 'Iniciar sesión',
+  socialProviders: [],
+  registerPrompt: '¿No tienes cuenta?',
+  registerCta: 'Crea una gratis',
+  footerLinks: [],
 };

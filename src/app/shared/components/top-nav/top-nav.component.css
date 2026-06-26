@@ -1,1 +1,32 @@
-/* Tailwind utility classes are used in the template. */
+/* Light theme variant */
+:host-context([data-theme="light"]) header {
+  border-bottom-color: #e2e8f0 !important;
+  background: rgba(255, 255, 255, 0.8) !important;
+}
+
+:host-context([data-theme="light"]) .brand-link {
+  color: #0f172a !important;
+}
+
+:host-context([data-theme="light"]) .nav-link {
+  color: #64748b !important;
+}
+
+:host-context([data-theme="light"]) .nav-link:hover {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+}
+
+:host-context([data-theme="light"]) .nav-link.active {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: #e2e8f0 !important;
+}
+
+:host-context([data-theme="light"]) .auth-link {
+  color: #475569 !important;
+}
+
+:host-context([data-theme="light"]) .auth-link:hover {
+  color: #0f172a !important;
+}
