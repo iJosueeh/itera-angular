@@ -531,11 +531,48 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     if (goalNames.length > 0) {
       careers = careers.filter((c) => goalNames.includes(c.titulo_carrera));
     }
-    return careers.map((c) => ({
-      label: c.titulo_carrera,
-      value: c.salario_promedio,
-    }));
+    return careers.map((c) => {
+      // Shorten career names for better chart readability
+      const shortLabel = this.shortenCareerName(c.titulo_carrera);
+      // Format salary as "$30k" for clarity
+      const formattedValue = this.formatSalary(c.salario_promedio);
+      return {
+        label: shortLabel,
+        value: c.salario_promedio,
+        // Store full data for tooltip
+        metadata: {
+          fullLabel: c.titulo_carrera,
+          formattedValue,
+          minSalary: c.salario_min,
+          maxSalary: c.salario_max,
+          volume: c.volumen_total,
+          trend: c.tendencia,
+        },
+      };
+    });
   });
+
+  private shortenCareerName(name: string): string {
+    const mapping: Record<string, string> = {
+      'Desarrollo Backend': 'Backend',
+      'Desarrollo Frontend': 'Frontend',
+      'Desarrollo Fullstack': 'Fullstack',
+      'Ciencia de Datos e IA': 'Data & IA',
+      'Datos y Business Intelligence': 'BI & Analytics',
+      'Ingeniería de Datos': 'Data Eng',
+      'Infraestructura y Cloud': 'Cloud',
+      'Infraestructura y Sistemas': 'Infra',
+      'DevOps y Cloud': 'DevOps',
+    };
+    return mapping[name] || name;
+  }
+
+  private formatSalary(value: number): string {
+    if (value >= 1000) {
+      return `$${Math.round(value / 1000)}k`;
+    }
+    return `$${value}`;
+  }
 
   protected readonly topCareerDetails = computed(() => {
     const data = this.salaryByCareer();
@@ -559,7 +596,8 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   protected selectedCareer = signal<string | null>(null);
 
   protected handleChartDrillDown(point: ChartDataPoint): void {
-    this.selectedCareer.set(point.label);
+    // Use fullLabel from metadata if available (shortened labels for chart display)
+    this.selectedCareer.set(point.metadata?.fullLabel || point.label);
   }
 
   protected handleFeedback(rating: number): void {
