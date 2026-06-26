@@ -38,7 +38,12 @@ interface BadgeItem {
 
 /** Fallback mastery cards when profile is not loaded */
 const FALLBACK_MASTERY_CARDS: ReadonlyArray<MasteryCard> = [
-  { title: 'Fundamentos de Python', subtitle: '4/5 Unidades Completadas', progress: 85, tone: 'indigo' },
+  {
+    title: 'Fundamentos de Python',
+    subtitle: '4/5 Unidades Completadas',
+    progress: 85,
+    tone: 'indigo',
+  },
   { title: 'Pandas & NumPy', subtitle: '2/8 Unidades Completadas', progress: 35, tone: 'emerald' },
   { title: 'Visualización de Datos', subtitle: 'Módulo Bloqueado', progress: 0, tone: 'violet' },
   { title: 'Deep Learning', subtitle: 'Módulo Bloqueado', progress: 0, tone: 'indigo' },
@@ -57,7 +62,11 @@ const FALLBACK_BADGES: ReadonlyArray<BadgeItem> = [
 
 const FALLBACK_MILESTONES: ReadonlyArray<MilestoneItem> = [
   { title: 'Maestría en Decoradores', meta: 'Estimado: 45 min', status: 'completed' },
-  { title: 'Manejo de Errores Pro', meta: 'Bloqueado hasta completar el anterior', status: 'in-progress' },
+  {
+    title: 'Manejo de Errores Pro',
+    meta: 'Bloqueado hasta completar el anterior',
+    status: 'in-progress',
+  },
   { title: 'Proyecto Final de Módulo', meta: 'Bloqueado', status: 'locked' },
 ];
 
@@ -118,14 +127,14 @@ export class ProgressPageComponent implements OnInit {
     }
 
     const iconMap: Record<string, string> = {
-      'Iniciado': 'bi-award',
-      'Explorador': 'bi-compass',
-      'Analista': 'bi-stars',
-      'Constructor': 'bi-box-seam',
-      'Mentor': 'bi-lightbulb',
-      'Arquitecto': 'bi-diagram-3',
-      'Lanzamiento': 'bi-rocket',
-      'Maestro': 'bi-trophy',
+      Iniciado: 'bi-award',
+      Explorador: 'bi-compass',
+      Analista: 'bi-stars',
+      Constructor: 'bi-box-seam',
+      Mentor: 'bi-lightbulb',
+      Arquitecto: 'bi-diagram-3',
+      Lanzamiento: 'bi-rocket',
+      Maestro: 'bi-trophy',
     };
 
     return p.badges.map((b: any) => ({
@@ -158,7 +167,9 @@ export class ProgressPageComponent implements OnInit {
   });
 
   /** Earned badge count */
-  protected readonly earnedBadgeCount = computed(() => this.badges().filter((b) => b.earned).length);
+  protected readonly earnedBadgeCount = computed(
+    () => this.badges().filter((b) => b.earned).length,
+  );
 
   ngOnInit(): void {
     this.profileContentService.loadProfile();

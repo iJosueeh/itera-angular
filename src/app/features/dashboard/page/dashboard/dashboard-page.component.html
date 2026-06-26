@@ -6,7 +6,6 @@
   [footerLinks]="vm().footerLinks"
 >
   <div dashboard-main class="min-w-0 min-h-0 flex flex-1 flex-col gap-6 pb-6">
-
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- HEADER: Skeleton while profile loads                       -->
     <!-- ═══════════════════════════════════════════════════════════ -->
@@ -27,7 +26,9 @@
       } @else {
         <div class="flex flex-wrap items-start justify-between gap-4">
           <div class="flex-1 min-w-0">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-primary bg-primary/5 border border-primary/10 rounded-full">
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-primary bg-primary/5 border border-primary/10 rounded-full"
+            >
               <i class="bi bi-stars text-[10px]"></i>
               Ruta Curada por IA
             </span>
@@ -36,8 +37,8 @@
             </h1>
             <p class="mt-3 max-w-[720px] text-base text-slate-600 leading-relaxed">
               Bienvenido de nuevo. Tu experiencia de
-              <span class="font-semibold text-slate-800">{{ profile()?.experience }} años</span> te sitúa en
-              una posición privilegiada para alcanzar nuevas metas.
+              <span class="font-semibold text-slate-800">{{ profile()?.experience }} años</span> te
+              sitúa en una posición privilegiada para alcanzar nuevas metas.
             </p>
           </div>
 
@@ -47,7 +48,7 @@
                 Salario Promedio
               </p>
               @if (dynamicAvgSalary(); as avg) {
-                <p class="text-2xl font-bold text-slate-900">${{ avg | number:'1.0-0' }}</p>
+                <p class="text-2xl font-bold text-slate-900">${{ avg | number: '1.0-0' }}</p>
               } @else {
                 <p class="text-2xl font-bold text-slate-300">--</p>
               }
@@ -68,10 +69,13 @@
         <div class="mt-6 pt-6 border-t border-slate-100">
           <div class="flex items-center justify-between mb-3">
             <p class="text-xs font-semibold text-slate-500">
-              Objetivo Académico Actual: <span class="text-primary font-bold">{{ profile()?.academicGoal }}</span>
+              Objetivo Académico Actual:
+              <span class="text-primary font-bold">{{ profile()?.academicGoal }}</span>
             </p>
             @if (currentGoalCategory()) {
-              <span class="text-[0.6rem] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
+              <span
+                class="text-[0.6rem] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold"
+              >
                 Filtrando por carrera
               </span>
             }
@@ -110,18 +114,20 @@
     <!-- MATCH SCORE + TRENDING SKILLS                              -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-
       <!-- Match Score Card -->
       <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
         <div class="flex items-center gap-3 mb-6">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+          <div
+            class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center"
+          >
             <i class="bi bi-bullseye text-primary text-lg"></i>
           </div>
           <div>
             <h2 class="text-lg font-semibold text-slate-900">Nivel de Compatibilidad</h2>
             <p class="text-xs text-slate-500">
               @if (currentGoalCategory()) {
-                Análisis para <span class="font-semibold text-primary">{{ profile()?.academicGoal }}</span>
+                Análisis para
+                <span class="font-semibold text-primary">{{ profile()?.academicGoal }}</span>
               } @else {
                 Análisis de tu perfil con el mercado actual
               }
@@ -157,7 +163,11 @@
               <svg class="w-28 h-28 -rotate-90" viewBox="0 0 36 36">
                 <circle cx="18" cy="18" r="16" fill="none" stroke="#e2e8f0" stroke-width="2.5" />
                 <circle
-                  cx="18" cy="18" r="16" fill="none" stroke-width="2.5"
+                  cx="18"
+                  cy="18"
+                  r="16"
+                  fill="none"
+                  stroke-width="2.5"
                   [attr.stroke]="displayScore() >= 50 ? '#10b981' : '#f43f5e'"
                   stroke-dasharray="100"
                   [attr.stroke-dashoffset]="100 - displayScore()"
@@ -183,7 +193,11 @@
                 <div class="h-2.5 rounded-full bg-slate-100 overflow-hidden">
                   <div
                     class="h-full rounded-full transition-all duration-700"
-                    [style.width.%]="skillsGapData().total > 0 ? (skillsGapData().matched / skillsGapData().total) * 100 : 0"
+                    [style.width.%]="
+                      skillsGapData().total > 0
+                        ? (skillsGapData().matched / skillsGapData().total) * 100
+                        : 0
+                    "
                     [class.bg-emerald-500]="displayScore() >= 50"
                     [class.bg-rose-500]="displayScore() < 50"
                   ></div>
@@ -196,12 +210,16 @@
                   <p class="text-xs font-semibold text-slate-600 mb-2">Habilidades faltantes:</p>
                   <div class="flex flex-wrap gap-1.5">
                     @for (skill of displayMissingSkills().slice(0, 5); track skill) {
-                      <span class="px-2.5 py-1 text-[0.65rem] font-bold bg-rose-50 text-rose-600 rounded-full border border-rose-100">
+                      <span
+                        class="px-2.5 py-1 text-[0.65rem] font-bold bg-rose-50 text-rose-600 rounded-full border border-rose-100"
+                      >
                         {{ skill }}
                       </span>
                     }
                     @if (displayMissingSkills().length > 5) {
-                      <span class="text-xs text-slate-400">+{{ displayMissingSkills().length - 5 }}</span>
+                      <span class="text-xs text-slate-400"
+                        >+{{ displayMissingSkills().length - 5 }}</span
+                      >
                     }
                   </div>
                 </div>
@@ -223,7 +241,9 @@
           <div class="mt-6 pt-4 border-t border-slate-100">
             <p class="text-xs font-semibold text-slate-500 mb-3">¿Es útil este análisis?</p>
             @if (feedbackSent()) {
-              <p class="text-sm font-semibold text-emerald-600 animate-in fade-in zoom-in duration-300">
+              <p
+                class="text-sm font-semibold text-emerald-600 animate-in fade-in zoom-in duration-300"
+              >
                 ¡Gracias por tu feedback!
               </p>
             } @else {
@@ -240,7 +260,9 @@
       <!-- Sidebar: Habilidades en Tendencia -->
       <aside class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-violet-50 flex items-center justify-center">
+          <div
+            class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-violet-50 flex items-center justify-center"
+          >
             <i class="bi bi-graph-up text-violet-600 text-lg"></i>
           </div>
           <div>
@@ -253,7 +275,9 @@
           <!-- Skeleton for skills -->
           <div class="space-y-2">
             @for (i of [1, 2, 3]; track i) {
-              <div class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 border border-slate-100">
+              <div
+                class="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 border border-slate-100"
+              >
                 <div class="skeleton h-4 w-24 rounded-lg"></div>
                 <div class="skeleton h-5 w-16 rounded-full"></div>
               </div>
@@ -277,8 +301,12 @@
                   [class.text-emerald-700]="skill.tendencia_mensual === 'creciente'"
                   [class.bg-amber-100]="skill.tendencia_mensual === 'estable'"
                   [class.text-amber-700]="skill.tendencia_mensual === 'estable'"
-                  [class.bg-slate-100]="skill.tendencia_mensual !== 'creciente' && skill.tendencia_mensual !== 'estable'"
-                  [class.text-slate-500]="skill.tendencia_mensual !== 'creciente' && skill.tendencia_mensual !== 'estable'"
+                  [class.bg-slate-100]="
+                    skill.tendencia_mensual !== 'creciente' && skill.tendencia_mensual !== 'estable'
+                  "
+                  [class.text-slate-500]="
+                    skill.tendencia_mensual !== 'creciente' && skill.tendencia_mensual !== 'estable'
+                  "
                 >
                   {{ skill.tendencia_mensual }}
                 </span>
@@ -295,7 +323,9 @@
     <section class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wider text-primary">Análisis de Mercado</p>
+          <p class="text-xs font-semibold uppercase tracking-wider text-primary">
+            Análisis de Mercado
+          </p>
           <h2 class="mt-2 text-xl font-bold text-slate-900">
             @if (isGoalFiltering()) {
               Distribución Salarial para {{ profile()?.academicGoal }}
@@ -334,7 +364,9 @@
     <section class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
       <div class="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p class="text-xs font-semibold uppercase tracking-wider text-primary">Demanda de Habilidades</p>
+          <p class="text-xs font-semibold uppercase tracking-wider text-primary">
+            Demanda de Habilidades
+          </p>
           <h2 class="mt-2 text-xl font-bold text-slate-900">
             @if (isGoalFiltering()) {
               Stack Tech para {{ profile()?.academicGoal }}
@@ -374,7 +406,9 @@
       <section class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
         <div class="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-primary">Comparación de Carreras</p>
+            <p class="text-xs font-semibold uppercase tracking-wider text-primary">
+              Comparación de Carreras
+            </p>
             <h2 class="mt-2 text-xl font-bold text-slate-900">
               @if (isGoalFiltering()) {
                 Salario en {{ profile()?.academicGoal }}
@@ -384,7 +418,9 @@
             </h2>
             <p class="mt-1 text-sm text-slate-500">
               @if (isGoalFiltering()) {
-                Carreras relacionadas con <span class="font-semibold text-primary">{{ profile()?.academicGoal }}</span>.
+                Carreras relacionadas con
+                <span class="font-semibold text-primary">{{ profile()?.academicGoal }}</span
+                >.
               } @else {
                 Comparación salarial promedio entre categorías de carrera.
               }
@@ -409,10 +445,16 @@
                 [class.ring-2]="selectedCareer() === career.title"
                 [class.ring-primary]="selectedCareer() === career.title"
               >
-                <p class="text-xs font-bold uppercase tracking-wider text-primary">{{ career.title }}</p>
-                <p class="mt-2 text-xl font-bold text-slate-900">${{ career.avgSalary | number:'1.0-0' }}</p>
+                <p class="text-xs font-bold uppercase tracking-wider text-primary">
+                  {{ career.title }}
+                </p>
+                <p class="mt-2 text-xl font-bold text-slate-900">
+                  ${{ career.avgSalary | number: '1.0-0' }}
+                </p>
                 <p class="mt-1 text-xs text-slate-400">
-                  ${{ career.minSalary | number:'1.0-0' }} — ${{ career.maxSalary | number:'1.0-0' }}
+                  ${{ career.minSalary | number: '1.0-0' }} — ${{
+                    career.maxSalary | number: '1.0-0'
+                  }}
                 </p>
                 <div class="mt-2 flex items-center gap-2">
                   <span
@@ -429,7 +471,10 @@
                 @if (career.topSkills.length > 0) {
                   <div class="mt-2 flex flex-wrap gap-1">
                     @for (skill of career.topSkills; track skill) {
-                      <span class="text-[0.5rem] rounded bg-slate-100 px-1.5 py-0.5 text-slate-500">{{ skill }}</span>
+                      <span
+                        class="text-[0.5rem] rounded bg-slate-100 px-1.5 py-0.5 text-slate-500"
+                        >{{ skill }}</span
+                      >
                     }
                   </div>
                 }
@@ -446,13 +491,16 @@
     <section class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
       <div class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
         <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center">
+          <div
+            class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-emerald-50 flex items-center justify-center"
+          >
             <i class="bi bi-signpost-2 text-emerald-600 text-lg"></i>
           </div>
           <div>
             <h3 class="text-lg font-semibold text-slate-900">Tu Ruta de Aprendizaje</h3>
             <p class="text-xs text-slate-500">
-              Progreso hacia <span class="font-semibold text-slate-700">{{ profile()?.academicGoal }}</span>
+              Progreso hacia
+              <span class="font-semibold text-slate-700">{{ profile()?.academicGoal }}</span>
             </p>
           </div>
         </div>
@@ -478,11 +526,15 @@
               <p class="text-xs font-semibold text-slate-500 mb-2">Ritmo de Aprendizaje</p>
               <div class="flex items-center gap-3">
                 @if (profile()?.academicGoal) {
-                  <span class="px-3 py-1.5 text-xs font-bold bg-emerald-100 text-emerald-700 rounded-full">
+                  <span
+                    class="px-3 py-1.5 text-xs font-bold bg-emerald-100 text-emerald-700 rounded-full"
+                  >
                     En progreso
                   </span>
                 } @else {
-                  <span class="px-3 py-1.5 text-xs font-bold bg-amber-100 text-amber-700 rounded-full">
+                  <span
+                    class="px-3 py-1.5 text-xs font-bold bg-amber-100 text-amber-700 rounded-full"
+                  >
                     Sin definir
                   </span>
                 }
@@ -490,11 +542,15 @@
             </div>
             <div>
               <p class="text-xs font-semibold text-slate-500 mb-2">Objetivo Seleccionado</p>
-              <p class="text-sm font-semibold text-slate-700">{{ profile()?.academicGoal || 'General' }}</p>
+              <p class="text-sm font-semibold text-slate-700">
+                {{ profile()?.academicGoal || 'General' }}
+              </p>
             </div>
             <div>
               <p class="text-xs font-semibold text-slate-500 mb-2">Habilidades Registradas</p>
-              <p class="text-sm font-semibold text-slate-700">{{ profile()?.skills?.length ?? 0 }} habilidades</p>
+              <p class="text-sm font-semibold text-slate-700">
+                {{ profile()?.skills?.length ?? 0 }} habilidades
+              </p>
             </div>
           </div>
         }

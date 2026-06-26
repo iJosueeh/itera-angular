@@ -8,31 +8,40 @@
     <!-- Subtle background decoration -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none -z-10">
       <div class="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"></div>
+      <div
+        class="absolute -bottom-40 -left-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl"
+      ></div>
     </div>
 
     <div class="text-center max-w-3xl mx-auto relative">
       <!-- Badge -->
-      <span class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/5 border border-primary/10 rounded-full mb-6">
+      <span
+        class="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/5 border border-primary/10 rounded-full mb-6"
+      >
         <i class="bi bi-stars text-[10px]"></i>
         Impulsado por IA
       </span>
 
       <!-- Title -->
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-tight">
+      <h1
+        class="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 tracking-tight leading-tight"
+      >
         Encuentra tu carrera
         <span class="text-gradient">ideal en tech</span>
       </h1>
 
       <!-- Subtitle -->
       <p class="mt-6 text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
-        Analizamos miles de ofertas laborales para mostrarte las habilidades que realmente necesitan las empresas.
+        Analizamos miles de ofertas laborales para mostrarte las habilidades que realmente necesitan
+        las empresas.
       </p>
 
       <!-- Search Input - light variant -->
       <div class="mt-10 max-w-xl mx-auto">
         <div class="relative">
-          <i class="bi bi-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 text-lg"></i>
+          <i
+            class="bi bi-search absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 text-lg"
+          ></i>
           <input
             type="text"
             placeholder="¿Qué carrera te interesa? (ej: Python, Cloud, Data)"
@@ -119,7 +128,9 @@
                 <div class="flex items-center gap-4 pt-2">
                   <div class="flex-1 text-center">
                     <p class="text-[0.55rem] text-slate-400 uppercase">Salario</p>
-                    <p class="text-sm font-extrabold text-primary font-mono">{{ snap.annualSalaryUsd }}</p>
+                    <p class="text-sm font-extrabold text-primary font-mono">
+                      {{ snap.annualSalaryUsd }}
+                    </p>
                   </div>
                   <div class="w-px h-6 bg-slate-100"></div>
                   <div class="flex-1 text-center">
@@ -149,14 +160,14 @@
     <!-- Loading skeletons while market data loads -->
     <section class="bg-slate-50/50 py-16 md:py-24">
       <div class="container-custom">
-      <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
-        <span class="text-xs font-semibold uppercase tracking-wider text-primary">
-          Simple y efectivo
-        </span>
-        <h2 class="mt-3 text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-          Cómo funciona Itera
-        </h2>
-      </div>
+        <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
+          <span class="text-xs font-semibold uppercase tracking-wider text-primary">
+            Simple y efectivo
+          </span>
+          <h2 class="mt-3 text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
+            Cómo funciona Itera
+          </h2>
+        </div>
         <div class="grid gap-8 lg:grid-cols-2">
           <!-- Skeleton for Skills -->
           <div class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 shadow-sm">
@@ -168,7 +179,7 @@
               </div>
             </div>
             <div class="space-y-3">
-              @for (i of [1,2,3,4,5,6,7,8]; track i) {
+              @for (i of [1, 2, 3, 4, 5, 6, 7, 8]; track i) {
                 <div class="space-y-1.5">
                   <div class="flex justify-between">
                     <div class="h-3 w-20 bg-slate-100 rounded animate-pulse"></div>
@@ -189,7 +200,7 @@
               </div>
             </div>
             <div class="grid grid-cols-2 gap-3">
-              @for (i of [1,2,3,4]; track i) {
+              @for (i of [1, 2, 3, 4]; track i) {
                 <div class="bg-white rounded-xl border border-slate-100 p-3 space-y-2">
                   <div class="h-3 w-full bg-slate-100 rounded animate-pulse"></div>
                   <div class="h-3 w-12 bg-slate-100 rounded animate-pulse"></div>
@@ -201,11 +212,16 @@
         </div>
       </div>
     </section>
-  } @else if (marketSkills().length > 0 || topCareers().length > 0 || topCompanies().length > 0 || careerCategories().length > 0) {
+  } @else if (
+    marketSkills().length > 0 ||
+    topCareers().length > 0 ||
+    topCompanies().length > 0 ||
+    careerCategories().length > 0
+  ) {
     <!-- Actual market data -->
     <section class="bg-slate-50/50 py-16 md:py-24">
       <div class="container-custom">
-          <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
+        <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
           <span class="text-xs font-semibold uppercase tracking-wider text-primary">
             Datos en tiempo real
           </span>
@@ -220,9 +236,15 @@
         <div class="grid gap-8 lg:grid-cols-2">
           <!-- Top Skills Chart -->
           @if (marketSkills().length > 0) {
-            <div data-aos="fade-up" data-aos-delay="0" class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 shadow-sm hover:shadow-lg transition-all duration-300">
+            <div
+              data-aos="fade-up"
+              data-aos-delay="0"
+              class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 shadow-sm hover:shadow-lg transition-all duration-300"
+            >
               <div class="flex items-center gap-3 mb-5">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center">
+                <div
+                  class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center"
+                >
                   <i class="bi bi-graph-up text-primary text-lg"></i>
                 </div>
                 <div>
@@ -238,7 +260,9 @@
           @if (topCareers().length > 0) {
             <div class="space-y-4">
               <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0">
+                <div
+                  class="w-9 h-9 rounded-lg bg-secondary/10 flex items-center justify-center shrink-0"
+                >
                   <i class="bi bi-mortarboard text-secondary text-base"></i>
                 </div>
                 <div>
@@ -265,9 +289,14 @@
         <div class="grid gap-8 mt-8 lg:grid-cols-2">
           <!-- TOP Companies -->
           @if (topCompanies().length > 0) {
-            <div data-aos="fade-up" class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 shadow-sm">
+            <div
+              data-aos="fade-up"
+              class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 shadow-sm"
+            >
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center">
+                <div
+                  class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-100 to-amber-50 flex items-center justify-center"
+                >
                   <i class="bi bi-building-check text-amber-600 text-lg"></i>
                 </div>
                 <div>
@@ -277,10 +306,15 @@
               </div>
               <div class="space-y-2">
                 @for (company of topCompanies().slice(0, 8); track company.name) {
-                  <div class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0">
+                  <div
+                    class="flex items-center justify-between py-2 border-b border-slate-100 last:border-0"
+                  >
                     <div class="flex items-center gap-2 min-w-0">
-                      <span class="text-sm font-semibold text-slate-700 truncate">{{ company.name }}</span>
-                      <span class="inline-flex items-center px-1.5 py-0.5 text-[0.55rem] font-bold rounded-full shrink-0"
+                      <span class="text-sm font-semibold text-slate-700 truncate">{{
+                        company.name
+                      }}</span>
+                      <span
+                        class="inline-flex items-center px-1.5 py-0.5 text-[0.55rem] font-bold rounded-full shrink-0"
                         [class.bg-amber-100]="company.tier === 1"
                         [class.text-amber-700]="company.tier === 1"
                         [class.bg-emerald-100]="company.tier === 2"
@@ -292,9 +326,13 @@
                       </span>
                     </div>
                     @if (company.offer_count > 0) {
-                      <span class="text-xs text-slate-500 shrink-0">{{ company.offer_count }} ofertas</span>
+                      <span class="text-xs text-slate-500 shrink-0"
+                        >{{ company.offer_count }} ofertas</span
+                      >
                     } @else {
-                      <span class="text-[0.65rem] text-slate-300 shrink-0">Sin ofertas activas</span>
+                      <span class="text-[0.65rem] text-slate-300 shrink-0"
+                        >Sin ofertas activas</span
+                      >
                     }
                   </div>
                 }
@@ -304,9 +342,15 @@
 
           <!-- Career Categories -->
           @if (careerCategories().length > 0) {
-            <div data-aos="fade-up" data-aos-delay="100" class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 shadow-sm">
+            <div
+              data-aos="fade-up"
+              data-aos-delay="100"
+              class="bg-white rounded-2xl border border-slate-200 p-4 md:p-5 shadow-sm"
+            >
               <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-violet-50 flex items-center justify-center">
+                <div
+                  class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-violet-50 flex items-center justify-center"
+                >
                   <i class="bi bi-grid-3x3-gap text-violet-600 text-lg"></i>
                 </div>
                 <div>
@@ -333,22 +377,30 @@
   }
   <section class="bg-slate-50/50 py-16 md:py-24">
     <div class="container-custom">
-        <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
-          <span class="text-xs font-semibold uppercase tracking-wider text-primary">
-            Datos en tiempo real
-          </span>
-          <h2 class="mt-3 text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
-            Mercado Laboral Actual
-          </h2>
+      <div data-aos="fade-up" class="text-center mb-8 md:mb-12">
+        <span class="text-xs font-semibold uppercase tracking-wider text-primary">
+          Datos en tiempo real
+        </span>
+        <h2 class="mt-3 text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
+          Mercado Laboral Actual
+        </h2>
       </div>
 
       <div class="grid gap-6 md:grid-cols-3">
         @for (step of howItWorks; track step.step; let i = $index) {
-          <div data-aos="fade-up" [attr.data-aos-delay]="i * 100" class="group bg-white rounded-2xl border border-slate-200 p-5 md:p-6 text-center shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-            <div class="w-12 h-12 rounded-2xl bg-linear-to-br from-primary/10 to-primary/5 flex items-center justify-center mx-auto mb-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300">
+          <div
+            data-aos="fade-up"
+            [attr.data-aos-delay]="i * 100"
+            class="group bg-white rounded-2xl border border-slate-200 p-5 md:p-6 text-center shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+          >
+            <div
+              class="w-12 h-12 rounded-2xl bg-linear-to-br from-primary/10 to-primary/5 flex items-center justify-center mx-auto mb-4 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300"
+            >
               <i [class]="'bi ' + step.icon + ' text-2xl text-primary'"></i>
             </div>
-            <span class="inline-block px-3 py-1 text-[0.65rem] font-bold text-primary bg-primary/5 border border-primary/10 rounded-full uppercase tracking-wider mb-3">
+            <span
+              class="inline-block px-3 py-1 text-[0.65rem] font-bold text-primary bg-primary/5 border border-primary/10 rounded-full uppercase tracking-wider mb-3"
+            >
               Paso {{ step.step }}
             </span>
             <h3 class="text-xl font-semibold text-slate-900">
@@ -362,7 +414,9 @@
               class="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-primary hover:text-primary-dark transition-colors"
             >
               Explorar
-              <i class="bi bi-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+              <i
+                class="bi bi-arrow-right text-xs group-hover:translate-x-1 transition-transform"
+              ></i>
             </a>
           </div>
         }
@@ -371,18 +425,34 @@
   </section>
 
   <section class="container-custom pb-16 md:pb-24">
-    <div data-aos="fade-up" data-aos-delay="150" class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-[#008f6b] to-emerald-800 p-6 md:p-16 lg:p-20 text-center shadow-2xl shadow-primary/25">
+    <div
+      data-aos="fade-up"
+      data-aos-delay="150"
+      class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary via-[#008f6b] to-emerald-800 p-6 md:p-16 lg:p-20 text-center shadow-2xl shadow-primary/25"
+    >
       <!-- Background decoration -->
       <div class="absolute inset-0 opacity-[0.12]">
-        <div class="absolute top-0 right-0 w-80 h-80 bg-white rounded-full -translate-y-1/3 translate-x-1/3 blur-3xl"></div>
-        <div class="absolute bottom-0 left-0 w-64 h-64 bg-emerald-300 rounded-full translate-y-1/3 -translate-x-1/4 blur-3xl"></div>
+        <div
+          class="absolute top-0 right-0 w-80 h-80 bg-white rounded-full -translate-y-1/3 translate-x-1/3 blur-3xl"
+        ></div>
+        <div
+          class="absolute bottom-0 left-0 w-64 h-64 bg-emerald-300 rounded-full translate-y-1/3 -translate-x-1/4 blur-3xl"
+        ></div>
         <!-- Grid pattern overlay -->
-        <div class="absolute inset-0 opacity-[0.03]" style="background-image: radial-gradient(circle at 25px 25px, white 1px, transparent 0); background-size: 50px 50px;"></div>
+        <div
+          class="absolute inset-0 opacity-[0.03]"
+          style="
+            background-image: radial-gradient(circle at 25px 25px, white 1px, transparent 0);
+            background-size: 50px 50px;
+          "
+        ></div>
       </div>
 
       <div class="relative z-10 max-w-2xl mx-auto">
         <!-- Badge -->
-        <span class="inline-flex items-center gap-2 px-4 py-1.5 text-[0.65rem] font-bold uppercase tracking-widest text-white/80 bg-white/10 rounded-full border border-white/10 mb-6">
+        <span
+          class="inline-flex items-center gap-2 px-4 py-1.5 text-[0.65rem] font-bold uppercase tracking-widest text-white/80 bg-white/10 rounded-full border border-white/10 mb-6"
+        >
           <i class="bi bi-rocket-takeoff text-xs"></i>
           Comienza ahora
         </span>
@@ -390,7 +460,9 @@
         <h2 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-[1.1]">
           Comienza tu <span class="text-white/90">transformación</span> hoy
         </h2>
-        <p class="mt-5 text-lg md:text-xl text-white/70 max-w-xl mx-auto leading-relaxed font-medium">
+        <p
+          class="mt-5 text-lg md:text-xl text-white/70 max-w-xl mx-auto leading-relaxed font-medium"
+        >
           Únete a quienes ya están construyendo su carrera en tech con datos reales del mercado.
         </p>
 
@@ -402,7 +474,9 @@
             <span class="flex items-center gap-3">
               <i class="bi bi-person-plus-fill text-xl"></i>
               Crear cuenta gratis
-              <i class="bi bi-arrow-right text-lg group-hover:translate-x-1 transition-transform"></i>
+              <i
+                class="bi bi-arrow-right text-lg group-hover:translate-x-1 transition-transform"
+              ></i>
             </span>
             <span class="block text-[0.75rem] font-semibold text-primary/70 mt-1.5">
               <i class="bi bi-credit-card mr-1.5"></i>
@@ -416,7 +490,9 @@
             <span class="flex items-center text-white gap-3">
               <i class="bi bi-play-circle-fill text-xl"></i>
               Ver demo
-              <i class="bi bi-arrow-right text-lg group-hover:translate-x-1 transition-transform"></i>
+              <i
+                class="bi bi-arrow-right text-lg group-hover:translate-x-1 transition-transform"
+              ></i>
             </span>
             <span class="block text-[0.75rem] font-semibold text-white/80 mt-1.5">
               <i class="bi bi-eye-fill mr-1.5"></i>

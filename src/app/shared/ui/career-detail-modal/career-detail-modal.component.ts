@@ -10,7 +10,7 @@ import { CareerMetrics } from '@shared/interfaces/market.interface';
   styleUrl: './career-detail-modal.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    'role': 'dialog',
+    role: 'dialog',
     '[attr.aria-label]': '"Detalles de " + career().titulo_carrera',
     '(click)': 'onBackdropClick($event)',
     '(keydown.escape)': 'close.emit()',
@@ -52,24 +52,24 @@ export class CareerDetailModalComponent {
   protected get rankLabel(): string | null {
     if (!this.allCareers().length) return null;
     const sorted = [...this.allCareers()].sort(
-      (a, b) => (b.demanda_mercado.volumen_total || 0) - (a.demanda_mercado.volumen_total || 0)
+      (a, b) => (b.demanda_mercado.volumen_total || 0) - (a.demanda_mercado.volumen_total || 0),
     );
-    const idx = sorted.findIndex(c => c.titulo_carrera === this.career().titulo_carrera);
+    const idx = sorted.findIndex((c) => c.titulo_carrera === this.career().titulo_carrera);
     return idx >= 0 ? `#${idx + 1} de ${sorted.length}` : null;
   }
 
   protected getRank(): number {
     const sorted = [...this.allCareers()].sort(
-      (a, b) => (b.demanda_mercado.volumen_total || 0) - (a.demanda_mercado.volumen_total || 0)
+      (a, b) => (b.demanda_mercado.volumen_total || 0) - (a.demanda_mercado.volumen_total || 0),
     );
-    const idx = sorted.findIndex(c => c.titulo_carrera === this.career().titulo_carrera);
+    const idx = sorted.findIndex((c) => c.titulo_carrera === this.career().titulo_carrera);
     return idx >= 0 ? idx + 1 : 0;
   }
 
   protected getComparedCareers(): Array<{ career: CareerMetrics; rank: number }> {
     if (!this.allCareers().length) return [];
     const sorted = [...this.allCareers()].sort(
-      (a, b) => (b.demanda_mercado.volumen_total || 0) - (a.demanda_mercado.volumen_total || 0)
+      (a, b) => (b.demanda_mercado.volumen_total || 0) - (a.demanda_mercado.volumen_total || 0),
     );
     return sorted.slice(0, 7).map((c, i) => ({ career: c, rank: i + 1 }));
   }
@@ -83,7 +83,7 @@ export class CareerDetailModalComponent {
   protected getSalaryPosition(): number {
     if (!this.allCareers().length) return 50;
     const avgSalary = this.career().salario_anual_usd.promedio || 0;
-    const salaries = this.allCareers().map(c => c.salario_anual_usd.promedio || 0);
+    const salaries = this.allCareers().map((c) => c.salario_anual_usd.promedio || 0);
     const max = Math.max(...salaries);
     const min = Math.min(...salaries);
     if (max === min) return 50;

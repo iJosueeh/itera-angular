@@ -1,7 +1,17 @@
 import { inject, Injectable, computed, signal, OnDestroy } from '@angular/core';
 import { Observable, take, map, catchError, of, interval, Subject, takeUntil } from 'rxjs';
-import { CareerSnapshot, CareerSearchResult, CareerSearchMatch, DashboardViewModel } from '@shared/interfaces/dashboard.interface';
-import { MarketSkill, CareerMetrics, TopCompany, CareerCategory } from '@shared/interfaces/market.interface';
+import {
+  CareerSnapshot,
+  CareerSearchResult,
+  CareerSearchMatch,
+  DashboardViewModel,
+} from '@shared/interfaces/dashboard.interface';
+import {
+  MarketSkill,
+  CareerMetrics,
+  TopCompany,
+  CareerCategory,
+} from '@shared/interfaces/market.interface';
 import { DashboardApiMockService } from './dashboard-api.mock.service';
 import { MarketApiService } from './market-api.service';
 import { DASHBOARD_MODEL_MOCK } from '../mocks/dashboard.mock';
@@ -48,7 +58,9 @@ export class DashboardContentService implements OnDestroy {
 
   readonly topCareers = computed(() => {
     return this.careerMetrics()
-      .sort((a, b) => (b.demanda_mercado?.volumen_total || 0) - (a.demanda_mercado?.volumen_total || 0))
+      .sort(
+        (a, b) => (b.demanda_mercado?.volumen_total || 0) - (a.demanda_mercado?.volumen_total || 0),
+      )
       .slice(0, 6);
   });
 
@@ -85,16 +97,8 @@ export class DashboardContentService implements OnDestroy {
       career.includes('Seguridad');
     const hasRealSalary =
       metrics?.salario_anual_usd && (metrics.salario_anual_usd.promedio || 0) > 0;
-    const min = hasRealSalary
-      ? metrics!.salario_anual_usd!.min
-      : isHighEnd
-        ? 42000
-        : 30000;
-    const max = hasRealSalary
-      ? metrics!.salario_anual_usd!.max
-      : isHighEnd
-        ? 82000
-        : 62000;
+    const min = hasRealSalary ? metrics!.salario_anual_usd!.min : isHighEnd ? 42000 : 30000;
+    const max = hasRealSalary ? metrics!.salario_anual_usd!.max : isHighEnd ? 82000 : 62000;
 
     return {
       career,
@@ -102,9 +106,7 @@ export class DashboardContentService implements OnDestroy {
       growthYoY: `+${metrics?.demanda_mercado?.tendencia === 'creciente' ? '12' : '4'}% de crecimiento anual`,
       demandLevel: demandLabel,
       demandMomentum:
-        metrics?.demanda_mercado?.tendencia === 'creciente'
-          ? 'Alto impulso'
-          : 'Mercado estable',
+        metrics?.demanda_mercado?.tendencia === 'creciente' ? 'Alto impulso' : 'Mercado estable',
       profileFit: '64%',
       alignmentDescription: metrics
         ? 'Basado en las ofertas reales en base de datos'
@@ -169,9 +171,7 @@ export class DashboardContentService implements OnDestroy {
     // 3. Build result
     if (matches.length > 0) {
       const firstMatch = matches[0];
-      const matchingMetrics = metrics.find(
-        (m) => m.titulo_carrera === firstMatch.category,
-      );
+      const matchingMetrics = metrics.find((m) => m.titulo_carrera === firstMatch.category);
       const snapshot = this.buildSnapshot(firstMatch.category, matchingMetrics);
 
       this.searchResults.set({ query, matches, snapshot });

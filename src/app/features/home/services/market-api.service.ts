@@ -41,11 +41,7 @@ export class MarketApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/ia';
 
-  getOffers(
-    limit = 10,
-    skip = 0,
-    filters?: OfferFilters,
-  ): Observable<JobOffer[]> {
+  getOffers(limit = 10, skip = 0, filters?: OfferFilters): Observable<JobOffer[]> {
     const params: Record<string, string | number> = { limit, skip };
 
     if (filters) {
@@ -143,13 +139,8 @@ export class MarketApiService {
   }
 
   /** POST /companies/cleanup - Clean dirty company names (admin) */
-  cleanupCompanyNames(
-    dryRun: boolean = true,
-    limit: number = 500,
-  ): Observable<any> {
-    let params = new HttpParams()
-      .set('dry_run', dryRun.toString())
-      .set('limit', limit.toString());
+  cleanupCompanyNames(dryRun: boolean = true, limit: number = 500): Observable<any> {
+    let params = new HttpParams().set('dry_run', dryRun.toString()).set('limit', limit.toString());
     return this.http.post(`${this.baseUrl}/companies/cleanup`, {}, { params });
   }
 

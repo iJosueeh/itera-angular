@@ -54,7 +54,16 @@ export class JobExplorerPageComponent implements OnInit, OnDestroy {
   readonly pageSize = 9;
 
   /** Popular skill chips for quick filtering */
-  readonly popularSkills = ['Python', 'React', 'TypeScript', 'AWS', 'Docker', 'Node.js', 'Java', 'SQL'];
+  readonly popularSkills = [
+    'Python',
+    'React',
+    'TypeScript',
+    'AWS',
+    'Docker',
+    'Node.js',
+    'Java',
+    'SQL',
+  ];
 
   /** Available modality options */
   readonly modalities = [

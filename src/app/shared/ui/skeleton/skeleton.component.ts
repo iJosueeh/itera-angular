@@ -13,10 +13,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
       @if (lines() > 0) {
         <div class="space-y-3 p-6">
           @for (i of lineArray(); track i) {
-            <div
-              class="h-3 rounded-full bg-white/[0.05]"
-              [style.width]="lineWidth(i)"
-            ></div>
+            <div class="h-3 rounded-full bg-white/[0.05]" [style.width]="lineWidth(i)"></div>
           }
         </div>
       } @else {
