@@ -318,88 +318,6 @@
     </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- DISTRIBUCIÓN SALARIAL                                     -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <section class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
-      <div class="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wider text-primary">
-            Análisis de Mercado
-          </p>
-          <h2 class="mt-2 text-xl font-bold text-slate-900">
-            @if (isGoalFiltering()) {
-              Distribución Salarial para {{ profile()?.academicGoal }}
-            } @else {
-              Distribución Salarial (USD)
-            }
-          </h2>
-          <p class="mt-1 text-sm text-slate-500">
-            @if (isGoalFiltering()) {
-              Datos filtrados por la categoría seleccionada.
-            } @else {
-              Basado en las ofertas laborales analizadas recientemente.
-            }
-          </p>
-        </div>
-      </div>
-      <div class="mt-6">
-        @if (isDemandLoading()) {
-          <div class="space-y-3">
-            <div class="skeleton h-48 w-full rounded-xl"></div>
-            <div class="flex justify-between">
-              @for (i of [1, 2, 3, 4, 5]; track i) {
-                <div class="skeleton h-3 w-12 rounded-lg"></div>
-              }
-            </div>
-          </div>
-        } @else {
-          <itera-demand-chart [data]="demandData()" color="#6366f1"></itera-demand-chart>
-        }
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- HABILIDADES MÁS DEMANDADAS                                -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <section class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
-      <div class="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <p class="text-xs font-semibold uppercase tracking-wider text-primary">
-            Demanda de Habilidades
-          </p>
-          <h2 class="mt-2 text-xl font-bold text-slate-900">
-            @if (isGoalFiltering()) {
-              Stack Tech para {{ profile()?.academicGoal }}
-            } @else {
-              Stack Tech Más Buscado
-            }
-          </h2>
-          <p class="mt-1 text-sm text-slate-500">
-            @if (isGoalFiltering()) {
-              Habilidades clave requeridas en {{ profile()?.academicGoal }}.
-            } @else {
-              Habilidades con mayor número de vacantes abiertas.
-            }
-          </p>
-        </div>
-      </div>
-      <div class="mt-6">
-        @if (isDemandLoading()) {
-          <div class="space-y-3">
-            <div class="skeleton h-48 w-full rounded-xl"></div>
-            <div class="flex justify-between">
-              @for (i of [1, 2, 3, 4, 5]; track i) {
-                <div class="skeleton h-3 w-12 rounded-lg"></div>
-              }
-            </div>
-          </div>
-        } @else {
-          <itera-demand-chart [data]="skillDemandData()" color="#a855f7"></itera-demand-chart>
-        }
-      </div>
-    </section>
-
-    <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- COMPARACIÓN DE CARRERAS                                   -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     @if (careerComparisonData().length > 0) {
@@ -531,6 +449,47 @@
         }
       </section>
     }
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- HABILIDADES MÁS DEMANDADAS                                -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-wider text-primary">
+            Demanda de Habilidades
+          </p>
+          <h2 class="mt-2 text-xl font-bold text-slate-900">
+            @if (isGoalFiltering()) {
+              Stack Tech para {{ profile()?.academicGoal }}
+            } @else {
+              Stack Tech Más Buscado
+            }
+          </h2>
+          <p class="mt-1 text-sm text-slate-500">
+            @if (isGoalFiltering()) {
+              Habilidades clave requeridas en {{ profile()?.academicGoal }}.
+            } @else {
+              Habilidades con mayor número de vacantes abiertas.
+            }
+          </p>
+        </div>
+      </div>
+      <div class="mt-6">
+        @if (isDemandLoading()) {
+          <div class="space-y-3">
+            <div class="skeleton h-48 w-full rounded-xl"></div>
+            <div class="flex justify-between">
+              @for (i of [1, 2, 3, 4, 5]; track i) {
+                <div class="skeleton h-3 w-12 rounded-lg"></div>
+              }
+            </div>
+          </div>
+        } @else {
+          <itera-demand-chart [data]="skillDemandData()" color="#a855f7"></itera-demand-chart>
+        }
+      </div>
+    </section>
 
     <!-- ═══════════════════════════════════════════════════════════ -->
     <!-- TU RUTA DE APRENDIZAJE                                     -->
