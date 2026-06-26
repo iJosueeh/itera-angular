@@ -470,23 +470,35 @@
             @if (isGoalFiltering()) {
               Habilidades clave requeridas en {{ profile()?.academicGoal }}.
             } @else {
-              Habilidades con mayor número de vacantes abiertas.
+              Distribución de habilidades más demandadas en el mercado.
             }
           </p>
         </div>
       </div>
-      <div class="mt-6">
+
+      <div class="mt-6 grid gap-8 lg:grid-cols-[320px_1fr]">
         @if (isDemandLoading()) {
           <div class="space-y-3">
-            <div class="skeleton h-48 w-full rounded-xl"></div>
-            <div class="flex justify-between">
-              @for (i of [1, 2, 3, 4, 5]; track i) {
-                <div class="skeleton h-3 w-12 rounded-lg"></div>
-              }
-            </div>
+            <div class="skeleton h-[280px] w-full rounded-xl"></div>
+          </div>
+          <div class="space-y-4">
+            @for (i of [1, 2, 3, 4, 5]; track i) {
+              <div class="space-y-2">
+                <div class="skeleton h-3 w-24 rounded-lg"></div>
+                <div class="skeleton h-2 w-full rounded-full"></div>
+              </div>
+            }
           </div>
         } @else {
-          <itera-demand-chart [data]="skillDemandData()" color="#a855f7"></itera-demand-chart>
+          <!-- Donut Chart -->
+          <div class="flex items-center justify-center">
+            <itera-donut-chart [data]="donutChartData()"></itera-donut-chart>
+          </div>
+
+          <!-- Skill Ranking -->
+          <div>
+            <itera-skill-ranking [data]="skillRankingData()"></itera-skill-ranking>
+          </div>
         }
       </div>
     </section>

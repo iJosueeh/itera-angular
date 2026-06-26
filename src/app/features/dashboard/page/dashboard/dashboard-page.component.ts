@@ -19,6 +19,8 @@ import {
   DemandChartComponent,
   ChartDataPoint,
 } from '@shared/ui/demand-chart/demand-chart.component';
+import { DonutChartComponent } from '@shared/ui/donut-chart/donut-chart.component';
+import { SkillRankingComponent } from '@shared/ui/skill-ranking/skill-ranking.component';
 import { StarRatingComponent } from '@shared/ui/star-rating/star-rating.component';
 import {
   MarketApiService,
@@ -37,6 +39,8 @@ import { MatchResult } from '@shared/interfaces/market.interface';
     DashboardShellComponent,
     InteractiveRoadmapComponent,
     DemandChartComponent,
+    DonutChartComponent,
+    SkillRankingComponent,
     StarRatingComponent,
     DecimalPipe,
   ],
@@ -261,6 +265,46 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         label: d.skill,
         value: d.demand_count,
       }));
+  });
+
+  protected readonly donutChartData = computed(() => {
+    const demand = this.dashboardContentService.marketDemand();
+    if (!demand || !demand.top_skills) return [];
+    const goalSkills = this.goalFilteredSkills();
+    const useGoalFilter = this.isGoalFiltering() && goalSkills.length > 0;
+    const filtered = demand.top_skills.filter(
+      (d: any) =>
+        !useGoalFilter || goalSkills.some((g) => g.toLowerCase() === d.skill.toLowerCase()),
+    );
+    const top8 = filtered.slice(0, 8);
+    const total = top8.reduce((sum: number, d: any) => sum + d.demand_count, 0);
+    return top8.map((d: any) => ({
+      label: d.skill,
+      value: d.demand_count,
+      metadata: {
+        trend: d.tendencia_mensual,
+        percentage: total > 0 ? (d.demand_count / total) * 100 : 0,
+      },
+    }));
+  });
+
+  protected readonly skillRankingData = computed(() => {
+    const demand = this.dashboardContentService.marketDemand();
+    if (!demand || !demand.top_skills) return [];
+    const goalSkills = this.goalFilteredSkills();
+    const useGoalFilter = this.isGoalFiltering() && goalSkills.length > 0;
+    const filtered = demand.top_skills.filter(
+      (d: any) =>
+        !useGoalFilter || goalSkills.some((g) => g.toLowerCase() === d.skill.toLowerCase()),
+    );
+    const top10 = filtered.slice(0, 10);
+    const total = top10.reduce((sum: number, d: any) => sum + d.demand_count, 0);
+    return top10.map((d: any) => ({
+      label: d.skill,
+      value: d.demand_count,
+      percentage: total > 0 ? (d.demand_count / total) * 100 : 0,
+      trend: d.tendencia_mensual,
+    }));
   });
 
   protected readonly availableGoals = [
