@@ -83,10 +83,12 @@ export class DemandChartComponent implements AfterViewInit {
     const barWidth = Math.max(10, (width - padding * 2) / data.length);
 
     const svgns = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(svgns, 'svg');
+    const svg = document.createElementNS(svgns, 'svg') as SVGSVGElement;
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', String(height));
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    // Allow tooltip to overflow outside SVG bounds
+    svg.style.overflow = 'visible';
 
     const maxValue = Math.max(...data.map((d) => d.value), 1);
 
@@ -189,8 +191,11 @@ export class DemandChartComponent implements AfterViewInit {
   private showTooltip(svg: SVGSVGElement, ns: string, x: number, y: number, lines: string[]): void {
     this.hideTooltip();
 
-    const g = document.createElementNS(ns, 'g');
+    const g = document.createElementNS(ns, 'g') as SVGGElement;
     g.classList.add('chart-tooltip');
+    // Ensure tooltip renders on top of other elements
+    g.style.zIndex = '9999';
+    g.style.pointerEvents = 'none';
 
     const padding = 10;
     const lineHeight = 16;
