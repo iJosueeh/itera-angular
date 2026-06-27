@@ -92,24 +92,24 @@ export class HomePageComponent {
   protected readonly howItWorks = [
     {
       step: '01',
-      icon: 'bi-search',
+      icon: 'bi-bar-chart-line',
       title: 'Explora',
-      description: 'Busca carreras en tech y descubre qué habilidades demanda el mercado.',
-      link: '/dashboard/jobs',
+      description: 'Ve las tendencias del mercado laboral por carrera y las habilidades más demandadas.',
+      link: '/dashboard',
     },
     {
       step: '02',
-      icon: 'bi-bar-chart-line',
+      icon: 'bi-arrow-left-right',
       title: 'Compara',
-      description: 'Ve cómo tu perfil se alinea con las ofertas laborales actuales.',
-      link: '/dashboard',
+      description: 'Compara tu perfil con las exigencias del mercado para cada carrera.',
+      link: '/dashboard/comparison',
     },
     {
       step: '03',
       icon: 'bi-rocket-takeoff',
       title: 'Conecta',
-      description: 'Postula con confianza sabiendo que tienes las habilidades correctas.',
-      link: '/dashboard/jobs',
+      description: 'Usa las rutas de aprendizaje para adquirir las habilidades que el mercado necesita.',
+      link: '/dashboard',
     },
   ];
 

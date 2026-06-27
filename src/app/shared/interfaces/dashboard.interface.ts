@@ -6,6 +6,21 @@ export interface NavItem {
   fragment?: string;
 }
 
+/** Shared sidebar items for all dashboard pages — single source of truth */
+export const DASHBOARD_SIDEBAR_ITEMS: ReadonlyArray<NavItem> = [
+  { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
+  { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
+  { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
+  { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
+];
+
+/** Shared top nav items for all dashboard pages */
+export const DASHBOARD_TOP_NAV_ITEMS: ReadonlyArray<NavItem> = [
+  { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
+  { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
+  { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
+];
+
 export interface TrendItem {
   label: string;
 }

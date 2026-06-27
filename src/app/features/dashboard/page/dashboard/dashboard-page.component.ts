@@ -29,7 +29,11 @@ import {
 } from '@features/home/services/market-api.service';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
 import { PageTelemetryService } from '@shared/services/page-telemetry.service';
-import { NavItem } from '@shared/interfaces/dashboard.interface';
+import {
+  NavItem,
+  DASHBOARD_SIDEBAR_ITEMS,
+  DASHBOARD_TOP_NAV_ITEMS,
+} from '@shared/interfaces/dashboard.interface';
 import { MatchResult } from '@shared/interfaces/market.interface';
 
 @Component({
@@ -778,22 +782,15 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected readonly sidebarItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
-    { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Demanda', href: '/dashboard', fragment: 'demand', icon: 'bi-bar-chart-line' },
-    { label: 'Mis Rutas', href: '/dashboard', fragment: 'routes', icon: 'bi-signpost-2' },
-    { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
-    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
-    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
-  ];
+  protected readonly sidebarItems = DASHBOARD_SIDEBAR_ITEMS.map((item) => ({
+    ...item,
+    active: item.href === '/dashboard',
+  }));
 
-  protected readonly topNavItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
-    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
-  ];
+  protected readonly topNavItems = DASHBOARD_TOP_NAV_ITEMS.map((item) => ({
+    ...item,
+    active: item.href === '/dashboard',
+  }));
 
   ngOnDestroy(): void {
     this.activeMatchSub?.unsubscribe();

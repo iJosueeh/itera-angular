@@ -11,14 +11,6 @@ import {
   CareerCategory,
 } from '@shared/interfaces/market.interface';
 
-export interface OfferFilters {
-  q?: string;
-  skill?: string;
-  modality?: string;
-  salary_min?: number;
-  salary_max?: number;
-}
-
 export interface SalaryByCareerResponse {
   careers: Array<{
     titulo_carrera: string;
@@ -57,20 +49,6 @@ export class MarketApiService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = '/api/ia';
 
-  getOffers(limit = 10, skip = 0, filters?: OfferFilters): Observable<JobOffer[]> {
-    const params: Record<string, string | number> = { limit, skip };
-
-    if (filters) {
-      if (filters.q) params['q'] = filters.q;
-      if (filters.skill) params['skill'] = filters.skill;
-      if (filters.modality) params['modality'] = filters.modality;
-      if (filters.salary_min !== undefined) params['salary_min'] = filters.salary_min;
-      if (filters.salary_max !== undefined) params['salary_max'] = filters.salary_max;
-    }
-
-    return this.http.get<JobOffer[]>(`${this.baseUrl}/offers`, { params });
-  }
-
   getCareerMetrics(): Observable<CareerMetrics[]> {
     return this.http.get<CareerMetrics[]>(`${this.baseUrl}/careers/metrics`);
   }
@@ -97,16 +75,6 @@ export class MarketApiService {
 
   evaluateMatch(request: MatchRequest): Observable<MatchResult> {
     return this.http.post<MatchResult>(`${this.baseUrl}/match/evaluate`, request);
-  }
-
-  runScraper(query: string): Observable<{ status: string; message: string }> {
-    return this.http.post<{ status: string; message: string }>(
-      `${this.baseUrl}/scraper/run`,
-      {},
-      {
-        params: { query },
-      },
-    );
   }
 
   sendTelemetry(event: {

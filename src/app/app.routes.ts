@@ -47,14 +47,6 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'dashboard/jobs',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/dashboard/page/job-explorer/job-explorer-page.component').then(
-        (m) => m.JobExplorerPageComponent,
-      ),
-  },
-  {
     path: 'dashboard/profile',
     canActivate: [authGuard],
     loadComponent: () =>

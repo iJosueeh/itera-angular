@@ -16,6 +16,11 @@ export interface JobOffer {
   categoria_carrera_nombre?: string;
   company_tier?: number;
   skill_extraction_method?: string;
+  // Full description (scraped from individual job page)
+  descripcion_completa?: string;
+  requisitos?: string[];
+  beneficios?: string[];
+  modalidad_detalle?: string;
 }
 
 export interface TopCompany {
