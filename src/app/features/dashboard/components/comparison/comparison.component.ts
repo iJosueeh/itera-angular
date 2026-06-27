@@ -108,18 +108,35 @@ export class ComparisonComponent implements OnInit, OnDestroy {
       const accent = i === 0 ? ('primary' as const) : ('secondary' as const);
       const salaryAvg = m.salario_anual_usd.promedio || 0;
       const tendencia = m.demanda_mercado.tendencia;
-      const growthPercent = tendencia === 'creciente' ? 15 : tendencia === 'estable' ? 5 : -3;
 
-      // Projection bars from snapshots
+      // Calculate real growth % from snapshots (year-over-year)
+      let growthPercent = 0;
       let projectionBars: ReadonlyArray<{ year: number; height: number; salary: number }> = [];
+
       if (snap?.snapshots[m.titulo_carrera]) {
-        const careerSnaps = snap.snapshots[m.titulo_carrera];
+        const careerSnaps = snap.snapshots[m.titulo_carrera].sort((a, b) => a.year - b.year);
         const maxSalary = Math.max(...careerSnaps.map((s) => s.salario_promedio), 1);
+
         projectionBars = careerSnaps.map((s) => ({
           year: s.year,
           height: (s.salario_promedio / maxSalary) * 100,
           salary: s.salario_promedio,
         }));
+
+        // Calculate growth from first to last year
+        if (careerSnaps.length >= 2) {
+          const firstSalary = careerSnaps[0].salario_promedio;
+          const lastSalary = careerSnaps[careerSnaps.length - 1].salario_promedio;
+          const yearSpan = careerSnaps[careerSnaps.length - 1].year - careerSnaps[0].year;
+          if (firstSalary > 0 && yearSpan > 0) {
+            growthPercent = Math.round(((lastSalary - firstSalary) / firstSalary) * 100 / yearSpan);
+          }
+        }
+      }
+
+      // Fallback: estimate from tendencia if no snapshot data
+      if (growthPercent === 0) {
+        growthPercent = tendencia === 'creciente' ? 8 : tendencia === 'estable' ? 3 : -2;
       }
 
       return {
@@ -132,7 +149,7 @@ export class ComparisonComponent implements OnInit, OnDestroy {
         accent,
         salary: `$${salaryAvg.toLocaleString()}`,
         salaryRaw: salaryAvg,
-        growth: growthPercent > 0 ? `+${growthPercent}%` : `${growthPercent}%`,
+        growth: growthPercent > 0 ? `+${growthPercent}%` : growthPercent < 0 ? `${growthPercent}%` : '~0%',
         growthLabel: tendencia === 'creciente' ? 'Creciente' : tendencia === 'estable' ? 'Estable' : 'En reducción',
         stack: m.aprendizaje.habilidades_clave,
         preparationMonths: m.aprendizaje.tiempo_estimado_upgrading_meses ?? 12,
@@ -146,6 +163,7 @@ export class ComparisonComponent implements OnInit, OnDestroy {
     const metrics = this.allMetrics();
     const idxA = this.selectedIndexA();
     const idxB = this.selectedIndexB();
+    const snap = this.snapshots();
 
     if (metrics.length < 2) return [];
 
@@ -158,6 +176,24 @@ export class ComparisonComponent implements OnInit, OnDestroy {
     const v2 = m2.demanda_mercado.volumen_total;
     const s1 = m1.salario_anual_usd.promedio;
     const s2 = m2.salario_anual_usd.promedio;
+
+    // Calculate real growth from snapshots
+    const getGrowth = (careerTitle: string): string => {
+      const careerSnaps = snap?.snapshots[careerTitle]?.sort((a, b) => a.year - b.year);
+      if (!careerSnaps || careerSnaps.length < 2) {
+        // Fallback to tendencia
+        const tendencia = careerTitle === m1.titulo_carrera
+          ? m1.demanda_mercado.tendencia
+          : m2.demanda_mercado.tendencia;
+        return tendencia === 'creciente' ? '+8%/año' : tendencia === 'estable' ? '+3%/año' : '-2%/año';
+      }
+      const first = careerSnaps[0].salario_promedio;
+      const last = careerSnaps[careerSnaps.length - 1].salario_promedio;
+      const yearSpan = careerSnaps[careerSnaps.length - 1].year - careerSnaps[0].year;
+      if (first === 0 || yearSpan === 0) return 'N/A';
+      const growth = Math.round(((last - first) / first) * 100 / yearSpan);
+      return growth > 0 ? `+${growth}%/año` : `${growth}%/año`;
+    };
 
     return [
       {
@@ -173,6 +209,22 @@ export class ComparisonComponent implements OnInit, OnDestroy {
         optionB: `$${s2.toLocaleString()}`,
         outcome: s1 > s2 ? 'Mayor Salario' : s2 > s1 ? 'Mayor Salario' : 'Iguales',
         tone: s1 > s2 ? 'primary' : s2 > s1 ? 'secondary' : 'neutral',
+      },
+      {
+        metric: 'Crecimiento Salarial',
+        optionA: getGrowth(m1.titulo_carrera),
+        optionB: getGrowth(m2.titulo_carrera),
+        outcome:
+          getGrowth(m1.titulo_carrera) > getGrowth(m2.titulo_carrera)
+            ? 'Mayor Crecimiento'
+            : getGrowth(m2.titulo_carrera) > getGrowth(m1.titulo_carrera)
+              ? 'Mayor Crecimiento'
+              : 'Similar',
+        tone: getGrowth(m1.titulo_carrera) > getGrowth(m2.titulo_carrera)
+          ? 'primary'
+          : getGrowth(m2.titulo_carrera) > getGrowth(m1.titulo_carrera)
+            ? 'secondary'
+            : 'neutral',
       },
       {
         metric: 'Demanda de Mercado',
