@@ -14,367 +14,393 @@ import {
 } from '@features/home/services/learning-api.service';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
 
-interface MapNode {
-  node: LearningNode;
-  x: number;
-  y: number;
-  pathColor: string;
-  goalId: string;
-}
-
-interface SpokeConfig {
-  angle: number; // degrees, 0 = right, CCW
-  color: string;
-  label: string;
-  icon: string;
-}
-
 @Component({
   selector: 'itera-learning-map',
   standalone: true,
   imports: [],
   template: `
     @if (isLoading()) {
-      <div class="map-skeleton">
-        <div class="skeleton" style="width:100%;height:100%;border-radius:1rem"></div>
+      <div class="paths-grid">
+        @for (i of [1, 2, 3, 4, 5]; track i) {
+          <div class="path-card-skeleton">
+            <div class="skeleton h-12 w-12 rounded-xl"></div>
+            <div class="skeleton h-4 w-24 rounded-lg mt-3"></div>
+            <div class="skeleton h-3 w-16 rounded-lg mt-1"></div>
+            <div class="skeleton h-2 w-full rounded-full mt-3"></div>
+          </div>
+        }
       </div>
     } @else {
-      <div class="map-wrapper">
-        <!-- ═══════ SVG MAP ═══════ -->
-        <div class="map-container">
-          <svg [attr.viewBox]="'0 0 ' + SVG_W + ' ' + SVG_H" class="map-svg">
-            <!-- Background subtle grid -->
-            <defs>
-              <radialGradient id="hub-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.12"/>
-                <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
-              </radialGradient>
-              <filter id="node-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.08"/>
-              </filter>
-              <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-                <feGaussianBlur stdDeviation="4" result="blur"/>
-                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-              </filter>
-            </defs>
-
-            <!-- Hub glow -->
-            <circle [attr.cx]="CX" [attr.cy]="CY" r="90" fill="url(#hub-glow)"/>
-
-            <!-- Spoke lines + path labels -->
-            @for (spoke of spokeConfigs; track spoke.label; let i = $index) {
-              @if (allPaths()[i]) {
-                <!-- Spoke line -->
-                <line
-                  [attr.x1]="CX" [attr.y1]="CY"
-                  [attr.x2]="getSpokeEndX(spoke.angle)"
-                  [attr.y2]="getSpokeEndY(spoke.angle)"
-                  [attr.stroke]="spoke.color"
-                  stroke-width="2"
-                  stroke-opacity="0.15"
-                  stroke-dasharray="6 4"
-                />
-                <!-- Path label at end of spoke -->
-                <text
-                  [attr.x]="getSpokeEndX(spoke.angle)"
-                  [attr.y]="getSpokeEndY(spoke.angle)"
-                  [attr.fill]="spoke.color"
-                  font-size="10"
-                  font-weight="700"
-                  font-family="Inter, system-ui, sans-serif"
-                  text-anchor="middle"
-                  dominant-baseline="middle"
-                  opacity="0.7"
-                >{{ spoke.label }}</text>
-              }
-            }
-
-            <!-- Node connections (lines between consecutive nodes on same spoke) -->
-            @for (spoke of spokeConfigs; track spoke.label; let i = $index) {
-              @if (getPathNodes(i).length > 1) {
-                @for (pos of getPathNodes(i); track pos.node.id; let j = $index) {
-                  @if (j < getPathNodes(i).length - 1) {
-                    <line
-                      [attr.x1]="pos.x" [attr.y1]="pos.y"
-                      [attr.x2]="getPathNodes(i)[j + 1].x"
-                      [attr.y2]="getPathNodes(i)[j + 1].y"
-                      [attr.stroke]="spoke.color"
-                      stroke-width="2"
-                      stroke-opacity="0.25"
-                    />
-                  }
-                }
-              }
-            }
-
-            <!-- Map nodes -->
-            @for (mn of mapNodes(); track mn.node.id) {
-              <g class="map-node"
-                [class.map-node--completed]="isCompleted(mn.node.id)"
-                [class.map-node--current]="isCurrent(mn.node.id)"
-                [class.map-node--selected]="selectedNode() != null && selectedNode()!.node.id === mn.node.id"
-                (click)="selectNode(mn)"
-                style="cursor: pointer"
-              >
-                <!-- Glow for current -->
-                @if (isCurrent(mn.node.id)) {
-                  <circle [attr.cx]="mn.x" [attr.cy]="mn.y" r="22"
-                    [attr.fill]="mn.pathColor" fill-opacity="0.12"
-                    filter="url(#glow)">
-                    <animate attributeName="r" values="20;24;20" dur="2s" repeatCount="indefinite"/>
-                    <animate attributeName="fill-opacity" values="0.12;0.06;0.12" dur="2s" repeatCount="indefinite"/>
-                  </circle>
-                }
-                <!-- Node circle -->
-                <circle
-                  [attr.cx]="mn.x" [attr.cy]="mn.y" r="18"
-                  [attr.fill]="isCompleted(mn.node.id) ? mn.pathColor : 'white'"
-                  [attr.stroke]="mn.pathColor"
-                  stroke-width="2"
-                  filter="url(#node-shadow)"
-                />
-                <!-- Icon / number / check -->
-                @if (isCompleted(mn.node.id)) {
-                  <text [attr.x]="mn.x" [attr.y]="mn.y"
-                    fill="white" font-size="14" font-weight="700"
-                    text-anchor="middle" dominant-baseline="central"
-                    font-family="Inter, system-ui, sans-serif">✓</text>
-                } @else if (isCurrent(mn.node.id)) {
-                  <text [attr.x]="mn.x" [attr.y]="mn.y"
-                    [attr.fill]="mn.pathColor" font-size="13" font-weight="700"
-                    text-anchor="middle" dominant-baseline="central"
-                    font-family="Inter, system-ui, sans-serif">▶</text>
-                } @else {
-                  <text [attr.x]="mn.x" [attr.y]="mn.y"
-                    fill="#94a3b8" font-size="10" font-weight="600"
-                    text-anchor="middle" dominant-baseline="central"
-                    font-family="Inter, system-ui, sans-serif">{{ getOrderedIndex(mn) }}</text>
-                }
-                <!-- Node label (below circle) -->
-                <text
-                  [attr.x]="mn.x" [attr.y]="mn.y + 28"
-                  fill="#475569" font-size="8" font-weight="500"
-                  text-anchor="middle" dominant-baseline="hanging"
-                  font-family="Inter, system-ui, sans-serif"
-                >
-                  <tspan [attr.fill]="isCompleted(mn.node.id) ? '#10b981' : '#475569'" font-weight="600">
-                    {{ truncate(mn.node.name, 14) }}
-                  </tspan>
-                </text>
-              </g>
-            }
-
-            <!-- Center hub -->
-            <circle [attr.cx]="CX" [attr.cy]="CY" r="32" fill="white" stroke="#e2e8f0" stroke-width="2" filter="url(#node-shadow)"/>
-            <text [attr.x]="CX" [attr.y]="CY - 4" font-size="20" text-anchor="middle" dominant-baseline="central">🎓</text>
-            <text [attr.x]="CX" [attr.y]="CY + 16" font-size="7" font-weight="600" fill="#64748b"
-              text-anchor="middle" dominant-baseline="hanging" font-family="Inter, system-ui, sans-serif">
-              MI RUTA
-            </text>
-          </svg>
-        </div>
-
-        <!-- ═══════ NODE DETAIL PANEL ═══════ -->
-        @if (selectedNode()) {
-          <div class="detail-panel" [style.--accent]="selectedNode()!.pathColor">
-            <div class="detail-panel__header">
-              <div class="detail-panel__title-row">
-                <div class="detail-panel__step"
-                  [class.detail-panel__step--completed]="isCompleted(selectedNode()!.node.id)"
-                  [class.detail-panel__step--current]="isCurrent(selectedNode()!.node.id)">
-                  @if (isCompleted(selectedNode()!.node.id)) {
-                    <i class="bi bi-check-lg"></i>
-                  } @else if (isCurrent(selectedNode()!.node.id)) {
-                    <i class="bi bi-play-fill"></i>
-                  } @else {
-                    {{ getOrderedIndex(selectedNode()!) }}
-                  }
-                </div>
-                <div>
-                  <h4 class="detail-panel__name">{{ selectedNode()!.node.name }}</h4>
-                  <div class="detail-panel__meta">
-                    <span class="tag" [class]="'tag--' + selectedNode()!.node.difficulty">
-                      {{ getDifficultyLabel(selectedNode()!.node.difficulty) }}
-                    </span>
-                    <span class="tag tag--weeks">{{ selectedNode()!.node.estimated_weeks }} semanas</span>
-                  </div>
-                </div>
+      <!-- ═══════ PATH CARDS GRID ═══════ -->
+      <div class="paths-grid">
+        @for (p of allPaths(); track p.goal_id) {
+          <button
+            class="path-card"
+            [style.--pc]="p.color"
+            (click)="openPath(p)"
+          >
+            <div class="path-card__icon">
+              <i [class]="'bi ' + getPathIcon(p.goal_id)"></i>
+            </div>
+            <h4 class="path-card__title">{{ p.title }}</h4>
+            <p class="path-card__meta">{{ p.nodes.length }} módulos</p>
+            <div class="path-card__bar">
+              <div class="path-card__bar-fill"
+                [style.width.%]="getPathProgress(p.goal_id)"
+                [style.background]="p.color">
               </div>
-              <button class="detail-panel__close" (click)="selectedNode.set(null)">
+            </div>
+            <span class="path-card__percent" [style.color]="p.color">
+              {{ getPathProgress(p.goal_id) }}%
+            </span>
+          </button>
+        }
+      </div>
+    }
+
+    <!-- ═══════ PATH DETAIL MODAL ═══════ -->
+    @if (activePath()) {
+      <div class="modal-backdrop" (click)="closeModal($event)">
+        <div class="modal-panel" (click)="$event.stopPropagation()">
+          <!-- Modal header -->
+          <div class="modal-header" [style.--mc]="activePath()!.color">
+            <div class="modal-header__left">
+              <div class="modal-header__icon">
+                <i [class]="'bi ' + getPathIcon(activePath()!.goal_id)"></i>
+              </div>
+              <div>
+                <h3 class="modal-header__title">{{ activePath()!.title }}</h3>
+                <p class="modal-header__subtitle">{{ activePath()!.subtitle }}</p>
+              </div>
+            </div>
+            <div class="modal-header__right">
+              <div class="modal-progress-ring">
+                <svg viewBox="0 0 36 36">
+                  <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                  <path class="ring-fg"
+                    [attr.stroke]="activePath()!.color"
+                    [attr.stroke-dasharray]="modalPercent() + ', 100'"
+                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                </svg>
+                <span class="ring-text">{{ modalPercent() }}%</span>
+              </div>
+              <button class="modal-close" (click)="activePath.set(null)">
                 <i class="bi bi-x-lg"></i>
               </button>
             </div>
-            <p class="detail-panel__desc">{{ selectedNode()!.node.description }}</p>
+          </div>
 
-            <!-- Resources -->
-            @if (selectedNode()!.node.resources && selectedNode()!.node.resources.length > 0) {
-              <div class="detail-panel__resources">
-                <h5 class="detail-panel__resources-title">
-                  Recursos ({{ selectedNode()!.node.resources.length }})
-                </h5>
-                <div class="resources-grid">
-                  @for (res of selectedNode()!.node.resources; track res.url) {
-                    <a class="resource-card" [href]="res.url" target="_blank" rel="noopener">
-                      <span class="resource-card__icon" [class]="'resource-card__icon--' + res.type">
-                        @switch (res.type) {
-                          @case ('course') { <i class="bi bi-book"></i> }
-                          @case ('article') { <i class="bi bi-file-text"></i> }
-                          @case ('practice') { <i class="bi bi-code-slash"></i> }
-                          @case ('tool') { <i class="bi bi-tools"></i> }
-                          @case ('book') { <i class="bi bi-book-half"></i> }
-                        }
+          <!-- Node timeline -->
+          <div class="modal-body">
+            @for (node of sortedNodes(); track node.id; let last = $last; let idx = $index) {
+              <div class="node-row">
+                @if (!last) {
+                  <div class="node-line"
+                    [class.node-line--done]="isCompleted(node.id) || isCurrent(node.id)">
+                  </div>
+                }
+                <button class="node-dot"
+                  [class.node-dot--done]="isCompleted(node.id)"
+                  [class.node-dot--current]="isCurrent(node.id)"
+                  [style.--nc]="activePath()!.color"
+                  (click)="toggleNode(node.id)">
+                  @if (isCompleted(node.id)) {
+                    <i class="bi bi-check-lg"></i>
+                  } @else if (isCurrent(node.id)) {
+                    <i class="bi bi-play-fill"></i>
+                  } @else {
+                    <span>{{ idx + 1 }}</span>
+                  }
+                </button>
+                <div class="node-info">
+                  <div class="node-info__row">
+                    <h5 class="node-info__name">{{ node.name }}</h5>
+                    <div class="node-info__tags">
+                      <span class="ntag ntag--d" [class]="'ntag--' + node.difficulty">
+                        {{ getDiffLabel(node.difficulty) }}
                       </span>
-                      <div class="resource-card__info">
-                        <span class="resource-card__name">{{ res.name }}</span>
-                        <span class="resource-card__desc">{{ res.description }}</span>
+                      <span class="ntag ntag--w">{{ node.estimated_weeks }}sem</span>
+                    </div>
+                  </div>
+                  <p class="node-info__desc">{{ node.description }}</p>
+
+                  <!-- Resources inline -->
+                  @if (node.resources && node.resources.length > 0) {
+                    <button class="res-toggle" (click)="toggleRes(node.id)">
+                      <i class="bi"
+                        [class.bi-chevron-down]="expandedRes() !== node.id"
+                        [class.bi-chevron-up]="expandedRes() === node.id"></i>
+                      {{ node.resources.length }} recursos
+                    </button>
+                    @if (expandedRes() === node.id) {
+                      <div class="res-list">
+                        @for (res of node.resources; track res.url) {
+                          <a class="res-item" [href]="res.url" target="_blank" rel="noopener">
+                            <span class="res-icon" [class]="'res-icon--' + res.type">
+                              @switch (res.type) {
+                                @case ('course') { <i class="bi bi-book"></i> }
+                                @case ('article') { <i class="bi bi-file-text"></i> }
+                                @case ('practice') { <i class="bi bi-code-slash"></i> }
+                                @case ('tool') { <i class="bi bi-tools"></i> }
+                                @case ('book') { <i class="bi bi-book-half"></i> }
+                              }
+                            </span>
+                            <div class="res-info">
+                              <span class="res-name">{{ res.name }}</span>
+                              <span class="res-desc">{{ res.description }}</span>
+                            </div>
+                            @if (res.is_free) {
+                              <span class="res-free">Gratis</span>
+                            }
+                          </a>
+                        }
                       </div>
-                      @if (res.is_free) {
-                        <span class="resource-card__free">Gratis</span>
-                      }
-                    </a>
+                    }
                   }
                 </div>
               </div>
             }
-
-            <!-- Toggle button -->
-            <button class="toggle-btn"
-              [class.toggle-btn--completed]="isCompleted(selectedNode()!.node.id)"
-              (click)="toggleNode(selectedNode()!.node.id)">
-              @if (isCompleted(selectedNode()!.node.id)) {
-                <i class="bi bi-arrow-counterclockwise mr-1.5"></i>Marcar como pendiente
-              } @else {
-                <i class="bi bi-check-circle mr-1.5"></i>Marcar como completado
-              }
-            </button>
           </div>
-        }
+
+          <!-- Summary footer -->
+          <div class="modal-footer">
+            <span class="modal-footer__item modal-footer__item--done">
+              <i class="bi bi-check-circle-fill"></i> {{ completedCount() }} completados
+            </span>
+            <span class="modal-footer__item modal-footer__item--active">
+              <i class="bi bi-play-circle-fill"></i> {{ inProgressCount() }} en progreso
+            </span>
+            <span class="modal-footer__item modal-footer__item--pending">
+              <i class="bi bi-clock-history"></i> {{ plannedCount() }} restantes
+            </span>
+          </div>
+        </div>
       </div>
     }
   `,
   styles: [`
     /* ═══════════════════════════════════════
-       MAP CONTAINER
+       PATH CARDS GRID
     ═══════════════════════════════════════ */
-    .map-skeleton { width: 100%; height: 360px; background: #f8fafc; border-radius: 1rem; border: 1px solid #e2e8f0; }
-
-    .map-wrapper { font-family: 'Inter', system-ui, sans-serif; }
-
-    .map-container {
-      width: 100%; overflow-x: auto; overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;
-      border-radius: 1rem;
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      border: 1px solid #e2e8f0;
-      padding: 0.5rem;
+    .paths-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem;
+      font-family: 'Inter', system-ui, sans-serif;
     }
-    .map-container::-webkit-scrollbar { height: 4px; }
-    .map-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-
-    .map-svg {
-      display: block;
-      min-width: 680px;
-      width: 100%;
-      height: auto;
+    @media (max-width: 768px) {
+      .paths-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 480px) {
+      .paths-grid { grid-template-columns: repeat(2, 1fr); }
     }
 
-    /* Node interactions */
-    .map-node { transition: transform 0.15s ease; }
-    .map-node:hover { transform: scale(1.08); }
-    .map-node--selected circle:nth-child(2) { stroke-width: 3; }
+    .path-card-skeleton {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 1.25rem 0.75rem;
+      background: #f8fafc; border-radius: 1rem; border: 1px solid #e2e8f0;
+    }
+
+    .path-card {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 1.25rem 0.75rem;
+      background: #f8fafc; border: 1.5px solid #e2e8f0;
+      border-radius: 1rem; cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      text-align: center;
+    }
+    .path-card:hover {
+      border-color: var(--pc, #94a3b8);
+      background: color-mix(in srgb, var(--pc, #94a3b8) 5%, white);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px color-mix(in srgb, var(--pc, #94a3b8) 15%, transparent);
+    }
+
+    .path-card__icon {
+      width: 3rem; height: 3rem; border-radius: 0.75rem;
+      display: flex; align-items: center; justify-content: center;
+      background: color-mix(in srgb, var(--pc, #6366f1) 12%, white);
+      color: var(--pc, #6366f1);
+      font-size: 1.25rem;
+      transition: all 0.2s ease;
+    }
+    .path-card:hover .path-card__icon {
+      background: var(--pc, #6366f1);
+      color: white;
+    }
+
+    .path-card__title {
+      font-size: 0.8125rem; font-weight: 700; color: #1e293b;
+      margin: 0.75rem 0 0.125rem 0;
+    }
+    .path-card__meta { font-size: 0.6875rem; color: #94a3b8; margin: 0; }
+
+    .path-card__bar {
+      width: 100%; height: 0.25rem; border-radius: 9999px;
+      background: #e2e8f0; margin-top: 0.75rem; overflow: hidden;
+    }
+    .path-card__bar-fill {
+      height: 100%; border-radius: 9999px;
+      transition: width 0.5s ease;
+    }
+
+    .path-card__percent {
+      font-size: 0.6875rem; font-weight: 700; margin-top: 0.375rem;
+    }
 
     /* ═══════════════════════════════════════
-       DETAIL PANEL
+       MODAL BACKDROP
     ═══════════════════════════════════════ */
-    .detail-panel {
-      margin-top: 0.75rem;
-      background: white; border: 1px solid #e2e8f0;
-      border-radius: 0.875rem; border-left: 3px solid var(--accent, #6366f1);
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 50;
+      background: rgba(15, 23, 42, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
       padding: 1rem;
+      animation: fadeIn 0.15s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal-panel {
+      background: white; border-radius: 1.25rem;
+      width: 100%; max-width: 560px; max-height: 85vh;
+      display: flex; flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
       animation: slideUp 0.2s ease;
+      overflow: hidden;
     }
     @keyframes slideUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(16px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .detail-panel__header {
-      display: flex; justify-content: space-between; align-items: flex-start; gap: 0.75rem;
+    /* Modal header */
+    .modal-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid #e2e8f0;
+      background: color-mix(in srgb, var(--mc, #6366f1) 4%, white);
     }
-    .detail-panel__title-row { display: flex; gap: 0.625rem; align-items: flex-start; flex: 1; }
-    .detail-panel__step {
-      width: 2rem; height: 2rem; border-radius: 0.5rem; flex-shrink: 0;
+    .modal-header__left { display: flex; align-items: center; gap: 0.75rem; }
+    .modal-header__icon {
+      width: 2.5rem; height: 2.5rem; border-radius: 0.625rem;
       display: flex; align-items: center; justify-content: center;
-      border: 2px solid #d1d5db; background: white; font-size: 0.75rem; font-weight: 700; color: #94a3b8;
+      background: var(--mc, #6366f1); color: white; font-size: 1.125rem;
     }
-    .detail-panel__step--completed { background: #10b981; border-color: #10b981; color: white; }
-    .detail-panel__step--current { border-color: #3b82f6; color: #3b82f6; }
-    .detail-panel__name { font-size: 0.9375rem; font-weight: 700; color: #1e293b; margin: 0 0 0.25rem 0; }
-    .detail-panel__meta { display: flex; gap: 0.375rem; }
-    .detail-panel__close {
-      background: none; border: none; color: #94a3b8; cursor: pointer;
-      padding: 0.25rem; border-radius: 0.375rem; font-size: 0.875rem;
-    }
-    .detail-panel__close:hover { background: #f1f5f9; color: #475569; }
+    .modal-header__title { font-size: 1rem; font-weight: 700; color: #1e293b; margin: 0; }
+    .modal-header__subtitle { font-size: 0.6875rem; color: #64748b; margin: 0.125rem 0 0 0; }
+    .modal-header__right { display: flex; align-items: center; gap: 0.5rem; }
 
-    .detail-panel__desc {
-      font-size: 0.8125rem; color: #64748b; line-height: 1.5;
-      margin: 0.75rem 0;
+    .modal-progress-ring { position: relative; width: 2.25rem; height: 2.25rem; }
+    .modal-progress-ring svg { width: 100%; height: 100%; }
+    .ring-bg { fill: none; stroke: #e2e8f0; stroke-width: 3; }
+    .ring-fg {
+      fill: none; stroke-width: 3; stroke-linecap: round;
+      transform: rotate(-90deg); transform-origin: 50% 50%;
+      transition: stroke-dasharray 0.5s ease;
+    }
+    .ring-text {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.5rem; font-weight: 700; color: #1e293b;
     }
 
-    .tag {
-      font-size: 0.625rem; font-weight: 600;
-      padding: 0.125rem 0.5rem; border-radius: 9999px;
+    .modal-close {
+      width: 2rem; height: 2rem; border-radius: 0.5rem;
+      display: flex; align-items: center; justify-content: center;
+      background: none; border: none; color: #94a3b8;
+      cursor: pointer; font-size: 0.875rem;
     }
-    .tag--basic { background: #dbeafe; color: #1d4ed8; }
-    .tag--intermediate { background: #fef3c7; color: #b45309; }
-    .tag--advanced { background: #fce7f3; color: #be185d; }
-    .tag--weeks { background: #f1f5f9; color: #64748b; }
+    .modal-close:hover { background: #f1f5f9; color: #475569; }
+
+    /* Modal body */
+    .modal-body {
+      flex: 1; overflow-y: auto; padding: 1.25rem 1.5rem;
+      scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;
+    }
+    .modal-body::-webkit-scrollbar { width: 4px; }
+    .modal-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+
+    /* Node rows */
+    .node-row { display: flex; gap: 0.75rem; position: relative; padding-bottom: 0.75rem; }
+    .node-line {
+      position: absolute; left: 0.9375rem; top: 2.25rem;
+      width: 2px; height: calc(100% - 0.75rem);
+      background: #e2e8f0; transition: background 0.3s;
+    }
+    .node-line--done { background: #10b981; }
+
+    .node-dot {
+      width: 1.875rem; height: 1.875rem; border-radius: 0.5rem; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid #d1d5db; background: white; cursor: pointer;
+      transition: all 0.2s ease; font-size: 0.6875rem; font-weight: 700; color: #94a3b8;
+    }
+    .node-dot:hover { border-color: var(--nc, #6366f1); }
+    .node-dot--done { background: #10b981; border-color: #10b981; color: white; }
+    .node-dot--current { border-color: #3b82f6; color: #3b82f6; }
+
+    .node-info { flex: 1; min-width: 0; }
+    .node-info__row { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+    .node-info__name { font-size: 0.8125rem; font-weight: 600; color: #1e293b; margin: 0; }
+    .node-info__tags { display: flex; gap: 0.25rem; flex-shrink: 0; }
+    .ntag { font-size: 0.5625rem; font-weight: 600; padding: 0.0625rem 0.375rem; border-radius: 9999px; }
+    .ntag--d { text-transform: uppercase; }
+    .ntag--basic { background: #dbeafe; color: #1d4ed8; }
+    .ntag--intermediate { background: #fef3c7; color: #b45309; }
+    .ntag--advanced { background: #fce7f3; color: #be185d; }
+    .ntag--w { color: #94a3b8; background: #f1f5f9; }
+    .node-info__desc {
+      font-size: 0.6875rem; color: #64748b; margin: 0.25rem 0 0 0; line-height: 1.4;
+    }
 
     /* Resources */
-    .detail-panel__resources { margin-top: 0.5rem; }
-    .detail-panel__resources-title {
-      font-size: 0.75rem; font-weight: 600; color: #475569;
-      margin: 0 0 0.5rem 0;
+    .res-toggle {
+      display: inline-flex; align-items: center; gap: 0.25rem;
+      font-size: 0.6875rem; color: #6366f1; font-weight: 600;
+      background: none; border: none; cursor: pointer; padding: 0.25rem 0;
     }
-    .resources-grid { display: flex; flex-direction: column; gap: 0.375rem; }
-    .resource-card {
+    .res-toggle:hover { text-decoration: underline; }
+    .res-list { margin-top: 0.375rem; display: flex; flex-direction: column; gap: 0.25rem; }
+    .res-item {
       display: flex; align-items: center; gap: 0.5rem;
-      padding: 0.5rem 0.625rem; background: #f8fafc;
+      padding: 0.4375rem 0.5rem; background: #f8fafc;
       border: 1px solid #f1f5f9; border-radius: 0.5rem;
       text-decoration: none; transition: all 0.15s ease;
     }
-    .resource-card:hover { border-color: #c7d2fe; background: #f5f3ff; }
-    .resource-card__icon {
-      width: 1.5rem; height: 1.5rem; border-radius: 0.25rem;
+    .res-item:hover { border-color: #c7d2fe; background: #f5f3ff; }
+    .res-icon {
+      width: 1.375rem; height: 1.375rem; border-radius: 0.25rem;
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.6875rem; flex-shrink: 0;
+      font-size: 0.625rem; flex-shrink: 0;
     }
-    .resource-card__icon--course { background: #dbeafe; color: #2563eb; }
-    .resource-card__icon--article { background: #dcfce7; color: #16a34a; }
-    .resource-card__icon--practice { background: #fef3c7; color: #d97706; }
-    .resource-card__icon--tool { background: #e0e7ff; color: #4f46e5; }
-    .resource-card__icon--book { background: #fce7f3; color: #db2777; }
-    .resource-card__info { flex: 1; min-width: 0; }
-    .resource-card__name { display: block; font-size: 0.75rem; font-weight: 600; color: #1e293b; }
-    .resource-card__desc { display: block; font-size: 0.625rem; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .resource-card__free {
-      font-size: 0.5625rem; font-weight: 600; padding: 0.0625rem 0.375rem;
+    .res-icon--course { background: #dbeafe; color: #2563eb; }
+    .res-icon--article { background: #dcfce7; color: #16a34a; }
+    .res-icon--practice { background: #fef3c7; color: #d97706; }
+    .res-icon--tool { background: #e0e7ff; color: #4f46e5; }
+    .res-icon--book { background: #fce7f3; color: #db2777; }
+    .res-info { flex: 1; min-width: 0; }
+    .res-name { display: block; font-size: 0.6875rem; font-weight: 600; color: #1e293b; }
+    .res-desc { display: block; font-size: 0.5625rem; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .res-free {
+      font-size: 0.5rem; font-weight: 600; padding: 0.0625rem 0.3125rem;
       border-radius: 9999px; background: #dcfce7; color: #166534; flex-shrink: 0;
     }
 
-    /* Toggle button */
-    .toggle-btn {
-      width: 100%; margin-top: 0.75rem; padding: 0.5rem;
-      border-radius: 0.5rem; border: 1px solid #e2e8f0;
-      background: white; color: #475569; font-size: 0.8125rem; font-weight: 600;
-      cursor: pointer; transition: all 0.15s ease;
-      font-family: 'Inter', system-ui, sans-serif;
+    /* Modal footer */
+    .modal-footer {
+      display: flex; justify-content: center; gap: 1.25rem;
+      padding: 0.75rem 1.5rem;
+      border-top: 1px solid #e2e8f0; background: #f8fafc;
     }
-    .toggle-btn:hover { background: #f8fafc; border-color: #cbd5e1; }
-    .toggle-btn--completed { color: #10b981; border-color: #bbf7d0; background: #f0fdf4; }
-    .toggle-btn--completed:hover { background: #dcfce7; }
+    .modal-footer__item {
+      display: flex; align-items: center; gap: 0.25rem;
+      font-size: 0.6875rem; font-weight: 500;
+    }
+    .modal-footer__item i { font-size: 0.8125rem; }
+    .modal-footer__item--done { color: #10b981; }
+    .modal-footer__item--active { color: #3b82f6; }
+    .modal-footer__item--pending { color: #64748b; }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -382,54 +408,34 @@ export class LearningMapComponent implements OnInit {
   private readonly learningApi = inject(LearningApiService);
   private readonly authStorage = inject(AuthStorageService);
 
-  // SVG dimensions
-  readonly SVG_W = 700;
-  readonly SVG_H = 420;
-  readonly CX = 350;
-  readonly CY = 210;
-
-  // 5 paths positioned around the hub
-  readonly spokeConfigs: SpokeConfig[] = [
-    { angle: 90,   color: '#8b5cf6', label: 'IA',       icon: 'bi-robot' },      // bottom
-    { angle: 162,  color: '#6366f1', label: 'Backend',  icon: 'bi-server' },     // bottom-left
-    { angle: 234,  color: '#06b6d4', label: 'Frontend', icon: 'bi-window' },     // top-left
-    { angle: 306,  color: '#0ea5e9', label: 'Cloud',    icon: 'bi-cloud' },      // top-right
-    { angle: 18,   color: '#64748b', label: 'General',  icon: 'bi-grid' },       // right
-  ];
-
   readonly allPaths = signal<LearningPath[]>([]);
   readonly progressMap = signal<Record<string, number>>({});
+  readonly isLoading = signal(true);
+
+  // Modal state
+  readonly activePath = signal<LearningPath | null>(null);
   readonly completedNodeIds = signal<string[]>([]);
   readonly currentNodeId = signal<string | null>(null);
-  readonly isLoading = signal(true);
-  readonly selectedNode = signal<MapNode | null>(null);
+  readonly expandedRes = signal<string | null>(null);
 
-  readonly mapNodes = computed(() => {
-    const paths = this.allPaths();
-    if (!paths.length) return [];
+  readonly sortedNodes = computed(() => {
+    const p = this.activePath();
+    if (!p) return [];
+    return [...p.nodes].sort((a, b) => a.order - b.order);
+  });
 
-    const nodes: MapNode[] = [];
-    const distances = [80, 130, 180, 230, 275, 315, 345]; // distance from center per node index
+  readonly modalPercent = computed(() => {
+    const p = this.activePath();
+    if (!p || p.nodes.length === 0) return 0;
+    return Math.round((this.completedNodeIds().length / p.nodes.length) * 100);
+  });
 
-    paths.forEach((path, pathIdx) => {
-      if (pathIdx >= this.spokeConfigs.length) return;
-      const spoke = this.spokeConfigs[pathIdx];
-      const sorted = [...path.nodes].sort((a, b) => a.order - b.order);
-
-      sorted.forEach((node, nodeIdx) => {
-        const dist = distances[nodeIdx] ?? 345;
-        const rad = (spoke.angle * Math.PI) / 180;
-        nodes.push({
-          node,
-          x: this.CX + dist * Math.cos(rad),
-          y: this.CY - dist * Math.sin(rad),
-          pathColor: spoke.color,
-          goalId: path.goal_id,
-        });
-      });
-    });
-
-    return nodes;
+  readonly completedCount = computed(() => this.completedNodeIds().length);
+  readonly inProgressCount = computed(() => (this.currentNodeId() ? 1 : 0));
+  readonly plannedCount = computed(() => {
+    const p = this.activePath();
+    if (!p) return 0;
+    return p.nodes.length - this.completedNodeIds().length - (this.currentNodeId() ? 1 : 0);
   });
 
   constructor() {}
@@ -443,14 +449,14 @@ export class LearningMapComponent implements OnInit {
     this.learningApi.getPaths().subscribe({
       next: (res) => {
         this.allPaths.set(res.paths);
-        this.loadProgress();
+        this.loadAllProgress();
         this.isLoading.set(false);
       },
       error: () => this.isLoading.set(false),
     });
   }
 
-  private loadProgress(): void {
+  private loadAllProgress(): void {
     const userId = this.authStorage.getUserId();
     if (!userId) return;
     this.learningApi.getProgress(userId).subscribe({
@@ -460,75 +466,47 @@ export class LearningMapComponent implements OnInit {
           map[rec.goal_id] = rec.progress_percent;
         }
         this.progressMap.set(map);
-
-        // Set completed/current from first path with progress
-        const active = data.progress.find(p => p.progress_percent > 0 && p.progress_percent < 100)
-          ?? data.progress[0];
-        if (active) {
-          this.completedNodeIds.set(active.completed_nodes ?? []);
-          this.currentNodeId.set(active.current_node ?? null);
-        }
       },
     });
   }
 
-  getSpokeEndX(angle: number): number {
-    const rad = (angle * Math.PI) / 180;
-    return this.CX + 370 * Math.cos(rad);
+  getPathProgress(goalId: string): number {
+    return this.progressMap()[goalId] ?? 0;
   }
 
-  getSpokeEndY(angle: number): number {
-    const rad = (angle * Math.PI) / 180;
-    return this.CY - 370 * Math.sin(rad);
+  openPath(path: LearningPath): void {
+    this.activePath.set(path);
+    this.expandedRes.set(null);
+    this.loadPathProgress(path.goal_id);
   }
 
-  getPathNodes(pathIdx: number): MapNode[] {
-    return this.mapNodes().filter(m => {
-      const paths = this.allPaths();
-      if (!paths[pathIdx]) return false;
-      return m.goalId === paths[pathIdx].goal_id;
-    });
-  }
-
-  selectNode(mn: MapNode): void {
-    this.selectedNode.set(this.selectedNode()?.node.id === mn.node.id ? null : mn);
-    // Also set active path progress
-    this.loadProgressForPath(mn.goalId);
-  }
-
-  private loadProgressForPath(goalId: string): void {
+  private loadPathProgress(goalId: string): void {
     const userId = this.authStorage.getUserId();
-    if (!userId) return;
+    if (!userId) {
+      this.currentNodeId.set(this.findFirstUncompleted());
+      return;
+    }
     this.learningApi.getProgress(userId).subscribe({
       next: (data) => {
         const rec = data.progress.find(p => p.goal_id === goalId);
         this.completedNodeIds.set(rec?.completed_nodes ?? []);
-        this.currentNodeId.set(rec?.current_node ?? null);
+        this.currentNodeId.set(rec?.current_node ?? this.findFirstUncompleted());
+      },
+      error: () => {
+        this.currentNodeId.set(this.findFirstUncompleted());
       },
     });
   }
 
-  toggleNode(nodeId: string): void {
-    const userId = this.authStorage.getUserId();
-    const mn = this.selectedNode();
-    if (!userId || !mn) return;
-
-    const wasCompleted = this.isCompleted(nodeId);
-    if (wasCompleted) {
-      this.completedNodeIds.update(ids => ids.filter(id => id !== nodeId));
-    } else {
-      this.completedNodeIds.update(ids => [...ids, nodeId]);
+  private findFirstUncompleted(): string | null {
+    const p = this.activePath();
+    if (!p) return null;
+    const completed = this.completedNodeIds();
+    const sorted = [...p.nodes].sort((a, b) => a.order - b.order);
+    for (const node of sorted) {
+      if (!completed.includes(node.id)) return node.id;
     }
-
-    this.learningApi.toggleNode(userId, mn.goalId, nodeId, !wasCompleted).subscribe({
-      error: () => {
-        if (wasCompleted) {
-          this.completedNodeIds.update(ids => [...ids, nodeId]);
-        } else {
-          this.completedNodeIds.update(ids => ids.filter(id => id !== nodeId));
-        }
-      },
-    });
+    return null;
   }
 
   isCompleted(nodeId: string): boolean {
@@ -539,20 +517,49 @@ export class LearningMapComponent implements OnInit {
     return this.currentNodeId() === nodeId && !this.isCompleted(nodeId);
   }
 
-  getOrderedIndex(mn: MapNode): number {
-    const pathNodes = this.getPathNodes(this.spokeConfigs.findIndex(s =>
-      this.allPaths().find(p => p.goal_id === mn.goalId && s.label.toLowerCase() === mn.goalId.toLowerCase())
-    ));
-    const idx = pathNodes.findIndex(n => n.node.id === mn.node.id);
-    return idx >= 0 ? idx + 1 : 0;
+  toggleNode(nodeId: string): void {
+    const userId = this.authStorage.getUserId();
+    const p = this.activePath();
+    if (!userId || !p) return;
+
+    const wasCompleted = this.isCompleted(nodeId);
+    if (wasCompleted) {
+      this.completedNodeIds.update(ids => ids.filter(id => id !== nodeId));
+    } else {
+      this.completedNodeIds.update(ids => [...ids, nodeId]);
+    }
+    this.currentNodeId.set(this.findFirstUncompleted());
+
+    this.learningApi.toggleNode(userId, p.goal_id, nodeId, !wasCompleted).subscribe({
+      error: () => {
+        if (wasCompleted) {
+          this.completedNodeIds.update(ids => [...ids, nodeId]);
+        } else {
+          this.completedNodeIds.update(ids => ids.filter(id => id !== nodeId));
+        }
+        this.currentNodeId.set(this.findFirstUncompleted());
+      },
+    });
   }
 
-  getDifficultyLabel(d: string): string {
+  toggleRes(nodeId: string): void {
+    this.expandedRes.set(this.expandedRes() === nodeId ? null : nodeId);
+  }
+
+  closeModal(event: MouseEvent): void {
+    this.activePath.set(null);
+  }
+
+  getDiffLabel(d: string): string {
     const map: Record<string, string> = { basic: 'Básico', intermediate: 'Intermedio', advanced: 'Avanzado' };
     return map[d] ?? d;
   }
 
-  truncate(text: string, max: number): string {
-    return text.length > max ? text.slice(0, max) + '…' : text;
+  getPathIcon(goalId: string): string {
+    const icons: Record<string, string> = {
+      Backend: 'bi-server', AI: 'bi-robot', Cloud: 'bi-cloud',
+      Frontend: 'bi-window', General: 'bi-grid',
+    };
+    return icons[goalId] ?? 'bi-signpost-2';
   }
 }
