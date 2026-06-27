@@ -233,8 +233,10 @@ export class JobExplorerPageComponent implements OnInit, OnDestroy {
       })
       .subscribe();
 
-    // Open through our redirect proxy to avoid 403 from external sites
-    const proxyUrl = `/api/ia/offers/redirect?url=${encodeURIComponent(offer.url_origen)}`;
+    // Abrir oferta a través de nuestro proxy server-side
+    // El backend fetchea la página de Computrabajo y la sirve al usuario
+    // Así evitamos bloqueos 403 (la request sale de nuestro servidor, no del navegador)
+    const proxyUrl = `/api/ia/offers/proxy?url=${encodeURIComponent(offer.url_origen)}`;
     window.open(proxyUrl, '_blank', 'noopener,noreferrer');
   }
 
