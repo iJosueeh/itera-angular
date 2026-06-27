@@ -233,8 +233,9 @@ export class JobExplorerPageComponent implements OnInit, OnDestroy {
       })
       .subscribe();
 
-    // Open in new tab without Referer header to avoid 403 from external sites
-    window.open(offer.url_origen, '_blank', 'noopener,noreferrer');
+    // Open through our redirect proxy to avoid 403 from external sites
+    const proxyUrl = `/api/ia/offers/redirect?url=${encodeURIComponent(offer.url_origen)}`;
+    window.open(proxyUrl, '_blank', 'noopener,noreferrer');
   }
 
   onCompareProfile(): void {
