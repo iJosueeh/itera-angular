@@ -14,7 +14,7 @@ import { firstValueFrom, Subscription } from 'rxjs';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
-import { InteractiveRoadmapComponent } from '../../components/interactive-roadmap/interactive-roadmap.component';
+import { LearningMapComponent } from '../../components/learning-map/learning-map.component';
 import {
   DemandChartComponent,
   ChartDataPoint,
@@ -37,7 +37,7 @@ import { MatchResult } from '@shared/interfaces/market.interface';
   standalone: true,
   imports: [
     DashboardShellComponent,
-    InteractiveRoadmapComponent,
+    LearningMapComponent,
     DemandChartComponent,
     DonutChartComponent,
     SkillRankingComponent,
