@@ -781,7 +781,6 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   protected readonly sidebarItems: ReadonlyArray<NavItem> = [
     { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
     { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Monitor de Auditoría', href: '/dashboard/audit', icon: 'bi-shield-check' },
     { label: 'Demanda', href: '/dashboard', fragment: 'demand', icon: 'bi-bar-chart-line' },
     { label: 'Mis Rutas', href: '/dashboard', fragment: 'routes', icon: 'bi-signpost-2' },
     { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },

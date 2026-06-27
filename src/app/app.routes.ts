@@ -55,14 +55,6 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'dashboard/audit',
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./features/dashboard/page/audit-monitor/audit-monitor-page.component').then(
-        (m) => m.AuditMonitorPageComponent,
-      ),
-  },
-  {
     path: 'dashboard/profile',
     canActivate: [authGuard],
     loadComponent: () =>

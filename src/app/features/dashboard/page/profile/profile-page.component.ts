@@ -293,7 +293,6 @@ export class ProfilePageComponent implements OnInit {
   protected readonly sidebarItems: ReadonlyArray<NavItem> = [
     { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
     { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Monitor de Auditoría', href: '/dashboard/audit', icon: 'bi-shield-check' },
     { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
     { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
     { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person', active: true },
