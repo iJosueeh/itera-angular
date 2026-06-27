@@ -88,8 +88,8 @@
         <!-- Selector A -->
         <div class="relative">
           <select
+            #selectA
             class="appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm font-semibold text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none cursor-pointer transition-all hover:border-slate-300"
-            [value]="selectedIndexA()"
             (change)="onSelectA(+$any($event.target).value)"
           >
             @for (career of availableCareers(); track career.title; let i = $index) {
@@ -106,8 +106,8 @@
         <!-- Selector B -->
         <div class="relative">
           <select
+            #selectB
             class="appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm font-semibold text-slate-700 focus:border-secondary focus:ring-2 focus:ring-secondary/10 outline-none cursor-pointer transition-all hover:border-slate-300"
-            [value]="selectedIndexB()"
             (change)="onSelectB(+$any($event.target).value)"
           >
             @for (career of availableCareers(); track career.title; let i = $index) {

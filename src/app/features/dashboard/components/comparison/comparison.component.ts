@@ -6,6 +6,10 @@ import {
   computed,
   OnInit,
   OnDestroy,
+  effect,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
 } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
 import { MarketApiService, SalarySnapshotResponse } from '@features/home/services/market-api.service';
@@ -78,6 +82,9 @@ export class ComparisonComponent implements OnInit, OnDestroy {
   // ── Selection ──
   readonly selectedIndexA = signal<number>(0);
   readonly selectedIndexB = signal<number>(1);
+
+  @ViewChild('selectA') selectARef?: ElementRef<HTMLSelectElement>;
+  @ViewChild('selectB') selectBRef?: ElementRef<HTMLSelectElement>;
 
   // ── Derived ──
   readonly hasEnoughData = computed(() => this.allMetrics().length >= 2);
@@ -297,6 +304,23 @@ export class ComparisonComponent implements OnInit, OnDestroy {
 
   // ── Subscriptions ──
   private dataSub?: Subscription;
+
+  constructor() {
+    // Sync select elements when signals change
+    effect(() => {
+      const idxA = this.selectedIndexA();
+      const idxB = this.selectedIndexB();
+      // Small delay to ensure DOM is updated
+      setTimeout(() => {
+        if (this.selectARef?.nativeElement) {
+          this.selectARef.nativeElement.value = String(idxA);
+        }
+        if (this.selectBRef?.nativeElement) {
+          this.selectBRef.nativeElement.value = String(idxB);
+        }
+      });
+    });
+  }
 
   ngOnInit(): void {
     this.loadData();
