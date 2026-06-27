@@ -25,7 +25,10 @@ export class ProfileContentService {
 
     this.profileApi
       .getProfile()
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
         next: (data) => {
           console.log(`[Profile] loadProfile → academicGoal: "${data.academicGoal}"`);
@@ -35,7 +38,6 @@ export class ProfileContentService {
           console.error('[Profile] Error loading profile:', err);
           this.error.set('Error al cargar el perfil académico.');
         },
-        complete: () => this.isLoading.set(false),
       });
   }
 
