@@ -516,13 +516,10 @@
           </div>
           <div>
             <h3 class="text-lg font-semibold text-slate-900">Tu Ruta de Aprendizaje</h3>
-            <p class="text-xs text-slate-500">
-              Progreso hacia
-              <span class="font-semibold text-slate-700">{{ profile()?.academicGoal }}</span>
-            </p>
+            <p class="text-xs text-slate-500">Selecciona una especialización y sigue tu progreso</p>
           </div>
         </div>
-        <div class="mt-4">
+        <div class="mt-2">
           <itera-interactive-roadmap [academicGoal]="profile()?.academicGoal || 'General'"></itera-interactive-roadmap>
         </div>
       </div>
