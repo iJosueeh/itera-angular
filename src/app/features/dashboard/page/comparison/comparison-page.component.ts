@@ -24,7 +24,7 @@ export class ComparisonPageComponent {
   protected readonly vm = this.dashboardContentService.vm;
   protected readonly currentTheme = this.profileContentService.currentTheme;
 
-protected readonly sidebarItems = DASHBOARD_SIDEBAR_ITEMS.map((item) => ({
+  protected readonly sidebarItems = DASHBOARD_SIDEBAR_ITEMS.map((item) => ({
     ...item,
     active: item.href === '/dashboard/comparison',
   }));

@@ -94,7 +94,8 @@ export class HomePageComponent {
       step: '01',
       icon: 'bi-bar-chart-line',
       title: 'Explora',
-      description: 'Ve las tendencias del mercado laboral por carrera y las habilidades más demandadas.',
+      description:
+        'Ve las tendencias del mercado laboral por carrera y las habilidades más demandadas.',
       link: '/dashboard',
     },
     {
@@ -108,7 +109,8 @@ export class HomePageComponent {
       step: '03',
       icon: 'bi-rocket-takeoff',
       title: 'Conecta',
-      description: 'Usa las rutas de aprendizaje para adquirir las habilidades que el mercado necesita.',
+      description:
+        'Usa las rutas de aprendizaje para adquirir las habilidades que el mercado necesita.',
       link: '/dashboard',
     },
   ];

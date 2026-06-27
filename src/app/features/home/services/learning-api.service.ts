@@ -53,9 +53,7 @@ export class LearningApiService {
   private readonly baseUrl = '/api/ia/learning';
 
   getPaths(): Observable<{ paths: LearningPath[]; total: number }> {
-    return this.http.get<{ paths: LearningPath[]; total: number }>(
-      `${this.baseUrl}/paths`,
-    );
+    return this.http.get<{ paths: LearningPath[]; total: number }>(`${this.baseUrl}/paths`);
   }
 
   getPath(goalId: string): Observable<LearningPath> {

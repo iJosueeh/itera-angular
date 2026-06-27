@@ -12,7 +12,10 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { CommonModule, DecimalPipe } from '@angular/common';
-import { MarketApiService, SalarySnapshotResponse } from '@features/home/services/market-api.service';
+import {
+  MarketApiService,
+  SalarySnapshotResponse,
+} from '@features/home/services/market-api.service';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
 import { CareerMetrics } from '@shared/interfaces/market.interface';
@@ -136,7 +139,9 @@ export class ComparisonComponent implements OnInit, OnDestroy {
           const lastSalary = careerSnaps[careerSnaps.length - 1].salario_promedio;
           const yearSpan = careerSnaps[careerSnaps.length - 1].year - careerSnaps[0].year;
           if (firstSalary > 0 && yearSpan > 0) {
-            growthPercent = Math.round(((lastSalary - firstSalary) / firstSalary) * 100 / yearSpan);
+            growthPercent = Math.round(
+              (((lastSalary - firstSalary) / firstSalary) * 100) / yearSpan,
+            );
           }
         }
       }
@@ -156,8 +161,18 @@ export class ComparisonComponent implements OnInit, OnDestroy {
         accent,
         salary: `$${salaryAvg.toLocaleString()}`,
         salaryRaw: salaryAvg,
-        growth: growthPercent > 0 ? `+${growthPercent}%` : growthPercent < 0 ? `${growthPercent}%` : '~0%',
-        growthLabel: tendencia === 'creciente' ? 'Creciente' : tendencia === 'estable' ? 'Estable' : 'En reducción',
+        growth:
+          growthPercent > 0
+            ? `+${growthPercent}%`
+            : growthPercent < 0
+              ? `${growthPercent}%`
+              : '~0%',
+        growthLabel:
+          tendencia === 'creciente'
+            ? 'Creciente'
+            : tendencia === 'estable'
+              ? 'Estable'
+              : 'En reducción',
         stack: m.aprendizaje.habilidades_clave,
         preparationMonths: m.aprendizaje.tiempo_estimado_upgrading_meses ?? 12,
         topCompanies: m.analisis_competitivo.top_empresas,
@@ -189,16 +204,21 @@ export class ComparisonComponent implements OnInit, OnDestroy {
       const careerSnaps = snap?.snapshots[careerTitle]?.sort((a, b) => a.year - b.year);
       if (!careerSnaps || careerSnaps.length < 2) {
         // Fallback to tendencia
-        const tendencia = careerTitle === m1.titulo_carrera
-          ? m1.demanda_mercado.tendencia
-          : m2.demanda_mercado.tendencia;
-        return tendencia === 'creciente' ? '+8%/año' : tendencia === 'estable' ? '+3%/año' : '-2%/año';
+        const tendencia =
+          careerTitle === m1.titulo_carrera
+            ? m1.demanda_mercado.tendencia
+            : m2.demanda_mercado.tendencia;
+        return tendencia === 'creciente'
+          ? '+8%/año'
+          : tendencia === 'estable'
+            ? '+3%/año'
+            : '-2%/año';
       }
       const first = careerSnaps[0].salario_promedio;
       const last = careerSnaps[careerSnaps.length - 1].salario_promedio;
       const yearSpan = careerSnaps[careerSnaps.length - 1].year - careerSnaps[0].year;
       if (first === 0 || yearSpan === 0) return 'N/A';
-      const growth = Math.round(((last - first) / first) * 100 / yearSpan);
+      const growth = Math.round((((last - first) / first) * 100) / yearSpan);
       return growth > 0 ? `+${growth}%/año` : `${growth}%/año`;
     };
 
@@ -227,11 +247,12 @@ export class ComparisonComponent implements OnInit, OnDestroy {
             : getGrowth(m2.titulo_carrera) > getGrowth(m1.titulo_carrera)
               ? 'Mayor Crecimiento'
               : 'Similar',
-        tone: getGrowth(m1.titulo_carrera) > getGrowth(m2.titulo_carrera)
-          ? 'primary'
-          : getGrowth(m2.titulo_carrera) > getGrowth(m1.titulo_carrera)
-            ? 'secondary'
-            : 'neutral',
+        tone:
+          getGrowth(m1.titulo_carrera) > getGrowth(m2.titulo_carrera)
+            ? 'primary'
+            : getGrowth(m2.titulo_carrera) > getGrowth(m1.titulo_carrera)
+              ? 'secondary'
+              : 'neutral',
       },
       {
         metric: 'Demanda de Mercado',
@@ -249,18 +270,32 @@ export class ComparisonComponent implements OnInit, OnDestroy {
       },
       {
         metric: 'Tendencia',
-        optionA: m1.demanda_mercado.tendencia === 'creciente' ? '📈 Creciente' : m1.demanda_mercado.tendencia === 'estable' ? '➡️ Estable' : '📉 Bajante',
-        optionB: m2.demanda_mercado.tendencia === 'creciente' ? '📈 Creciente' : m2.demanda_mercado.tendencia === 'estable' ? '➡️ Estable' : '📉 Bajante',
+        optionA:
+          m1.demanda_mercado.tendencia === 'creciente'
+            ? '📈 Creciente'
+            : m1.demanda_mercado.tendencia === 'estable'
+              ? '➡️ Estable'
+              : '📉 Bajante',
+        optionB:
+          m2.demanda_mercado.tendencia === 'creciente'
+            ? '📈 Creciente'
+            : m2.demanda_mercado.tendencia === 'estable'
+              ? '➡️ Estable'
+              : '📉 Bajante',
         outcome:
-          m1.demanda_mercado.tendencia === 'creciente' && m2.demanda_mercado.tendencia !== 'creciente'
+          m1.demanda_mercado.tendencia === 'creciente' &&
+          m2.demanda_mercado.tendencia !== 'creciente'
             ? 'Mejor Perspectiva'
-            : m2.demanda_mercado.tendencia === 'creciente' && m1.demanda_mercado.tendencia !== 'creciente'
+            : m2.demanda_mercado.tendencia === 'creciente' &&
+                m1.demanda_mercado.tendencia !== 'creciente'
               ? 'Mejor Perspectiva'
               : 'Ambas Estables',
         tone:
-          m1.demanda_mercado.tendencia === 'creciente' && m2.demanda_mercado.tendencia !== 'creciente'
+          m1.demanda_mercado.tendencia === 'creciente' &&
+          m2.demanda_mercado.tendencia !== 'creciente'
             ? 'primary'
-            : m2.demanda_mercado.tendencia === 'creciente' && m1.demanda_mercado.tendencia !== 'creciente'
+            : m2.demanda_mercado.tendencia === 'creciente' &&
+                m1.demanda_mercado.tendencia !== 'creciente'
               ? 'secondary'
               : 'neutral',
       },
@@ -287,9 +322,13 @@ export class ComparisonComponent implements OnInit, OnDestroy {
 
     // Preparation time
     if (a.preparationMonths < b.preparationMonths) {
-      parts.push(`${a.title} permite un ingreso más rápido al mercado (${a.preparationMonths} meses vs ${b.preparationMonths})`);
+      parts.push(
+        `${a.title} permite un ingreso más rápido al mercado (${a.preparationMonths} meses vs ${b.preparationMonths})`,
+      );
     } else if (b.preparationMonths < a.preparationMonths) {
-      parts.push(`${b.title} permite un ingreso más rápido al mercado (${b.preparationMonths} meses vs ${a.preparationMonths})`);
+      parts.push(
+        `${b.title} permite un ingreso más rápido al mercado (${b.preparationMonths} meses vs ${a.preparationMonths})`,
+      );
     }
 
     // Growth
@@ -299,7 +338,9 @@ export class ComparisonComponent implements OnInit, OnDestroy {
       parts.push(`${b.title} tiene una demanda en crecimiento constante`);
     }
 
-    return parts.join('. ') + '. Evalúa tu tiempo disponible y objetivos para tomar la mejor decisión.';
+    return (
+      parts.join('. ') + '. Evalúa tu tiempo disponible y objetivos para tomar la mejor decisión.'
+    );
   });
 
   // ── Subscriptions ──
@@ -358,13 +399,19 @@ export class ComparisonComponent implements OnInit, OnDestroy {
     });
   }
 
-  private findCareerIndexByGoal(metrics: ReadonlyArray<CareerMetrics>, goalId: string): number | null {
+  private findCareerIndexByGoal(
+    metrics: ReadonlyArray<CareerMetrics>,
+    goalId: string,
+  ): number | null {
     if (goalId === 'General') return null;
     const idx = metrics.findIndex((m) => CAREER_TO_GOAL[m.titulo_carrera] === goalId);
     return idx >= 0 ? idx : null;
   }
 
-  private findHighestVolumeIndex(metrics: ReadonlyArray<CareerMetrics>, excludeIdx: number): number {
+  private findHighestVolumeIndex(
+    metrics: ReadonlyArray<CareerMetrics>,
+    excludeIdx: number,
+  ): number {
     let bestIdx = excludeIdx === 0 ? 1 : 0;
     let bestVolume = metrics[bestIdx]?.demanda_mercado.volumen_total ?? 0;
 
@@ -421,7 +468,9 @@ export class ComparisonComponent implements OnInit, OnDestroy {
 
     try {
       await firstValueFrom(this.profileContentService.updateAcademicGoal(goalId));
-      this.goalUpdateMessage.set(`¡Ruta actualizada a "${goalId}"! Tu perfil y progreso se han actualizado.`);
+      this.goalUpdateMessage.set(
+        `¡Ruta actualizada a "${goalId}"! Tu perfil y progreso se han actualizado.`,
+      );
     } catch {
       this.goalUpdateMessage.set('Error al actualizar la ruta. Intenta de nuevo.');
     } finally {
@@ -431,7 +480,9 @@ export class ComparisonComponent implements OnInit, OnDestroy {
   }
 
   protected scrollToSelectors(): void {
-    document.getElementById('career-selectors')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document
+      .getElementById('career-selectors')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   protected getGoalId(careerTitle: string): string | null {

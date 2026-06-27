@@ -81,7 +81,7 @@ export class ProfilePageComponent implements OnInit {
   protected readonly newSkillName = signal('');
   protected readonly newSkillLevel = signal('beginner');
   protected readonly showSkillDropdown = signal(false);
-  
+
   // Skills catalog from backend (154 skills organized by category)
   protected readonly skillsCatalog = signal<string[]>([]);
 
@@ -104,7 +104,7 @@ export class ProfilePageComponent implements OnInit {
     }
     return skills.filter((s) => s.toLowerCase().includes(search)).slice(0, 12);
   });
-  
+
   // Whether the skill input matches an existing skill in catalog
   protected readonly currentInputMatchesCatalog = computed(() => {
     const input = this.newSkillName().toLowerCase().trim();
@@ -235,11 +235,11 @@ export class ProfilePageComponent implements OnInit {
   protected addSkillFromInput(): void {
     const input = this.newSkillName().trim();
     if (!input) return;
-    
+
     // Try exact match first (case-insensitive)
     const catalog = this.skillsCatalog();
     const exactMatch = catalog.find((s) => s.toLowerCase() === input.toLowerCase());
-    
+
     if (exactMatch) {
       this.addSkill(exactMatch);
     } else {

@@ -69,29 +69,30 @@ export class ProgressPageComponent implements OnInit {
 
   // Learning progress from API
   protected readonly learningProgress = signal<LearningProgress | null>(null);
-  
+
   // Current learning path for milestone names
-  protected readonly currentPath = signal<{ goal_id: string; nodes: Array<{ id: string; name: string; status: string; order: number }> } | null>(null);
+  protected readonly currentPath = signal<{
+    goal_id: string;
+    nodes: Array<{ id: string; name: string; status: string; order: number }>;
+  } | null>(null);
 
   /** Dynamic stat bars calculated from real data */
   protected readonly statBars = computed(() => {
     const p = this.profile();
     const progress = this.learningProgress();
-    
+
     if (!p) return [];
 
     // 1. Route Progress: from learning API
     const routeProgress = progress?.progress_percent ?? 0;
-    
+
     // 2. Skills Mastery: % of skills at advanced level
     const skills = p.skills || [];
-    const advancedCount = skills.filter(s => 
-      s.level === 'advanced' || s.level === 'avanzado'
+    const advancedCount = skills.filter(
+      (s) => s.level === 'advanced' || s.level === 'avanzado',
     ).length;
-    const skillsMastery = skills.length > 0 
-      ? Math.round((advancedCount / skills.length) * 100)
-      : 0;
-    
+    const skillsMastery = skills.length > 0 ? Math.round((advancedCount / skills.length) * 100) : 0;
+
     // 3. Market Alignment: from matchScore
     const marketAlignment = p.matchScore?.score ?? 0;
 
@@ -109,7 +110,7 @@ export class ProgressPageComponent implements OnInit {
 
     const tones: Array<'indigo' | 'emerald' | 'violet'> = ['indigo', 'emerald', 'violet'];
     const missingSkills = p.matchScore?.habilidades_faltantes || [];
-    
+
     // Sort: in-progress first, then by level
     const sortedSkills = [...p.skills].sort((a, b) => {
       const aPercent = this.skillLevelToPercent(a.level);
@@ -123,14 +124,12 @@ export class ProgressPageComponent implements OnInit {
     return sortedSkills.map((skill: Skill, i: number) => {
       const levelPercent = this.skillLevelToPercent(skill.level);
       const isMissing = missingSkills.includes(skill.name);
-      
+
       let subtitle: string;
       if (levelPercent >= 90) {
         subtitle = 'Dominio completo';
       } else if (levelPercent > 0) {
-        subtitle = isMissing 
-          ? `Nivel: ${skill.level} (alta demanda)` 
-          : `Nivel: ${skill.level}`;
+        subtitle = isMissing ? `Nivel: ${skill.level} (alta demanda)` : `Nivel: ${skill.level}`;
       } else {
         subtitle = 'Sin comenzar';
       }
@@ -148,7 +147,7 @@ export class ProgressPageComponent implements OnInit {
   protected readonly mentorAlert = computed(() => {
     const p = this.profile();
     const progress = this.learningProgress();
-    
+
     if (!p) {
       return {
         title: 'Completa tu perfil',
@@ -180,7 +179,8 @@ export class ProgressPageComponent implements OnInit {
     if (skills.length < 3) {
       return {
         title: 'Expande tu arsenal',
-        message: 'Tienes pocas habilidades registradas. Explora el mercado y agrega más skills a tu perfil.',
+        message:
+          'Tienes pocas habilidades registradas. Explora el mercado y agrega más skills a tu perfil.',
       };
     }
 
@@ -197,54 +197,57 @@ export class ProgressPageComponent implements OnInit {
     if (!p) return [];
 
     const skills = p.skills || [];
-    const advancedCount = skills.filter(s => 
-      s.level === 'advanced' || s.level === 'avanzado'
+    const advancedCount = skills.filter(
+      (s) => s.level === 'advanced' || s.level === 'avanzado',
     ).length;
-    const intermediatePlus = skills.filter(s => 
-      s.level === 'intermediate' || s.level === 'intermedio' ||
-      s.level === 'advanced' || s.level === 'avanzado'
+    const intermediatePlus = skills.filter(
+      (s) =>
+        s.level === 'intermediate' ||
+        s.level === 'intermedio' ||
+        s.level === 'advanced' ||
+        s.level === 'avanzado',
     ).length;
 
     return [
-      { 
-        label: 'Iniciado', 
-        icon: 'bi-award', 
-        earned: true // Has profile
+      {
+        label: 'Iniciado',
+        icon: 'bi-award',
+        earned: true, // Has profile
       },
-      { 
-        label: 'Explorador', 
-        icon: 'bi-compass', 
-        earned: skills.length >= 3
+      {
+        label: 'Explorador',
+        icon: 'bi-compass',
+        earned: skills.length >= 3,
       },
-      { 
-        label: 'Analista', 
-        icon: 'bi-stars', 
-        earned: !!p.matchScore
+      {
+        label: 'Analista',
+        icon: 'bi-stars',
+        earned: !!p.matchScore,
       },
-      { 
-        label: 'Constructor', 
-        icon: 'bi-box-seam', 
-        earned: intermediatePlus >= 5
+      {
+        label: 'Constructor',
+        icon: 'bi-box-seam',
+        earned: intermediatePlus >= 5,
       },
-      { 
-        label: 'Mentor', 
-        icon: 'bi-lightbulb', 
-        earned: advancedCount >= 2
+      {
+        label: 'Mentor',
+        icon: 'bi-lightbulb',
+        earned: advancedCount >= 2,
       },
-      { 
-        label: 'Arquitecto', 
-        icon: 'bi-diagram-3', 
-        earned: skills.length >= 8
+      {
+        label: 'Arquitecto',
+        icon: 'bi-diagram-3',
+        earned: skills.length >= 8,
       },
-      { 
-        label: 'Lanzamiento', 
-        icon: 'bi-rocket', 
-        earned: (p.matchScore?.score ?? 0) >= 80
+      {
+        label: 'Lanzamiento',
+        icon: 'bi-rocket',
+        earned: (p.matchScore?.score ?? 0) >= 80,
       },
-      { 
-        label: 'Maestro', 
-        icon: 'bi-trophy', 
-        earned: advancedCount >= 5
+      {
+        label: 'Maestro',
+        icon: 'bi-trophy',
+        earned: advancedCount >= 5,
       },
     ];
   });
@@ -254,7 +257,7 @@ export class ProgressPageComponent implements OnInit {
     const p = this.profile();
     const progress = this.learningProgress();
     const path = this.currentPath();
-    
+
     if (!p) return [];
 
     // No progress started — return empty (empty state shown in template)
@@ -268,22 +271,22 @@ export class ProgressPageComponent implements OnInit {
     const completedNodes = progress.completed_nodes || [];
     const completedCount = completedNodes.length;
     const totalNodes = progress.total_nodes ?? 0;
-    
+
     if (totalNodes === 0) return [];
 
     const milestones: MilestoneItem[] = [];
     const nodes = path.nodes;
-    
+
     // Show next 3-5 milestones
     const startIdx = completedCount;
     const endIdx = Math.min(completedCount + 5, totalNodes);
-    
+
     for (let i = startIdx; i < endIdx; i++) {
       const node = nodes[i];
       if (!node) continue;
-      
+
       const isCurrent = progress.current_node && i === completedCount;
-      
+
       milestones.push({
         title: isCurrent ? node.name : node.name,
         meta: isCurrent ? 'En progreso' : 'Pendiente',

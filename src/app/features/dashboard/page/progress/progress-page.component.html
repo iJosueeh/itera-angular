@@ -75,7 +75,9 @@
                 Ciclo Académico
               </p>
               <p class="mt-1 flex items-center gap-3 text-2xl font-bold text-slate-900">
-                <span class="grid h-10 w-10 place-content-center rounded-xl bg-primary/10 text-primary">
+                <span
+                  class="grid h-10 w-10 place-content-center rounded-xl bg-primary/10 text-primary"
+                >
                   <i class="bi bi-arrow-repeat" aria-hidden="true"></i>
                 </span>
                 Ciclo {{ profile()?.cycle }}
@@ -90,14 +92,16 @@
 
             @if (isLoading()) {
               <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-                @for (i of [1,2,3,4]; track i) {
+                @for (i of [1, 2, 3, 4]; track i) {
                   <div class="h-32 rounded-xl bg-slate-200 animate-pulse"></div>
                 }
               </div>
             } @else if (masteryCards().length === 0) {
               <div class="flex flex-col items-center justify-center py-8 text-center">
                 <div class="text-4xl mb-3 text-slate-300">📚</div>
-                <p class="text-sm font-medium text-slate-500">Agrega habilidades en tu perfil para ver tu maestría</p>
+                <p class="text-sm font-medium text-slate-500">
+                  Agrega habilidades en tu perfil para ver tu maestría
+                </p>
               </div>
             } @else {
               <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
@@ -127,7 +131,9 @@
         <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
           <div class="flex items-center justify-between gap-4 mb-6">
             <h2 class="text-lg font-bold text-slate-900">Galería de Insignias</h2>
-            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-widest rounded-full bg-primary/10 text-primary border border-primary/10">
+            <span
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-widest rounded-full bg-primary/10 text-primary border border-primary/10"
+            >
               {{ earnedBadgeCount() }} / {{ badges().length }} Ganadas
             </span>
           </div>
@@ -135,8 +141,15 @@
           <div class="flex flex-wrap gap-2 justify-start">
             @for (badge of badges(); track badge.label) {
               <div class="flex flex-col items-center gap-1.5">
-                <itera-badge-item [label]="badge.label" [icon]="badge.icon" [earned]="badge.earned" />
-                <span class="text-[0.6rem] font-semibold text-slate-500 text-center max-w-[60px] truncate">{{ badge.label }}</span>
+                <itera-badge-item
+                  [label]="badge.label"
+                  [icon]="badge.icon"
+                  [earned]="badge.earned"
+                />
+                <span
+                  class="text-[0.6rem] font-semibold text-slate-500 text-center max-w-[60px] truncate"
+                  >{{ badge.label }}</span
+                >
               </div>
             }
           </div>
@@ -147,20 +160,28 @@
           @if (milestones().length === 0) {
             <div class="flex flex-col items-center justify-center py-6 text-center">
               <div class="text-4xl mb-3 text-slate-300">🗺️</div>
-              <p class="text-sm font-medium text-slate-500">Selecciona una ruta de aprendizaje para comenzar</p>
+              <p class="text-sm font-medium text-slate-500">
+                Selecciona una ruta de aprendizaje para comenzar
+              </p>
             </div>
           } @else {
             <div class="space-y-4">
               @for (milestone of milestones(); track milestone.title; let index = $index) {
-                <article class="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50 p-4 group">
+                <article
+                  class="flex items-start gap-3 rounded-xl border border-slate-100 bg-slate-50 p-4 group"
+                >
                   <div
                     class="grid h-8 w-8 shrink-0 place-content-center rounded-lg bg-primary/10 text-primary font-bold text-xs"
                   >
                     {{ index + 1 }}
                   </div>
                   <div class="flex-1 min-w-0">
-                    <p class="font-bold text-slate-800 text-sm leading-snug">{{ milestone.title }}</p>
-                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mt-1">{{ milestone.meta }}</p>
+                    <p class="font-bold text-slate-800 text-sm leading-snug">
+                      {{ milestone.title }}
+                    </p>
+                    <p class="text-xs text-slate-400 font-medium uppercase tracking-wider mt-1">
+                      {{ milestone.meta }}
+                    </p>
                   </div>
                 </article>
               }
@@ -174,7 +195,9 @@
           <h2 class="text-lg font-bold text-slate-900 mb-6">Consejo del Mentor IA</h2>
           <div class="rounded-2xl border-l-4 border-primary bg-primary/5 p-5">
             <div class="flex items-center gap-4 mb-4">
-              <div class="grid h-12 w-12 place-content-center rounded-xl bg-primary text-white font-bold text-lg shadow-md">
+              <div
+                class="grid h-12 w-12 place-content-center rounded-xl bg-primary text-white font-bold text-lg shadow-md"
+              >
                 AM
               </div>
               <div>

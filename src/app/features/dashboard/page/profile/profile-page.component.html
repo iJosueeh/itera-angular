@@ -333,7 +333,7 @@
             }
           </div>
 
-<!-- Add skill -->
+          <!-- Add skill -->
           <div class="relative">
             <div class="flex gap-2">
               <div class="flex-1 relative">
@@ -361,10 +361,18 @@
                       </button>
                     }
                   </div>
-                } @else if (showSkillDropdown() && newSkillName().trim() && filteredAvailableSkills().length === 0) {
-                  <div class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-10 px-4 py-3">
+                } @else if (
+                  showSkillDropdown() &&
+                  newSkillName().trim() &&
+                  filteredAvailableSkills().length === 0
+                ) {
+                  <div
+                    class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-10 px-4 py-3"
+                  >
                     <p class="text-xs text-slate-400">
-                      No se encontraron habilidades. Presiona Enter para agregar "{{ newSkillName() }}" como personalizada.
+                      No se encontraron habilidades. Presiona Enter para agregar "{{
+                        newSkillName()
+                      }}" como personalizada.
                     </p>
                   </div>
                 }

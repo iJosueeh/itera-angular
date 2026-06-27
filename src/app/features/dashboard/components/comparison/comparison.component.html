@@ -19,7 +19,9 @@
 
   <!-- ═══════ USER GOAL BADGE ═══════ -->
   @if (userGoal() !== 'General') {
-    <div class="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-xl text-sm">
+    <div
+      class="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-xl text-sm"
+    >
       <i class="bi bi-signpost-2 text-primary"></i>
       <span class="text-slate-600">Tu ruta actual:</span>
       <span class="font-bold text-primary">{{ userGoal() }}</span>
@@ -39,7 +41,9 @@
       [class.border]="true"
     >
       <i
-        [class.bi]="goalUpdateMessage()!.includes('Error') ? 'bi-exclamation-circle' : 'bi-check-circle'"
+        [class.bi]="
+          goalUpdateMessage()!.includes('Error') ? 'bi-exclamation-circle' : 'bi-check-circle'
+        "
       ></i>
       {{ goalUpdateMessage() }}
     </div>
@@ -98,7 +102,9 @@
               </option>
             }
           </select>
-          <i class="bi bi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+          <i
+            class="bi bi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"
+          ></i>
         </div>
 
         <span class="text-slate-300 font-bold text-lg">vs</span>
@@ -116,7 +122,9 @@
               </option>
             }
           </select>
-          <i class="bi bi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+          <i
+            class="bi bi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"
+          ></i>
         </div>
       </div>
     </div>
@@ -133,7 +141,9 @@
                 {{ option.label }}
               </p>
               @if (isUserGoal(option.title)) {
-                <span class="px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-full bg-primary/10 text-primary">
+                <span
+                  class="px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-full bg-primary/10 text-primary"
+                >
                   Tu ruta
                 </span>
               }
@@ -182,9 +192,10 @@
             </p>
             <div class="mt-4 flex flex-wrap gap-2">
               @for (tech of option.stack.slice(0, 5); track tech) {
-                <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600">{{
-                  tech
-                }}</span>
+                <span
+                  class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600"
+                  >{{ tech }}</span
+                >
               }
             </div>
           </div>
@@ -201,7 +212,7 @@
                 @for (bar of option.projectionBars; track bar.year) {
                   <div class="flex-1 flex flex-col items-center gap-1">
                     <span class="text-[0.6rem] font-bold text-slate-500">
-                      ${{ (bar.salary / 1000) | number:'1.0-0' }}k
+                      ${{ bar.salary / 1000 | number: '1.0-0' }}k
                     </span>
                     <div
                       class="w-full rounded-t-lg transition-all duration-700"
@@ -219,7 +230,9 @@
               <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
                 Evolución Salarial
               </p>
-              <div class="mt-4 flex h-[80px] items-center justify-center rounded-xl bg-slate-50 border border-slate-200 px-4">
+              <div
+                class="mt-4 flex h-[80px] items-center justify-center rounded-xl bg-slate-50 border border-slate-200 px-4"
+              >
                 <span class="text-xs text-slate-400">Sin datos de evolución disponibles</span>
               </div>
             </div>
@@ -271,9 +284,7 @@
     </article>
 
     <!-- ═══════ MENTOR SUMMARY ═══════ -->
-    <article
-      class="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-8"
-    >
+    <article class="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
       <div class="flex flex-wrap items-start gap-6">
         <div
           class="grid h-14 w-14 place-content-center rounded-2xl bg-purple-50 text-purple-600 shrink-0"
