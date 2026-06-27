@@ -1,42 +1,43 @@
 <section class="comparison-panel" id="comparison" aria-label="Comparador de carrera">
+  <!-- ═══════ HEADER ═══════ -->
   <div class="flex flex-wrap items-start justify-between gap-4 mb-10">
     <div>
-      <p
-        class="inline-flex rounded-full bg-primary/20 px-4 py-1.5 text-[0.65rem] font-black uppercase tracking-[0.25em] text-primary"
+      <span
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-primary bg-primary/5 border border-primary/10 rounded-full"
       >
+        <i class="bi bi-graph-up text-[10px]"></i>
         AI Route Intelligence
-      </p>
-      <h2
-        class="mt-4 text-[clamp(2.5rem,4vw,3.5rem)] font-black leading-[0.95] text-white tracking-tighter"
-      >
+      </span>
+      <h2 class="mt-3 text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
         {{ title }}<span class="text-primary">.</span>
       </h2>
-      <p class="mt-4 max-w-[820px] text-lg leading-relaxed text-white/50 font-medium">
+      <p class="mt-2 text-sm text-slate-500 max-w-[820px]">
         {{ subtitle }}
       </p>
     </div>
   </div>
 
+  <!-- ═══════ OPTION CARDS ═══════ -->
   <div class="mt-6 grid gap-6 xl:grid-cols-2">
     @for (option of options(); track option.title) {
       <article
-        class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl shadow-2xl rounded-[3rem] overflow-hidden"
+        class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
       >
         <div class="p-8 pb-0">
-          <p class="text-[0.65rem] font-black uppercase tracking-[0.25em] text-white/30">
+          <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
             {{ option.label }}
           </p>
-          <h3 class="mt-2 text-3xl font-black text-white tracking-tight">
+          <h3 class="mt-2 text-3xl font-black text-slate-900 tracking-tight">
             {{ option.title }}
           </h3>
-          <p class="mt-3 max-w-[420px] text-sm font-medium leading-relaxed text-white/50">
+          <p class="mt-3 max-w-[420px] text-sm font-medium leading-relaxed text-slate-500">
             {{ option.subtitle }}
           </p>
         </div>
 
         <div class="grid gap-4 p-8 sm:grid-cols-2">
-          <div class="rounded-3xl bg-white/[0.02] border border-white/[0.03] p-5 shadow-inner">
-            <p class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">
+          <div class="rounded-xl bg-slate-50 border border-slate-200 p-5">
+            <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
               Salario Promedio
             </p>
             <p
@@ -47,8 +48,8 @@
               {{ option.salary === '$0' ? 'En análisis...' : option.salary }}
             </p>
           </div>
-          <div class="rounded-3xl bg-white/[0.02] border border-white/[0.03] p-5 shadow-inner">
-            <p class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">
+          <div class="rounded-xl bg-slate-50 border border-slate-200 p-5">
+            <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
               Crecimiento
             </p>
             <p
@@ -62,12 +63,12 @@
         </div>
 
         <div class="px-8 pb-4">
-          <p class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">
+          <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
             Stack Tecnológico
           </p>
           <div class="mt-4 flex flex-wrap gap-2">
             @for (tech of option.stack.slice(0, 5); track tech) {
-              <span class="badge bg-white/5 border-none text-white/70 font-bold px-3 py-3">{{
+              <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600">{{
                 tech
               }}</span>
             }
@@ -75,11 +76,11 @@
         </div>
 
         <div class="px-8 pb-8 mt-4">
-          <p class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30">
+          <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
             Proyección de Demanda (5 años)
           </p>
           <div
-            class="mt-4 flex h-[70px] items-end gap-2 rounded-2xl bg-white/[0.02] border border-white/[0.02] px-4 py-3 shadow-inner"
+            class="mt-4 flex h-[70px] items-end gap-2 rounded-xl bg-slate-50 border border-slate-200 px-4 py-3"
           >
             @for (bar of option.projectionBars; track $index) {
               <div
@@ -96,17 +97,19 @@
     }
   </div>
 
+  <!-- ═══════ COMPARISON TABLE ═══════ -->
   <article
-    class="mt-6 card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl shadow-2xl rounded-[3rem] p-8"
+    class="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-8"
     aria-label="Comparación directa de métricas"
   >
-    <h3 class="text-2xl font-black text-white tracking-tight">Comparación Directa</h3>
+    <h3 class="text-xl font-bold text-slate-900 tracking-tight">Comparación Directa</h3>
 
     <div
-      class="mt-8 overflow-hidden rounded-3xl border border-white/[0.03] bg-white/[0.02] shadow-inner"
+      class="mt-8 overflow-hidden rounded-xl border border-slate-200"
     >
+      <!-- Table header -->
       <div
-        class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] gap-4 border-b border-white/[0.05] px-6 py-5 text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/30"
+        class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] gap-4 border-b border-slate-200 bg-slate-50 px-6 py-4 text-[0.65rem] font-bold uppercase tracking-wider text-slate-400"
       >
         <span>Métrica</span>
         <span class="text-primary">{{ options()[0]?.title ?? 'Opción A' }}</span>
@@ -114,19 +117,20 @@
         <span class="text-right">Análisis</span>
       </div>
 
+      <!-- Table rows -->
       @for (row of metricRows(); track row.metric) {
         <div
-          class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] items-center gap-4 border-b border-white/[0.02] px-6 py-5 text-sm font-medium text-white/60 last:border-b-0 hover:bg-white/[0.02] transition-colors"
+          class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] items-center gap-4 border-b border-slate-100 px-6 py-4 text-sm text-slate-600 last:border-b-0 hover:bg-slate-50 transition-colors"
         >
-          <span class="font-bold text-white/90">{{ row.metric }}</span>
+          <span class="font-semibold text-slate-900">{{ row.metric }}</span>
           <span>{{ row.optionA }}</span>
           <span>{{ row.optionB }}</span>
           <div class="flex justify-end">
             <span
-              class="badge font-black uppercase tracking-widest py-3 px-4 border-none text-[0.6rem] text-center"
-              [class.bg-primary/20]="row.tone === 'primary' || row.tone === 'neutral'"
+              class="px-3 py-1 text-[0.6rem] font-bold uppercase tracking-wider rounded-full text-center"
+              [class.bg-primary/10]="row.tone === 'primary' || row.tone === 'neutral'"
               [class.text-primary]="row.tone === 'primary' || row.tone === 'neutral'"
-              [class.bg-secondary/20]="row.tone === 'secondary'"
+              [class.bg-secondary/10]="row.tone === 'secondary'"
               [class.text-secondary]="row.tone === 'secondary'"
             >
               {{ row.outcome }}
@@ -137,34 +141,35 @@
     </div>
   </article>
 
+  <!-- ═══════ MENTOR SUMMARY ═══════ -->
   <article
-    class="mt-6 card bg-neutral/40 border border-white/[0.03] backdrop-blur-2xl shadow-2xl rounded-[3rem] p-8"
+    class="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-8"
   >
     <div class="flex flex-wrap items-start gap-6">
       <div
-        class="grid h-14 w-14 place-content-center rounded-2xl bg-accent/20 text-accent shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+        class="grid h-14 w-14 place-content-center rounded-2xl bg-purple-50 text-purple-600"
       >
         <i class="bi bi-stars text-2xl" aria-hidden="true"></i>
       </div>
 
       <div class="min-w-0 flex-1">
-        <p class="text-xs font-black uppercase tracking-[0.25em] text-accent">
+        <p class="text-xs font-bold uppercase tracking-wider text-purple-600">
           Análisis del Mentor
         </p>
-        <p class="mt-3 max-w-[1000px] text-lg leading-relaxed text-white/70 font-medium italic">
+        <p class="mt-3 max-w-[1000px] text-lg leading-relaxed text-slate-600 font-medium italic">
           "{{ mentorSummary }}"
         </p>
 
         <div class="mt-8 flex flex-wrap gap-4">
           <button
             type="button"
-            class="btn btn-primary rounded-2xl px-8 font-black uppercase tracking-widest border-none shadow-xl shadow-primary/20"
+            class="btn btn-primary rounded-xl px-8 py-2.5 text-sm font-bold border-none"
           >
             Elegir Ruta {{ options()[0]?.title }}
           </button>
           <button
             type="button"
-            class="btn btn-ghost bg-white/[0.03] border-white/[0.05] hover:bg-white/[0.05] text-white/60 hover:text-white rounded-2xl px-8 font-bold"
+            class="px-8 py-2.5 text-sm font-bold rounded-xl border border-slate-200 text-slate-500 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
           >
             Simular Otra Ruta
           </button>
