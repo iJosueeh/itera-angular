@@ -232,6 +232,9 @@ export class JobExplorerPageComponent implements OnInit, OnDestroy {
         tiempo_permanencia_segundos: 0,
       })
       .subscribe();
+
+    // Open in new tab without Referer header to avoid 403 from external sites
+    window.open(offer.url_origen, '_blank', 'noopener,noreferrer');
   }
 
   onCompareProfile(): void {
