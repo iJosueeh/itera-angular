@@ -3,265 +3,269 @@
   [sidebarItems]="sidebarItems"
   sidebarTitle="Mercado e Inteligencia"
 >
-  <div dashboard-main class="min-w-0 flex flex-1 flex-col gap-8 pb-6">
-    <header class="flex flex-wrap items-center justify-between gap-6">
-      <div>
-        <h1 class="text-3xl font-black text-white tracking-tighter">
-          Explorador de Empleos<span class="text-primary">.</span>
-        </h1>
-        <p class="text-white/40 mt-2 font-medium">
-          Descubre oportunidades reales analizadas por Itera AI.
-        </p>
-      </div>
+  <div dashboard-main class="min-w-0 flex flex-1 flex-col gap-6 pb-6">
+    <!-- ═══════ HEADER ═══════ -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-primary bg-primary/5 border border-primary/10 rounded-full"
+          >
+            <i class="bi bi-briefcase text-[10px]"></i>
+            Explorador de Empleos
+          </span>
+          <h1 class="mt-3 text-2xl md:text-3xl font-bold text-slate-900 tracking-tight">
+            Encuentra tu próximo rol<span class="text-primary">.</span>
+          </h1>
+          <p class="mt-2 text-sm text-slate-500">
+            Ofertas reales analizadas por Itera AI. Compara tu perfil con cada oportunidad.
+          </p>
+        </div>
 
-      <div class="flex items-center gap-4">
-        <!-- Compara tu Perfil button (visible for guests and authenticated) -->
-        <button
-          type="button"
-          class="btn btn-outline border-white/10 text-white/60 hover:text-white hover:border-primary rounded-2xl px-6 font-bold text-xs"
-          (click)="onCompareProfile()"
-        >
-          <i class="bi bi-person-badge mr-2"></i>
-          Compara tu Perfil
-        </button>
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            class="px-4 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 text-slate-600 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+            (click)="onCompareProfile()"
+          >
+            <i class="bi bi-person-badge mr-1.5"></i>
+            Compara tu Perfil
+          </button>
 
-        <div class="form-control w-full max-w-md">
           <div class="relative">
-            <i
-              class="bi bi-search absolute left-5 top-1/2 -translate-y-1/2 text-white/30 text-lg"
-            ></i>
+            <i class="bi bi-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
             <input
               type="text"
               placeholder="Buscar por rol, empresa o habilidad..."
-              class="input w-full pl-14 py-7 bg-white/[0.03] border-white/[0.05] focus:border-primary focus:outline-none text-white rounded-2xl shadow-inner placeholder:text-white/20"
+              class="pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none text-sm text-slate-700 rounded-xl transition-all w-64 md:w-80 placeholder:text-slate-400"
               [value]="searchQuery()"
               (input)="onSearch($event)"
             />
           </div>
         </div>
       </div>
-    </header>
-
-    <!-- Skill Filter Chips -->
-    <section>
-      <div class="flex flex-wrap items-center gap-3">
-        <span class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20">
-          Habilidades:
-        </span>
-        @for (skill of popularSkills; track skill) {
-          <button
-            type="button"
-            class="badge border-none text-[0.7rem] font-bold px-4 py-3 transition-all cursor-pointer"
-            [class.bg-primary]="activeSkillFilter() === skill"
-            [class.text-white]="activeSkillFilter() === skill"
-            [class.shadow-lg]="activeSkillFilter() === skill"
-            [class.shadow-primary/20]="activeSkillFilter() === skill"
-            [class.bg-white/5]="activeSkillFilter() !== skill"
-            [class.text-white/50]="activeSkillFilter() !== skill"
-            [class.hover:bg-white/10]="activeSkillFilter() !== skill"
-            (click)="toggleSkillFilter(skill)"
-          >
-            {{ skill }}
-          </button>
-        }
-      </div>
     </section>
 
-    <!-- Modality + Scraper Row -->
-    <section class="flex flex-wrap items-center justify-between gap-4">
-      <div class="flex flex-wrap items-center gap-3">
-        <span class="text-[0.65rem] font-black uppercase tracking-[0.2em] text-white/20">
+    <!-- ═══════ FILTERS ═══════ -->
+    <section class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-wrap items-center gap-3">
+          <!-- Skill chips -->
+          <span class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+            Habilidades:
+          </span>
+          @for (skill of popularSkills; track skill) {
+            <button
+              type="button"
+              class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all"
+              [class.bg-primary]="activeSkillFilter() === skill"
+              [class.text-white]="activeSkillFilter() === skill"
+              [class.border-primary]="activeSkillFilter() === skill"
+              [class.shadow-sm]="activeSkillFilter() === skill"
+              [class.bg-slate-50]="activeSkillFilter() !== skill"
+              [class.text-slate-500]="activeSkillFilter() !== skill"
+              [class.border-slate-200]="activeSkillFilter() !== skill"
+              [class.hover:bg-primary/5]="activeSkillFilter() !== skill"
+              [class.hover:border-primary/30]="activeSkillFilter() !== skill"
+              (click)="toggleSkillFilter(skill)"
+            >
+              {{ skill }}
+            </button>
+          }
+        </div>
+
+        <div class="flex items-center gap-2">
+          @if (activeSkillFilter() || activeModalityFilter() || searchQuery()) {
+            <button
+              type="button"
+              class="text-xs text-slate-400 hover:text-slate-600 font-semibold px-2 py-1"
+              (click)="clearAllFilters()"
+            >
+              <i class="bi bi-x-lg mr-1"></i> Limpiar
+            </button>
+          }
+          <button
+            type="button"
+            class="px-3 py-1.5 text-xs font-semibold rounded-lg border border-slate-200 text-slate-500 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+            [disabled]="isScraperRunning()"
+            (click)="triggerScraper()"
+          >
+            @if (isScraperRunning()) {
+              <span class="loading loading-spinner loading-xs"></span>
+            } @else {
+              <i class="bi bi-arrow-repeat mr-1"></i>
+            }
+            Actualizar
+          </button>
+        </div>
+      </div>
+
+      <!-- Modality chips -->
+      <div class="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-slate-100">
+        <span class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
           Modalidad:
         </span>
         @for (mod of modalities; track mod.value) {
           <button
             type="button"
-            class="btn btn-sm rounded-xl border-none font-bold text-xs transition-all"
-            [class.btn-primary]="activeModalityFilter() === mod.value"
-            [class.bg-white/5]="activeModalityFilter() !== mod.value"
-            [class.text-white/40]="activeModalityFilter() !== mod.value"
-            [class.hover:bg-white/10]="activeModalityFilter() !== mod.value"
+            class="px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all"
+            [class.bg-primary]="activeModalityFilter() === mod.value"
+            [class.text-white]="activeModalityFilter() === mod.value"
+            [class.border-primary]="activeModalityFilter() === mod.value"
+            [class.bg-slate-50]="activeModalityFilter() !== mod.value"
+            [class.text-slate-500]="activeModalityFilter() !== mod.value"
+            [class.border-slate-200]="activeModalityFilter() !== mod.value"
+            [class.hover:bg-primary/5]="activeModalityFilter() !== mod.value"
             (click)="toggleModalityFilter(mod.value)"
           >
             <i [class]="'bi ' + mod.icon + ' mr-1'"></i>
             {{ mod.label }}
           </button>
         }
-
-        @if (activeSkillFilter() || activeModalityFilter() || searchQuery()) {
-          <button
-            type="button"
-            class="btn btn-ghost btn-sm text-white/30 hover:text-white text-xs"
-            (click)="clearAllFilters()"
-          >
-            <i class="bi bi-x-lg mr-1"></i> Limpiar
-          </button>
-        }
       </div>
-
-      <button
-        type="button"
-        class="btn btn-sm btn-outline border-white/10 text-white/50 hover:text-white hover:border-primary rounded-xl font-bold text-xs"
-        [disabled]="isScraperRunning()"
-        (click)="triggerScraper()"
-      >
-        @if (isScraperRunning()) {
-          <span class="loading loading-spinner loading-xs"></span>
-        } @else {
-          <i class="bi bi-arrow-repeat mr-1"></i>
-        }
-        Actualizar Datos
-      </button>
     </section>
 
-    <!-- Scraper Status Message -->
+    <!-- ═══════ SCRAPER STATUS ═══════ -->
     @if (scraperMessage()) {
-      <div class="alert bg-primary/10 border-primary/20 text-white rounded-2xl text-sm font-medium">
-        <i class="bi bi-info-circle text-primary"></i>
+      <div class="bg-primary/5 border border-primary/10 text-primary rounded-xl px-4 py-3 text-sm font-medium flex items-center gap-2">
+        <i class="bi bi-info-circle"></i>
         <span>{{ scraperMessage() }}</span>
       </div>
     }
 
-    <!-- Login prompt for guests after data loads -->
+    <!-- ═══════ GUEST PROMPT ═══════ -->
     @if (!isAuthenticated() && offers().length > 0) {
-      <div
-        class="alert bg-white/[0.03] border-white/[0.05] text-white/70 rounded-2xl text-sm font-medium backdrop-blur-md"
-      >
-        <i class="bi bi-person-badge text-primary"></i>
-        <span>
-          <strong class="text-white">Compara tu perfil</strong> con estas oportunidades para obtener
-          un Match Score personalizado.
+      <div class="bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-sm text-slate-600 flex flex-wrap items-center gap-3">
+        <i class="bi bi-person-badge text-primary text-lg"></i>
+        <span class="flex-1">
+          <strong class="text-slate-800">Compara tu perfil</strong> con estas oportunidades para
+          obtener un Match Score personalizado.
         </span>
         <a
           routerLink="/auth/login"
           [queryParams]="{ returnUrl: '/dashboard' }"
-          class="btn btn-primary btn-sm rounded-xl ml-4"
+          class="px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-white hover:bg-primary/90 transition-colors"
         >
           Iniciar Sesión
         </a>
       </div>
     }
 
+    <!-- ═══════ JOB CARDS ═══════ -->
     @if (isLoading()) {
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-          <article
-            class="rounded-[2.5rem] bg-neutral/40 border border-white/[0.03] p-8 animate-pulse"
-          >
+          <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm animate-pulse">
             <div class="flex justify-between items-start mb-4">
-              <div class="h-6 w-16 rounded-full bg-white/[0.05]"></div>
-              <div class="h-6 w-20 rounded bg-white/[0.05]"></div>
+              <div class="skeleton h-5 w-16 rounded-full"></div>
+              <div class="skeleton h-5 w-20 rounded-lg"></div>
             </div>
-            <div class="h-5 w-3/4 rounded bg-white/[0.05] mb-2"></div>
-            <div class="h-3 w-1/2 rounded bg-white/[0.03] mb-4"></div>
-            <div class="flex gap-2 mb-8">
-              <div class="h-6 w-14 rounded bg-white/[0.04]"></div>
-              <div class="h-6 w-18 rounded bg-white/[0.04]"></div>
-              <div class="h-6 w-12 rounded bg-white/[0.04]"></div>
+            <div class="skeleton h-5 w-3/4 rounded-lg mb-2"></div>
+            <div class="skeleton h-3 w-1/2 rounded-lg mb-4"></div>
+            <div class="flex gap-2 mb-6">
+              <div class="skeleton h-6 w-14 rounded-lg"></div>
+              <div class="skeleton h-6 w-18 rounded-lg"></div>
+              <div class="skeleton h-6 w-12 rounded-lg"></div>
             </div>
-            <div class="h-12 w-full rounded-2xl bg-white/[0.03]"></div>
+            <div class="skeleton h-10 w-full rounded-xl"></div>
           </article>
         }
       </div>
     } @else {
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         @for (offer of offers(); track offer.url_origen) {
           <article
-            class="card bg-neutral/40 border border-white/[0.03] backdrop-blur-md shadow-2xl hover:bg-neutral/60 transition-all duration-500 group overflow-hidden rounded-[2.5rem]"
+            class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 group flex flex-col"
           >
-            <div class="card-body p-8">
-              <div class="flex justify-between items-start mb-4">
-                <span
-                  class="badge badge-primary border-none text-white font-bold uppercase tracking-widest text-[0.6rem] py-3 px-3 shadow-lg shadow-primary/20"
-                >
-                  {{ offer.fuente }}
-                </span>
-                @if (offer.salario_normalizado_usd) {
-                  <span class="text-lg font-black text-secondary tracking-tighter">
-                    ${{ offer.salario_normalizado_usd | number: '1.0-0' }}
-                  </span>
-                }
-              </div>
-
-              <h3
-                class="card-title text-xl font-black text-white leading-tight group-hover:text-primary transition-colors"
+            <!-- Top row: source + salary -->
+            <div class="flex justify-between items-start mb-3">
+              <span
+                class="px-2.5 py-1 text-[0.6rem] font-bold uppercase tracking-wider rounded-full bg-primary/10 text-primary"
               >
-                {{ offer.puesto }}
-              </h3>
-              <p class="text-sm text-white/40 flex items-center gap-2 mb-2 font-medium">
-                <i class="bi bi-building opacity-50"></i> {{ offer.empresa }}
-              </p>
-              @if (offer.modalidad) {
-                <p class="text-xs text-white/25 font-bold uppercase tracking-widest mb-4">
-                  <i class="bi bi-geo-alt mr-1"></i> {{ offer.modalidad }}
-                </p>
+                {{ offer.fuente }}
+              </span>
+              @if (offer.salario_normalizado_usd) {
+                <span class="text-lg font-bold text-slate-900">
+                  ${{ offer.salario_normalizado_usd | number: '1.0-0' }}
+                </span>
               }
-
-              <div class="flex flex-wrap gap-2 mb-8">
-                @for (skill of offer.habilidades_requeridas.slice(0, 4); track skill) {
-                  <span
-                    class="badge bg-white/5 border-none text-white/60 text-[0.7rem] font-bold px-3 py-3"
-                  >
-                    {{ skill }}
-                  </span>
-                }
-                @if (offer.habilidades_requeridas.length > 4) {
-                  <span class="text-xs text-white/20 font-bold ml-1">
-                    +{{ offer.habilidades_requeridas.length - 4 }}
-                  </span>
-                }
-              </div>
-
-              <div class="card-actions mt-auto">
-                <a
-                  [href]="offer.url_origen"
-                  target="_blank"
-                  (click)="trackJobView(offer)"
-                  class="btn btn-primary w-full rounded-2xl h-12 text-xs font-black uppercase tracking-[0.2em] border-none shadow-xl shadow-primary/10"
-                >
-                  Ver Detalles <i class="bi bi-arrow-up-right text-[10px] ml-1"></i>
-                </a>
-              </div>
             </div>
+
+            <!-- Title + company -->
+            <h3
+              class="text-base font-bold text-slate-900 leading-snug group-hover:text-primary transition-colors mb-1"
+            >
+              {{ offer.puesto }}
+            </h3>
+            <p class="text-sm text-slate-500 flex items-center gap-1.5 mb-1">
+              <i class="bi bi-building text-slate-400"></i> {{ offer.empresa }}
+            </p>
+            @if (offer.modalidad) {
+              <p class="text-xs text-slate-400 font-semibold uppercase tracking-wider mb-3">
+                <i class="bi bi-geo-alt mr-1"></i> {{ offer.modalidad }}
+              </p>
+            }
+
+            <!-- Skills -->
+            <div class="flex flex-wrap gap-1.5 mb-5 flex-1">
+              @for (skill of offer.habilidades_requeridas.slice(0, 4); track skill) {
+                <span
+                  class="px-2 py-0.5 text-[0.65rem] font-semibold rounded bg-slate-100 text-slate-600"
+                >
+                  {{ skill }}
+                </span>
+              }
+              @if (offer.habilidades_requeridas.length > 4) {
+                <span class="text-xs text-slate-400 font-semibold ml-0.5">
+                  +{{ offer.habilidades_requeridas.length - 4 }}
+                </span>
+              }
+            </div>
+
+            <!-- CTA -->
+            <a
+              [href]="offer.url_origen"
+              target="_blank"
+              (click)="trackJobView(offer)"
+              class="block w-full text-center px-4 py-2.5 text-xs font-bold rounded-xl border border-primary text-primary hover:bg-primary hover:text-white transition-all"
+            >
+              Ver Detalles <i class="bi bi-arrow-up-right text-[10px] ml-1"></i>
+            </a>
           </article>
         } @empty {
-          <div class="col-span-full py-24 text-center">
-            <div class="text-6xl mb-6 opacity-10">🔍</div>
-            <h3 class="text-2xl font-black text-white/20 tracking-tighter">
+          <div class="col-span-full py-20 text-center">
+            <div class="text-5xl mb-4 text-slate-200">🔍</div>
+            <h3 class="text-lg font-bold text-slate-400">
               No se encontraron ofertas
             </h3>
-            <p class="text-white/10 font-medium mt-2 uppercase tracking-widest text-xs">
+            <p class="text-slate-400 text-sm mt-1">
               Intenta ajustar tu búsqueda o actualiza los datos
             </p>
           </div>
         }
       </div>
 
-      <!-- Pagination Footer -->
-      <footer class="mt-12 flex justify-center pb-10">
-        <div
-          class="join bg-neutral/40 border border-white/[0.03] backdrop-blur-md rounded-2xl shadow-xl p-1"
-        >
+      <!-- ═══════ PAGINATION ═══════ -->
+      <footer class="mt-8 flex justify-center">
+        <div class="flex items-center gap-1 bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
           <button
-            class="btn btn-ghost join-item px-6 font-bold text-white/50 hover:text-white disabled:bg-transparent"
+            class="px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             [disabled]="currentPage() === 0 || isLoading()"
             (click)="prevPage()"
           >
-            <i class="bi bi-chevron-left mr-2"></i> Anterior
+            <i class="bi bi-chevron-left mr-1"></i> Anterior
           </button>
 
-          <div
-            class="join-item px-6 flex items-center bg-white/[0.03] text-primary font-black text-sm uppercase tracking-widest"
-          >
+          <div class="px-4 py-2.5 text-xs font-bold text-primary bg-primary/5 border-x border-slate-200">
             Página {{ currentPage() + 1 }}
           </div>
 
           <button
-            class="btn btn-ghost join-item px-6 font-bold text-white/50 hover:text-white disabled:bg-transparent"
+            class="px-4 py-2.5 text-xs font-semibold text-slate-500 hover:text-slate-700 hover:bg-slate-50 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             [disabled]="offers().length < pageSize || isLoading()"
             (click)="nextPage()"
           >
-            Siguiente <i class="bi bi-chevron-right ml-2"></i>
+            Siguiente <i class="bi bi-chevron-right ml-1"></i>
           </button>
         </div>
       </footer>
