@@ -155,7 +155,7 @@
     @if (isLoading()) {
       <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         @for (i of [1, 2, 3, 4, 5, 6]; track i) {
-          <article class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm animate-pulse">
+          <article class="skeleton-card">
             <div class="flex justify-between items-start mb-4">
               <div class="skeleton h-5 w-16 rounded-full"></div>
               <div class="skeleton h-5 w-20 rounded-lg"></div>
@@ -164,7 +164,7 @@
             <div class="skeleton h-3 w-1/2 rounded-lg mb-4"></div>
             <div class="flex gap-2 mb-6">
               <div class="skeleton h-6 w-14 rounded-lg"></div>
-              <div class="skeleton h-6 w-18 rounded-lg"></div>
+              <div class="skeleton h-6 w-16 rounded-lg"></div>
               <div class="skeleton h-6 w-12 rounded-lg"></div>
             </div>
             <div class="skeleton h-10 w-full rounded-xl"></div>
@@ -172,7 +172,8 @@
         }
       </div>
     } @else {
-      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div class="fade-in-content">
+        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         @for (offer of offers(); track offer.url_origen) {
           <article
             class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md hover:border-slate-300 transition-all duration-200 group flex flex-col"
@@ -269,6 +270,7 @@
           </button>
         </div>
       </footer>
+      </div>
     }
   </div>
 </itera-dashboard-shell>
