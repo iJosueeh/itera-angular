@@ -11,43 +11,15 @@ import { FormsModule } from '@angular/forms';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { ProfileApiService } from '@features/profile/services/profile-api.service';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
+import { SkillsApiService } from '@features/home/services/skills-api.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
-import { NavItem } from '@shared/interfaces/dashboard.interface';
+import {
+  NavItem,
+  DASHBOARD_SIDEBAR_ITEMS,
+  DASHBOARD_TOP_NAV_ITEMS,
+} from '@shared/interfaces/dashboard.interface';
 import { Skill } from '@shared/interfaces/profile.interface';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
-
-const AVAILABLE_SKILLS: ReadonlyArray<string> = [
-  'Python',
-  'JavaScript',
-  'TypeScript',
-  'React',
-  'Angular',
-  'Vue.js',
-  'Node.js',
-  'Django',
-  'FastAPI',
-  'Spring Boot',
-  'PostgreSQL',
-  'MongoDB',
-  'Docker',
-  'Kubernetes',
-  'AWS',
-  'Azure',
-  'GCP',
-  'Git',
-  'CI/CD',
-  'HTML/CSS',
-  'Tailwind',
-  'REST APIs',
-  'GraphQL',
-  'Java',
-  'Go',
-  'Machine Learning',
-  'Data Analysis',
-  'SQL',
-  'Redis',
-  'Microservices',
-];
 
 const BADGE_ICON_MAP: Record<string, string> = {
   Iniciado: 'bi-award',
@@ -80,6 +52,7 @@ export class ProfilePageComponent implements OnInit {
   private readonly profileContentService = inject(ProfileContentService);
   private readonly profileApi = inject(ProfileApiService);
   private readonly dashboardContentService = inject(DashboardContentService);
+  private readonly skillsApi = inject(SkillsApiService);
   private readonly authStorage = inject(AuthStorageService);
   private readonly router = inject(Router);
 
@@ -109,19 +82,34 @@ export class ProfilePageComponent implements OnInit {
   protected readonly newSkillLevel = signal('beginner');
   protected readonly showSkillDropdown = signal(false);
 
-  // Filtered available skills (not already added)
+  // Skills catalog from backend (154 skills organized by category)
+  protected readonly skillsCatalog = signal<string[]>([]);
+
+  // Filtered available skills (not already added) — uses catalog from backend
   protected readonly availableSkills = computed(() => {
     const current = this.editSkills();
     const currentNames = new Set(current.map((s) => s.name.toLowerCase()));
-    return AVAILABLE_SKILLS.filter((s) => !currentNames.has(s.toLowerCase()));
+    const catalog = this.skillsCatalog();
+    return catalog.filter((s) => !currentNames.has(s.toLowerCase()));
   });
 
-  // Filtered available skills for search
+  // Filtered available skills for search — returns up to 12 matches
   protected readonly filteredAvailableSkills = computed(() => {
-    const search = this.newSkillName().toLowerCase();
+    const search = this.newSkillName().toLowerCase().trim();
     const skills = this.availableSkills();
-    if (!search) return skills.slice(0, 8);
-    return skills.filter((s) => s.toLowerCase().includes(search)).slice(0, 8);
+    if (!search) {
+      // When no search, show skills matching the current level selection
+      const level = this.newSkillLevel();
+      return skills.slice(0, 12);
+    }
+    return skills.filter((s) => s.toLowerCase().includes(search)).slice(0, 12);
+  });
+
+  // Whether the skill input matches an existing skill in catalog
+  protected readonly currentInputMatchesCatalog = computed(() => {
+    const input = this.newSkillName().toLowerCase().trim();
+    if (!input) return false;
+    return this.skillsCatalog().some((s) => s.toLowerCase() === input);
   });
 
   // Profile stats
@@ -158,6 +146,7 @@ export class ProfilePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.profileContentService.loadProfile();
+    this.loadSkillsCatalog();
 
     setTimeout(() => {
       if (this.error() && !this.profile() && !this.isLoading()) {
@@ -227,15 +216,36 @@ export class ProfilePageComponent implements OnInit {
   // --- Skills management ---
 
   protected addSkill(skillName: string): void {
-    const name = skillName || this.newSkillName();
-    if (!name.trim()) return;
+    const name = skillName?.trim();
+    if (!name) return;
 
     const current = this.editSkills();
-    if (current.some((s) => s.name.toLowerCase() === name.toLowerCase())) return;
+    // Prevent duplicates (case-insensitive)
+    if (current.some((s) => s.name.toLowerCase() === name.toLowerCase())) {
+      this.newSkillName.set('');
+      this.showSkillDropdown.set(false);
+      return;
+    }
 
-    this.editSkills.set([...current, { name: name.trim(), level: this.newSkillLevel() }]);
+    this.editSkills.set([...current, { name, level: this.newSkillLevel() }]);
     this.newSkillName.set('');
     this.showSkillDropdown.set(false);
+  }
+
+  protected addSkillFromInput(): void {
+    const input = this.newSkillName().trim();
+    if (!input) return;
+
+    // Try exact match first (case-insensitive)
+    const catalog = this.skillsCatalog();
+    const exactMatch = catalog.find((s) => s.toLowerCase() === input.toLowerCase());
+
+    if (exactMatch) {
+      this.addSkill(exactMatch);
+    } else {
+      // Allow custom skills not in catalog
+      this.addSkill(input);
+    }
   }
 
   protected removeSkill(index: number): void {
@@ -266,6 +276,19 @@ export class ProfilePageComponent implements OnInit {
     }
   }
 
+  private loadSkillsCatalog(): void {
+    this.skillsApi.getCatalog().subscribe({
+      next: (catalog) => {
+        // Flatten all skills from all categories into a single list
+        const allSkills = catalog.categories.flatMap((c) => c.skills);
+        this.skillsCatalog.set(allSkills);
+      },
+      error: (err) => {
+        console.error('Failed to load skills catalog:', err);
+      },
+    });
+  }
+
   protected skillLevelLabel(level: string): string {
     switch (level?.toLowerCase()) {
       case 'advanced':
@@ -284,18 +307,10 @@ export class ProfilePageComponent implements OnInit {
 
   // --- Navigation ---
 
-  protected readonly topNavItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
-    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
-  ];
+  protected readonly topNavItems = DASHBOARD_TOP_NAV_ITEMS;
 
-  protected readonly sidebarItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
-    { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Monitor de Auditoría', href: '/dashboard/audit', icon: 'bi-shield-check' },
-    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
-    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person', active: true },
-  ];
+  protected readonly sidebarItems = DASHBOARD_SIDEBAR_ITEMS.map((item) => ({
+    ...item,
+    active: item.href === '/dashboard/profile',
+  }));
 }

@@ -25,14 +25,19 @@ export class ProfileContentService {
 
     this.profileApi
       .getProfile()
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        finalize(() => this.isLoading.set(false)),
+      )
       .subscribe({
-        next: (data) => this.profileState.set(data),
+        next: (data) => {
+          console.log(`[Profile] loadProfile → academicGoal: "${data.academicGoal}"`);
+          this.profileState.set(data);
+        },
         error: (err) => {
-          console.error('Error loading profile:', err);
+          console.error('[Profile] Error loading profile:', err);
           this.error.set('Error al cargar el perfil académico.');
         },
-        complete: () => this.isLoading.set(false),
       });
   }
 
@@ -42,27 +47,28 @@ export class ProfileContentService {
 
     this.isLoading.set(true);
     this.error.set(null);
-    return this.profileApi
-      .updateProfile({
-        userId: current.userId,
-        academicGoal: goal,
-      })
-      .pipe(
-        tap({
-          next: () => {
-            // Merge new goal directly into current profile — no GET needed.
-            // This avoids a race condition where getProfile() might return
-            // stale data from a goals table that hasn't committed yet.
-            this.profileState.set({ ...current, academicGoal: goal });
-          },
-          error: (err) => {
-            console.error('Error updating goal:', err);
-            this.error.set('No se pudo actualizar el objetivo académico.');
-          },
-        }),
-        finalize(() => this.isLoading.set(false)),
-        map(() => ({ ...current, academicGoal: goal })),
-        take(1),
-      );
+
+    const payload = { userId: current.userId, academicGoal: goal };
+    console.log(`[Profile] updateAcademicGoal → PUT payload:`, payload);
+    return this.profileApi.updateProfile(payload).pipe(
+      tap({
+        next: () => {
+          console.log(
+            `[Profile] updateAcademicGoal → PUT OK, merging goal "${goal}" into profileState`,
+          );
+          // Merge new goal directly into current profile — no GET needed.
+          // This avoids a race condition where getProfile() might return
+          // stale data from a goals table that hasn't committed yet.
+          this.profileState.set({ ...current, academicGoal: goal });
+        },
+        error: (err) => {
+          console.error('[Profile] Error updating goal:', err);
+          this.error.set('No se pudo actualizar el objetivo académico.');
+        },
+      }),
+      finalize(() => this.isLoading.set(false)),
+      map(() => ({ ...current, academicGoal: goal })),
+      take(1),
+    );
   }
 }

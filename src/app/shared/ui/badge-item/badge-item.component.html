@@ -1,11 +1,11 @@
 <div
   class="grid h-14 w-14 place-content-center rounded-[18px] border transition-all duration-200"
-  [class.border-[#dbe0f9]]="earned()"
-  [class.bg-[#e8fff6]]="earned()"
-  [class.text-[#0ebd86]]="earned()"
-  [class.border-[#eceef7]]="!earned()"
-  [class.bg-[#f3f4f9]]="!earned()"
-  [class.text-[#c0c4d7]]="!earned()"
+  [class.border-emerald-200]="earned()"
+  [class.bg-emerald-50]="earned()"
+  [class.text-emerald-600]="earned()"
+  [class.border-slate-200]="!earned()"
+  [class.bg-slate-50]="!earned()"
+  [class.text-slate-400]="!earned()"
   [title]="label()"
 >
   <i [class]="'bi ' + icon()"></i>

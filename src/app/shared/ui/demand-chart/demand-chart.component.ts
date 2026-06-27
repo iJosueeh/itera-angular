@@ -14,6 +14,14 @@ import gsap from 'gsap';
 export interface ChartDataPoint {
   label: string;
   value: number;
+  metadata?: {
+    fullLabel?: string;
+    formattedValue?: string;
+    minSalary?: number;
+    maxSalary?: number;
+    volume?: number;
+    trend?: string;
+  };
 }
 
 @Component({
@@ -75,10 +83,12 @@ export class DemandChartComponent implements AfterViewInit {
     const barWidth = Math.max(10, (width - padding * 2) / data.length);
 
     const svgns = 'http://www.w3.org/2000/svg';
-    const svg = document.createElementNS(svgns, 'svg');
+    const svg = document.createElementNS(svgns, 'svg') as SVGSVGElement;
     svg.setAttribute('width', '100%');
     svg.setAttribute('height', String(height));
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    // Allow tooltip to overflow outside SVG bounds
+    svg.style.overflow = 'visible';
 
     const maxValue = Math.max(...data.map((d) => d.value), 1);
 
@@ -101,7 +111,8 @@ export class DemandChartComponent implements AfterViewInit {
       // Hover tooltip
       rect.addEventListener('mouseenter', () => {
         gsap.to(rect, { fill: '#6a57f1', duration: 0.2 });
-        this.showTooltip(svg, svgns, x + barWidth / 2, y - 8, `${point.label}: ${point.value}`);
+        const tooltipText = this.buildTooltipText(point);
+        this.showTooltip(svg, svgns, x + barWidth / 2, y - 8, tooltipText);
       });
       rect.addEventListener('mouseleave', () => {
         gsap.to(rect, { fill: this.color(), duration: 0.2 });
@@ -139,27 +150,77 @@ export class DemandChartComponent implements AfterViewInit {
     container.appendChild(svg);
   }
 
-  private showTooltip(svg: SVGSVGElement, ns: string, x: number, y: number, text: string): void {
+  private buildTooltipText(point: ChartDataPoint): string[] {
+    const lines: string[] = [];
+
+    if (point.metadata) {
+      // Rich tooltip for salary comparison
+      lines.push(point.metadata.fullLabel || point.label);
+      lines.push(
+        `Promedio: ${point.metadata.formattedValue || this.formatNumber(point.value)} USD/año`,
+      );
+      if (point.metadata.minSalary !== undefined && point.metadata.maxSalary !== undefined) {
+        lines.push(
+          `Rango: ${this.formatNumber(point.metadata.minSalary)} — ${this.formatNumber(point.metadata.maxSalary)}`,
+        );
+      }
+      if (point.metadata.volume !== undefined) {
+        lines.push(`Ofertas: ${point.metadata.volume}`);
+      }
+      if (point.metadata.trend) {
+        const trendIcon =
+          point.metadata.trend === 'creciente'
+            ? '↑'
+            : point.metadata.trend === 'decreciente'
+              ? '↓'
+              : '→';
+        lines.push(`Tendencia: ${trendIcon} ${point.metadata.trend}`);
+      }
+    } else {
+      // Simple tooltip for other charts
+      lines.push(`${point.label}: ${this.formatNumber(point.value)}`);
+    }
+
+    return lines;
+  }
+
+  private formatNumber(value: number): string {
+    return value.toLocaleString('es-AR');
+  }
+
+  private showTooltip(svg: SVGSVGElement, ns: string, x: number, y: number, lines: string[]): void {
     this.hideTooltip();
 
-    const g = document.createElementNS(ns, 'g');
+    const g = document.createElementNS(ns, 'g') as SVGGElement;
     g.classList.add('chart-tooltip');
+    // Ensure tooltip renders on top of other elements
+    g.style.zIndex = '9999';
+    g.style.pointerEvents = 'none';
 
-    const padding = 8;
-    const tempText = document.createElementNS(ns, 'text');
-    tempText.setAttribute('font-size', '11');
-    tempText.setAttribute('font-weight', '700');
-    tempText.setAttribute('fill', '#ffffff');
-    tempText.textContent = text;
-    svg.appendChild(tempText);
-    const bbox = (tempText as SVGTextElement).getBBox();
-    svg.removeChild(tempText);
+    const padding = 10;
+    const lineHeight = 16;
+    const fontSize = 11;
 
-    const rectW = bbox.width + padding * 2;
-    const rectH = bbox.height + padding * 2;
+    // Measure text width to size the background
+    let maxWidth = 0;
+    lines.forEach((line) => {
+      const tempText = document.createElementNS(ns, 'text');
+      tempText.setAttribute('font-size', String(fontSize));
+      tempText.setAttribute('font-weight', '700');
+      tempText.setAttribute('fill', '#ffffff');
+      tempText.textContent = line;
+      svg.appendChild(tempText);
+      const bbox = (tempText as SVGTextElement).getBBox();
+      svg.removeChild(tempText);
+      maxWidth = Math.max(maxWidth, bbox.width);
+    });
+
+    const rectW = maxWidth + padding * 2;
+    const rectH = lines.length * lineHeight + padding * 2;
     const rectX = x - rectW / 2;
     const rectY = y - rectH - 4;
 
+    // Background
     const bg = document.createElementNS(ns, 'rect');
     bg.setAttribute('x', String(rectX));
     bg.setAttribute('y', String(rectY));
@@ -170,17 +231,21 @@ export class DemandChartComponent implements AfterViewInit {
     bg.setAttribute('stroke', this.color());
     bg.setAttribute('stroke-width', '1');
 
-    const txt = document.createElementNS(ns, 'text');
-    txt.setAttribute('x', String(x));
-    txt.setAttribute('y', String(rectY + rectH / 2 + 4));
-    txt.setAttribute('text-anchor', 'middle');
-    txt.setAttribute('font-size', '11');
-    txt.setAttribute('font-weight', '700');
-    txt.setAttribute('fill', '#ffffff');
-    txt.textContent = text;
-
     g.appendChild(bg);
-    g.appendChild(txt);
+
+    // Text lines
+    lines.forEach((line, i) => {
+      const txt = document.createElementNS(ns, 'text');
+      txt.setAttribute('x', String(x));
+      txt.setAttribute('y', String(rectY + padding + (i + 0.7) * lineHeight));
+      txt.setAttribute('text-anchor', 'middle');
+      txt.setAttribute('font-size', String(fontSize));
+      txt.setAttribute('font-weight', i === 0 ? '700' : '500');
+      txt.setAttribute('fill', i === 0 ? '#ffffff' : '#cbd5e1');
+      txt.textContent = line;
+      g.appendChild(txt);
+    });
+
     svg.appendChild(g);
     this.activeTooltip = g as SVGGElement;
 

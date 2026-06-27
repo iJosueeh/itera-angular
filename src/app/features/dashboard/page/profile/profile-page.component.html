@@ -7,10 +7,35 @@
 >
   <div dashboard-main class="min-w-0 flex flex-1 flex-col gap-6 pb-6">
     @if (isLoading()) {
-      <div class="flex-1 grid place-content-center py-20">
-        <span class="loading loading-spinner loading-lg text-primary"></span>
-        <p class="mt-4 text-sm text-slate-400 font-medium text-center">Cargando tu perfil...</p>
-      </div>
+      <!-- Skeleton loading state -->
+      <section class="bg-white rounded-2xl border border-slate-200 p-6 md:p-8 shadow-sm">
+        <div class="flex flex-wrap items-start justify-between gap-4">
+          <div class="space-y-4">
+            <div class="skeleton h-3 w-20 rounded-full"></div>
+            <div class="skeleton h-8 w-56 rounded-lg"></div>
+            <div class="skeleton h-4 w-80 rounded-lg"></div>
+          </div>
+          <div class="skeleton h-10 w-24 rounded-xl"></div>
+        </div>
+      </section>
+      <section class="grid gap-6 xl:grid-cols-2">
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <div class="skeleton h-5 w-32 rounded-lg mb-6"></div>
+          <div class="space-y-3">
+            <div class="skeleton h-12 rounded-xl"></div>
+            <div class="skeleton h-12 rounded-xl"></div>
+            <div class="skeleton h-12 rounded-xl"></div>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <div class="skeleton h-5 w-40 rounded-lg mb-6"></div>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="skeleton h-20 rounded-xl"></div>
+            <div class="skeleton h-20 rounded-xl"></div>
+            <div class="skeleton h-20 rounded-xl"></div>
+          </div>
+        </div>
+      </section>
     } @else if (error()) {
       <div class="flex-1 grid place-content-center py-20">
         <div class="text-center">
@@ -315,24 +340,40 @@
                 <input
                   type="text"
                   placeholder="Buscar habilidad..."
-                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
                   [ngModel]="newSkillName()"
                   (ngModelChange)="newSkillName.set($event); showSkillDropdown.set(true)"
                   (focus)="showSkillDropdown.set(true)"
+                  (keydown.enter)="addSkillFromInput()"
                 />
                 @if (showSkillDropdown() && filteredAvailableSkills().length > 0) {
                   <div
-                    class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-10 max-h-48 overflow-y-auto"
+                    class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-10 max-h-56 overflow-y-auto"
                   >
                     @for (skill of filteredAvailableSkills(); track skill) {
                       <button
                         type="button"
-                        class="w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-primary/5 hover:text-primary transition-colors"
+                        class="w-full px-4 py-2.5 text-left text-sm text-slate-700 hover:bg-primary/5 hover:text-primary transition-colors flex items-center gap-2"
                         (click)="addSkill(skill)"
                       >
+                        <i class="bi bi-plus-circle text-xs text-slate-400"></i>
                         {{ skill }}
                       </button>
                     }
+                  </div>
+                } @else if (
+                  showSkillDropdown() &&
+                  newSkillName().trim() &&
+                  filteredAvailableSkills().length === 0
+                ) {
+                  <div
+                    class="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-10 px-4 py-3"
+                  >
+                    <p class="text-xs text-slate-400">
+                      No se encontraron habilidades. Presiona Enter para agregar "{{
+                        newSkillName()
+                      }}" como personalizada.
+                    </p>
                   </div>
                 }
               </div>
@@ -347,8 +388,9 @@
               </select>
               <button
                 type="button"
-                class="px-4 py-2.5 bg-primary/10 text-primary font-semibold rounded-xl hover:bg-primary/20 transition-all"
-                (click)="addSkill(newSkillName())"
+                class="px-4 py-2.5 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                [disabled]="!newSkillName().trim()"
+                (click)="addSkillFromInput()"
               >
                 <i class="bi bi-plus-lg"></i>
               </button>

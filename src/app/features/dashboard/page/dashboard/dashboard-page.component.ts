@@ -4,6 +4,7 @@ import {
   inject,
   OnInit,
   OnDestroy,
+  effect,
   signal,
   computed,
 } from '@angular/core';
@@ -13,19 +14,26 @@ import { firstValueFrom, Subscription } from 'rxjs';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
-import { InteractiveRoadmapComponent } from '../../components/interactive-roadmap/interactive-roadmap.component';
+import { LearningMapComponent } from '../../components/learning-map/learning-map.component';
 import {
   DemandChartComponent,
   ChartDataPoint,
 } from '@shared/ui/demand-chart/demand-chart.component';
+import { DonutChartComponent } from '@shared/ui/donut-chart/donut-chart.component';
+import { SkillRankingComponent } from '@shared/ui/skill-ranking/skill-ranking.component';
 import { StarRatingComponent } from '@shared/ui/star-rating/star-rating.component';
 import {
   MarketApiService,
   SalaryByCareerResponse,
+  SalarySnapshotResponse,
 } from '@features/home/services/market-api.service';
 import { AuthStorageService } from '@shared/services/auth-storage.service';
 import { PageTelemetryService } from '@shared/services/page-telemetry.service';
-import { NavItem } from '@shared/interfaces/dashboard.interface';
+import {
+  NavItem,
+  DASHBOARD_SIDEBAR_ITEMS,
+  DASHBOARD_TOP_NAV_ITEMS,
+} from '@shared/interfaces/dashboard.interface';
 import { MatchResult } from '@shared/interfaces/market.interface';
 
 @Component({
@@ -33,8 +41,10 @@ import { MatchResult } from '@shared/interfaces/market.interface';
   standalone: true,
   imports: [
     DashboardShellComponent,
-    InteractiveRoadmapComponent,
+    LearningMapComponent,
     DemandChartComponent,
+    DonutChartComponent,
+    SkillRankingComponent,
     StarRatingComponent,
     DecimalPipe,
   ],
@@ -259,6 +269,46 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
         label: d.skill,
         value: d.demand_count,
       }));
+  });
+
+  protected readonly donutChartData = computed(() => {
+    const demand = this.dashboardContentService.marketDemand();
+    if (!demand || !demand.top_skills) return [];
+    const goalSkills = this.goalFilteredSkills();
+    const useGoalFilter = this.isGoalFiltering() && goalSkills.length > 0;
+    const filtered = demand.top_skills.filter(
+      (d: any) =>
+        !useGoalFilter || goalSkills.some((g) => g.toLowerCase() === d.skill.toLowerCase()),
+    );
+    const top8 = filtered.slice(0, 8);
+    const total = top8.reduce((sum: number, d: any) => sum + d.demand_count, 0);
+    return top8.map((d: any) => ({
+      label: d.skill,
+      value: d.demand_count,
+      metadata: {
+        trend: d.tendencia_mensual,
+        percentage: total > 0 ? (d.demand_count / total) * 100 : 0,
+      },
+    }));
+  });
+
+  protected readonly skillRankingData = computed(() => {
+    const demand = this.dashboardContentService.marketDemand();
+    if (!demand || !demand.top_skills) return [];
+    const goalSkills = this.goalFilteredSkills();
+    const useGoalFilter = this.isGoalFiltering() && goalSkills.length > 0;
+    const filtered = demand.top_skills.filter(
+      (d: any) =>
+        !useGoalFilter || goalSkills.some((g) => g.toLowerCase() === d.skill.toLowerCase()),
+    );
+    const top10 = filtered.slice(0, 10);
+    const total = top10.reduce((sum: number, d: any) => sum + d.demand_count, 0);
+    return top10.map((d: any) => ({
+      label: d.skill,
+      value: d.demand_count,
+      percentage: total > 0 ? (d.demand_count / total) * 100 : 0,
+      trend: d.tendencia_mensual,
+    }));
   });
 
   protected readonly availableGoals = [
@@ -503,6 +553,20 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   protected readonly salaryByCareer = signal<SalaryByCareerResponse | null>(null);
 
+  protected readonly salarySnapshots = signal<SalarySnapshotResponse | null>(null);
+
+  protected readonly selectedYear = signal<number | null>(null);
+
+  protected readonly isSalaryLoading = signal(false);
+
+  protected readonly availableYears = computed(() => {
+    return this.salarySnapshots()?.available_years ?? [];
+  });
+
+  protected readonly isHistoricalMode = computed(() => {
+    return this.selectedYear() !== null && this.availableYears().length > 0;
+  });
+
   protected readonly dynamicAvgSalary = computed(() => {
     const data = this.salaryByCareer();
     const goalNames = this.goalCareerNames();
@@ -523,18 +587,83 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   });
 
   protected readonly careerComparisonData = computed<ChartDataPoint[]>(() => {
-    const data = this.salaryByCareer();
+    const year = this.selectedYear();
+    const snapshots = this.salarySnapshots();
     const goalNames = this.goalCareerNames();
+
+    // Historical mode: use snapshot data for selected year
+    if (year !== null && snapshots?.snapshots) {
+      const result: ChartDataPoint[] = [];
+      for (const [careerName, yearData] of Object.entries(snapshots.snapshots)) {
+        // Find data for selected year
+        const yearEntry = yearData.find((y) => y.year === year);
+        if (!yearEntry) continue;
+        if (goalNames.length > 0 && !goalNames.includes(careerName)) continue;
+
+        const shortLabel = this.shortenCareerName(careerName);
+        const formattedValue = this.formatSalary(yearEntry.salario_promedio);
+        result.push({
+          label: `${shortLabel} ${year}`,
+          value: yearEntry.salario_promedio,
+          metadata: {
+            fullLabel: `${careerName} (${year})`,
+            formattedValue,
+            minSalary: yearEntry.salario_min,
+            maxSalary: yearEntry.salario_max,
+            volume: yearEntry.volumen_total,
+            trend: undefined,
+          },
+        });
+      }
+      return result.sort((a, b) => b.value - a.value);
+    }
+
+    // Current mode: use salary-by-career data
+    const data = this.salaryByCareer();
     if (!data?.careers?.length) return [];
     let careers = data.careers.filter((c) => c.salario_promedio > 0);
     if (goalNames.length > 0) {
       careers = careers.filter((c) => goalNames.includes(c.titulo_carrera));
     }
-    return careers.map((c) => ({
-      label: c.titulo_carrera,
-      value: c.salario_promedio,
-    }));
+    return careers.map((c) => {
+      const shortLabel = this.shortenCareerName(c.titulo_carrera);
+      const formattedValue = this.formatSalary(c.salario_promedio);
+      return {
+        label: shortLabel,
+        value: c.salario_promedio,
+        metadata: {
+          fullLabel: c.titulo_carrera,
+          formattedValue,
+          minSalary: c.salario_min,
+          maxSalary: c.salario_max,
+          volume: c.volumen_total,
+          trend: c.tendencia,
+        },
+      };
+    });
   });
+
+  private shortenCareerName(name: string): string {
+    const mapping: Record<string, string> = {
+      'Desarrollo Backend': 'Backend',
+      'Desarrollo Frontend': 'Frontend',
+      'Desarrollo Fullstack': 'Fullstack',
+      'Ciencia de Datos e IA': 'Data & IA',
+      'Datos y Business Intelligence': 'BI & Analytics',
+      'Ingeniería de Datos': 'Data Eng',
+      'Infraestructura y Cloud': 'Cloud',
+      'Infraestructura y Sistemas': 'Infra',
+      'DevOps y Cloud': 'DevOps',
+    };
+    return mapping[name] || name;
+  }
+
+  private formatSalary(value: number): string {
+    if (value >= 1000) {
+      return `$${Math.round(value / 1000)}k`;
+    }
+    return `$${value}`;
+  }
 
   protected readonly topCareerDetails = computed(() => {
     const data = this.salaryByCareer();
@@ -558,7 +687,18 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   protected selectedCareer = signal<string | null>(null);
 
   protected handleChartDrillDown(point: ChartDataPoint): void {
-    this.selectedCareer.set(point.label);
+    // Use fullLabel from metadata if available (shortened labels for chart display)
+    this.selectedCareer.set(point.metadata?.fullLabel || point.label);
+  }
+
+  protected selectYear(year: number | null): void {
+    if (this.selectedYear() === year) return;
+    this.isSalaryLoading.set(true);
+    // Brief delay to show skeleton during transition
+    setTimeout(() => {
+      this.selectedYear.set(year);
+      this.isSalaryLoading.set(false);
+    }, 150);
   }
 
   protected handleFeedback(rating: number): void {
@@ -595,6 +735,27 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
 
   private readonly initialMatchEvaluated = signal(false);
 
+  constructor() {
+    // Reactively fire the initial match evaluation once the profile signal becomes available.
+    // This is more reliable than setTimeout polling because it fires as soon as the
+    // profile data arrives, regardless of network latency.
+    effect(() => {
+      // Track these signals so the effect re-runs when they change
+      const p = this.profile();
+      const inProgress = this.isUpdatingGoal();
+
+      // Only fire once: profile must be loaded, no goal change in progress,
+      // and we haven't evaluated yet.
+      if (!p || inProgress || this.initialMatchEvaluated()) return;
+
+      console.log(
+        `[Match] Initial evaluate → profile.academicGoal: "${p.academicGoal}", category: "${this.currentGoalCategory()}"`,
+      );
+      this.initialMatchEvaluated.set(true);
+      this.evaluateMatch();
+    });
+  }
+
   ngOnInit(): void {
     this.telemetry.startTracking('dashboard');
 
@@ -605,23 +766,14 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
       this.salaryByCareer.set(data);
     });
 
-    // Wait for profile to load before evaluating match (avoid racing with async loadProfile)
-    // Use a delayed check since loadProfile is async and we need the profile loaded
-    const tryEvaluate = () => {
-      // Don't fire during a goal change — updateGoal() triggers evaluateMatch() via its own path
-      if (this.isUpdatingGoal()) return;
-      // Profile must exist (skills can be empty — API handles that)
-      if (!this.profile()) return;
-      if (this.initialMatchEvaluated()) return;
-      this.initialMatchEvaluated.set(true);
-      this.evaluateMatch();
-    };
-    // Immediate attempt (in case profile already loaded synchronously)
-    tryEvaluate();
-    // Delayed attempts (profile loads async — add extra timeouts for slow connections)
-    setTimeout(tryEvaluate, 500);
-    setTimeout(tryEvaluate, 1500);
-    setTimeout(tryEvaluate, 3000);
+    // Load salary snapshots for historical comparison
+    this.marketApi.getSalarySnapshots().subscribe((data) => {
+      this.salarySnapshots.set(data);
+      // Auto-select most recent year if snapshots available
+      if (data.available_years.length > 0) {
+        this.selectedYear.set(data.available_years[0]);
+      }
+    });
 
     // Read ?q= query param from URL and trigger career search if present
     const query = this.route.snapshot.queryParamMap.get('q');
@@ -630,23 +782,15 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected readonly sidebarItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
-    { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Monitor de Auditoría', href: '/dashboard/audit', icon: 'bi-shield-check' },
-    { label: 'Demanda', href: '/dashboard', fragment: 'demand', icon: 'bi-bar-chart-line' },
-    { label: 'Mis Rutas', href: '/dashboard', fragment: 'routes', icon: 'bi-signpost-2' },
-    { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
-    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
-    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
-  ];
+  protected readonly sidebarItems = DASHBOARD_SIDEBAR_ITEMS.map((item) => ({
+    ...item,
+    active: item.href === '/dashboard',
+  }));
 
-  protected readonly topNavItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2', active: true },
-    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
-  ];
+  protected readonly topNavItems = DASHBOARD_TOP_NAV_ITEMS.map((item) => ({
+    ...item,
+    active: item.href === '/dashboard',
+  }));
 
   ngOnDestroy(): void {
     this.activeMatchSub?.unsubscribe();

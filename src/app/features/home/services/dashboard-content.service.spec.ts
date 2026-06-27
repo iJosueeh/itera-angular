@@ -39,7 +39,6 @@ describe('DashboardContentService', () => {
       getSalaryByCareer: () =>
         of({ careers: [], summary: { total_offers: 0, avg_salary_weighted: 0, career_count: 0 } }),
       getCareersCategories: () => of({ total: 0, categories: [] }),
-      getOffers: () => of([]),
     };
 
     TestBed.configureTestingModule({

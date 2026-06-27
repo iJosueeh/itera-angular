@@ -3,7 +3,11 @@ import { DashboardContentService } from '@features/home/services/dashboard-conte
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
 import { ComparisonComponent } from '../../components/comparison/comparison.component';
-import { NavItem } from '@shared/interfaces/dashboard.interface';
+import {
+  NavItem,
+  DASHBOARD_SIDEBAR_ITEMS,
+  DASHBOARD_TOP_NAV_ITEMS,
+} from '@shared/interfaces/dashboard.interface';
 
 @Component({
   selector: 'itera-dashboard-comparison-page',
@@ -20,30 +24,10 @@ export class ComparisonPageComponent {
   protected readonly vm = this.dashboardContentService.vm;
   protected readonly currentTheme = this.profileContentService.currentTheme;
 
-  protected readonly sidebarItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
-    { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Monitor de Auditoría', href: '/dashboard/audit', icon: 'bi-shield-check' },
-    { label: 'Mis Rutas', href: '/dashboard', fragment: 'routes', icon: 'bi-signpost-2' },
-    { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
-    {
-      label: 'Comparación',
-      href: '/dashboard/comparison',
-      icon: 'bi-arrow-left-right',
-      active: true,
-    },
-    { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow' },
-    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
-  ];
+  protected readonly sidebarItems = DASHBOARD_SIDEBAR_ITEMS.map((item) => ({
+    ...item,
+    active: item.href === '/dashboard/comparison',
+  }));
 
-  protected readonly topNavItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
-    {
-      label: 'Comparación',
-      href: '/dashboard/comparison',
-      icon: 'bi-arrow-left-right',
-      active: true,
-    },
-    { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
-  ];
+  protected readonly topNavItems = DASHBOARD_TOP_NAV_ITEMS;
 }

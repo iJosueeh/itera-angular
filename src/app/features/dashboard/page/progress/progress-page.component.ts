@@ -9,12 +9,17 @@ import {
 import { Router } from '@angular/router';
 import { DashboardContentService } from '@features/home/services/dashboard-content.service';
 import { ProfileContentService } from '@features/profile/services/profile-content.service';
+import { LearningApiService, LearningProgress } from '@features/home/services/learning-api.service';
 import { DashboardShellComponent } from '@shared/components/dashboard-shell/dashboard-shell.component';
 import { MasteryCardComponent } from '@shared/ui/mastery-card/mastery-card.component';
 import { MentorAlertCardComponent } from '@shared/ui/mentor-alert-card/mentor-alert-card.component';
 import { BadgeItemComponent } from '@shared/ui/badge-item/badge-item.component';
 import { StatBarComponent } from '@shared/ui/stat-bar/stat-bar.component';
-import { NavItem } from '@shared/interfaces/dashboard.interface';
+import {
+  NavItem,
+  DASHBOARD_SIDEBAR_ITEMS,
+  DASHBOARD_TOP_NAV_ITEMS,
+} from '@shared/interfaces/dashboard.interface';
 import { Skill } from '@shared/interfaces/profile.interface';
 
 interface MasteryCard {
@@ -36,40 +41,6 @@ interface BadgeItem {
   earned: boolean;
 }
 
-/** Fallback mastery cards when profile is not loaded */
-const FALLBACK_MASTERY_CARDS: ReadonlyArray<MasteryCard> = [
-  {
-    title: 'Fundamentos de Python',
-    subtitle: '4/5 Unidades Completadas',
-    progress: 85,
-    tone: 'indigo',
-  },
-  { title: 'Pandas & NumPy', subtitle: '2/8 Unidades Completadas', progress: 35, tone: 'emerald' },
-  { title: 'Visualización de Datos', subtitle: 'Módulo Bloqueado', progress: 0, tone: 'violet' },
-  { title: 'Deep Learning', subtitle: 'Módulo Bloqueado', progress: 0, tone: 'indigo' },
-];
-
-const FALLBACK_BADGES: ReadonlyArray<BadgeItem> = [
-  { label: 'Iniciado', icon: 'bi-award', earned: true },
-  { label: 'Explorador', icon: 'bi-compass', earned: true },
-  { label: 'Analista', icon: 'bi-stars', earned: true },
-  { label: 'Constructor', icon: 'bi-box-seam', earned: false },
-  { label: 'Mentor', icon: 'bi-lightbulb', earned: false },
-  { label: 'Arquitecto', icon: 'bi-diagram-3', earned: false },
-  { label: 'Lanzamiento', icon: 'bi-rocket', earned: false },
-  { label: 'Maestro', icon: 'bi-trophy', earned: false },
-];
-
-const FALLBACK_MILESTONES: ReadonlyArray<MilestoneItem> = [
-  { title: 'Maestría en Decoradores', meta: 'Estimado: 45 min', status: 'completed' },
-  {
-    title: 'Manejo de Errores Pro',
-    meta: 'Bloqueado hasta completar el anterior',
-    status: 'in-progress',
-  },
-  { title: 'Proyecto Final de Módulo', meta: 'Bloqueado', status: 'locked' },
-];
-
 @Component({
   selector: 'itera-dashboard-progress-page',
   standalone: true,
@@ -87,6 +58,7 @@ const FALLBACK_MILESTONES: ReadonlyArray<MilestoneItem> = [
 export class ProgressPageComponent implements OnInit {
   private readonly dashboardContentService = inject(DashboardContentService);
   private readonly profileContentService = inject(ProfileContentService);
+  private readonly learningApi = inject(LearningApiService);
   private readonly router = inject(Router);
 
   protected readonly vm = this.dashboardContentService.vm;
@@ -95,20 +67,72 @@ export class ProgressPageComponent implements OnInit {
   protected readonly isLoading = this.profileContentService.isLoading;
   protected readonly error = this.profileContentService.error;
 
-  /** Derive mastery cards from profile skills, or use fallback */
+  // Learning progress from API
+  protected readonly learningProgress = signal<LearningProgress | null>(null);
+
+  // Current learning path for milestone names
+  protected readonly currentPath = signal<{
+    goal_id: string;
+    nodes: Array<{ id: string; name: string; status: string; order: number }>;
+  } | null>(null);
+
+  /** Dynamic stat bars calculated from real data */
+  protected readonly statBars = computed(() => {
+    const p = this.profile();
+    const progress = this.learningProgress();
+
+    if (!p) return [];
+
+    // 1. Route Progress: from learning API
+    const routeProgress = progress?.progress_percent ?? 0;
+
+    // 2. Skills Mastery: % of skills at advanced level
+    const skills = p.skills || [];
+    const advancedCount = skills.filter(
+      (s) => s.level === 'advanced' || s.level === 'avanzado',
+    ).length;
+    const skillsMastery = skills.length > 0 ? Math.round((advancedCount / skills.length) * 100) : 0;
+
+    // 3. Market Alignment: from matchScore
+    const marketAlignment = p.matchScore?.score ?? 0;
+
+    return [
+      { label: 'Progreso de Ruta', value: routeProgress, color: '#6366f1' },
+      { label: 'Skills Dominadas', value: skillsMastery, color: '#10b981' },
+      { label: 'Alineación con el Mercado', value: marketAlignment, color: '#8b5cf6' },
+    ];
+  });
+
+  /** Smart mastery cards with market context */
   protected readonly masteryCards = computed<ReadonlyArray<MasteryCard>>(() => {
     const p = this.profile();
-    if (!p?.skills?.length) return FALLBACK_MASTERY_CARDS;
+    if (!p?.skills?.length) return [];
 
     const tones: Array<'indigo' | 'emerald' | 'violet'> = ['indigo', 'emerald', 'violet'];
-    return p.skills.map((skill: Skill, i: number) => {
+    const missingSkills = p.matchScore?.habilidades_faltantes || [];
+
+    // Sort: in-progress first, then by level
+    const sortedSkills = [...p.skills].sort((a, b) => {
+      const aPercent = this.skillLevelToPercent(a.level);
+      const bPercent = this.skillLevelToPercent(b.level);
+      // Prioritize intermediate skills (in-progress)
+      if (aPercent === 55 && bPercent !== 55) return -1;
+      if (bPercent === 55 && aPercent !== 55) return 1;
+      return bPercent - aPercent;
+    });
+
+    return sortedSkills.map((skill: Skill, i: number) => {
       const levelPercent = this.skillLevelToPercent(skill.level);
-      const subtitle =
-        levelPercent >= 100
-          ? 'Dominio completo'
-          : levelPercent > 0
-            ? `Nivel: ${skill.level}`
-            : 'Sin comenzar';
+      const isMissing = missingSkills.includes(skill.name);
+
+      let subtitle: string;
+      if (levelPercent >= 90) {
+        subtitle = 'Dominio completo';
+      } else if (levelPercent > 0) {
+        subtitle = isMissing ? `Nivel: ${skill.level} (alta demanda)` : `Nivel: ${skill.level}`;
+      } else {
+        subtitle = 'Sin comenzar';
+      }
 
       return {
         title: skill.name,
@@ -119,51 +143,158 @@ export class ProgressPageComponent implements OnInit {
     });
   });
 
-  /** Derive badges from profile, or use fallback */
-  protected readonly badges = computed<ReadonlyArray<BadgeItem>>(() => {
+  /** Contextual mentor alert based on user state */
+  protected readonly mentorAlert = computed(() => {
     const p = this.profile();
-    if (!p?.badges || !Array.isArray(p.badges) || p.badges.length === 0) {
-      return FALLBACK_BADGES;
+    const progress = this.learningProgress();
+
+    if (!p) {
+      return {
+        title: 'Completa tu perfil',
+        message: 'Agrega tus habilidades en Mi Perfil para comenzar tu ruta de aprendizaje.',
+      };
     }
 
-    const iconMap: Record<string, string> = {
-      Iniciado: 'bi-award',
-      Explorador: 'bi-compass',
-      Analista: 'bi-stars',
-      Constructor: 'bi-box-seam',
-      Mentor: 'bi-lightbulb',
-      Arquitecto: 'bi-diagram-3',
-      Lanzamiento: 'bi-rocket',
-      Maestro: 'bi-trophy',
-    };
+    const matchScore = p.matchScore?.score ?? 0;
+    const missingSkills = p.matchScore?.habilidades_faltantes || [];
+    const skills = p.skills || [];
 
-    return p.badges.map((b: any) => ({
-      label: b.name || b.label || 'Badge',
-      icon: iconMap[b.name || b.label] || 'bi-patch-check',
-      earned: b.earned ?? true,
-    }));
+    // Case 1: Low match score with missing skills
+    if (matchScore < 60 && missingSkills.length > 0) {
+      return {
+        title: 'Enfócate en lo crítico',
+        message: `Tu alineación con el mercado es del ${matchScore}%. Prioriza aprender: ${missingSkills.slice(0, 2).join(', ')}.`,
+      };
+    }
+
+    // Case 2: Low route progress
+    if (progress && progress.progress_percent < 30) {
+      return {
+        title: 'Retoma tu ruta',
+        message: `Llevas ${progress.progress_percent}% de tu ruta. Cada día cuenta para alcanzar tu meta.`,
+      };
+    }
+
+    // Case 3: Few skills
+    if (skills.length < 3) {
+      return {
+        title: 'Expande tu arsenal',
+        message:
+          'Tienes pocas habilidades registradas. Explora el mercado y agrega más skills a tu perfil.',
+      };
+    }
+
+    // Case 4: Good progress, encourage consistency
+    return {
+      title: 'Mantén el ritmo',
+      message: 'Vas por buen camino. Sigue practicando y completa los siguientes hitos de tu ruta.',
+    };
   });
 
-  /** Derive milestones from roadmap, or use fallback */
+  /** Badges with earning logic */
+  protected readonly badges = computed<ReadonlyArray<BadgeItem>>(() => {
+    const p = this.profile();
+    if (!p) return [];
+
+    const skills = p.skills || [];
+    const advancedCount = skills.filter(
+      (s) => s.level === 'advanced' || s.level === 'avanzado',
+    ).length;
+    const intermediatePlus = skills.filter(
+      (s) =>
+        s.level === 'intermediate' ||
+        s.level === 'intermedio' ||
+        s.level === 'advanced' ||
+        s.level === 'avanzado',
+    ).length;
+
+    return [
+      {
+        label: 'Iniciado',
+        icon: 'bi-award',
+        earned: true, // Has profile
+      },
+      {
+        label: 'Explorador',
+        icon: 'bi-compass',
+        earned: skills.length >= 3,
+      },
+      {
+        label: 'Analista',
+        icon: 'bi-stars',
+        earned: !!p.matchScore,
+      },
+      {
+        label: 'Constructor',
+        icon: 'bi-box-seam',
+        earned: intermediatePlus >= 5,
+      },
+      {
+        label: 'Mentor',
+        icon: 'bi-lightbulb',
+        earned: advancedCount >= 2,
+      },
+      {
+        label: 'Arquitecto',
+        icon: 'bi-diagram-3',
+        earned: skills.length >= 8,
+      },
+      {
+        label: 'Lanzamiento',
+        icon: 'bi-rocket',
+        earned: (p.matchScore?.score ?? 0) >= 80,
+      },
+      {
+        label: 'Maestro',
+        icon: 'bi-trophy',
+        earned: advancedCount >= 5,
+      },
+    ];
+  });
+
+  /** Milestones from learning path — only shows real node names, empty if no path loaded */
   protected readonly milestones = computed<ReadonlyArray<MilestoneItem>>(() => {
     const p = this.profile();
-    const roadmap = p?.roadmap;
-    if (!roadmap || !Array.isArray(roadmap) || roadmap.length === 0) {
-      return FALLBACK_MILESTONES;
+    const progress = this.learningProgress();
+    const path = this.currentPath();
+
+    if (!p) return [];
+
+    // No progress started — return empty (empty state shown in template)
+    if (!progress || (progress.completed_nodes?.length === 0 && !progress.current_node)) {
+      return [];
     }
 
-    return roadmap.slice(0, 5).map((node: any, i: number) => {
-      const status: MilestoneItem['status'] =
-        node.status === 'completed' ? 'completed' : i === 0 ? 'in-progress' : 'locked';
-      const meta =
-        status === 'completed'
-          ? 'Completado'
-          : status === 'in-progress'
-            ? 'En progreso'
-            : 'Bloqueado';
+    // Don't show milestones if path isn't loaded yet (avoids generic "Hito X" names)
+    if (!path?.nodes?.length) return [];
 
-      return { title: node.name || node.label || `Paso ${i + 1}`, meta, status };
-    });
+    const completedNodes = progress.completed_nodes || [];
+    const completedCount = completedNodes.length;
+    const totalNodes = progress.total_nodes ?? 0;
+
+    if (totalNodes === 0) return [];
+
+    const milestones: MilestoneItem[] = [];
+    const nodes = path.nodes;
+
+    // Show next 3-5 milestones
+    const startIdx = completedCount;
+    const endIdx = Math.min(completedCount + 5, totalNodes);
+
+    for (let i = startIdx; i < endIdx; i++) {
+      const node = nodes[i];
+      if (!node) continue;
+
+      const isCurrent = progress.current_node && i === completedCount;
+
+      milestones.push({
+        title: isCurrent ? node.name : node.name,
+        meta: isCurrent ? 'En progreso' : 'Pendiente',
+        status: isCurrent ? 'in-progress' : 'locked',
+      });
+    }
+
+    return milestones;
   });
 
   /** Earned badge count */
@@ -173,19 +304,45 @@ export class ProgressPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.profileContentService.loadProfile();
+    this.loadLearningProgress();
 
-    // Auth check: if profile fails with 401, redirect to login
-    // The ProfileContentService sets error on failure; we check for auth errors
-    // by watching the error signal. Since the service catches all errors,
-    // we add a check via the router on the next tick.
+    // Auth check
     setTimeout(() => {
       if (this.error() && !this.profile() && !this.isLoading()) {
-        // Could be an auth error — try to detect 401 by checking if session is invalid
-        // The auth interceptor sends withCredentials, so a 401 means the cookie is invalid
         this.router.navigate(['/auth/login'], {
           queryParams: { returnUrl: '/dashboard/progress' },
         });
       }
+    });
+  }
+
+  private loadLearningProgress(): void {
+    const userId = this.profileContentService.profile()?.userId;
+    if (!userId) {
+      // Retry after profile loads
+      setTimeout(() => this.loadLearningProgress(), 1000);
+      return;
+    }
+
+    this.learningApi.getProgress(userId).subscribe({
+      next: (response) => {
+        if (response.progress && response.progress.length > 0) {
+          this.learningProgress.set(response.progress[0]);
+          // Load the path to get node names for milestones
+          const goalId = response.progress[0].goal_id;
+          this.learningApi.getPath(goalId).subscribe({
+            next: (path) => {
+              this.currentPath.set(path);
+            },
+            error: (err) => {
+              console.error('Failed to load learning path:', err);
+            },
+          });
+        }
+      },
+      error: (err) => {
+        console.error('Failed to load learning progress:', err);
+      },
     });
   }
 
@@ -205,21 +362,10 @@ export class ProgressPageComponent implements OnInit {
     }
   }
 
-  protected readonly topNavItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
-    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow', active: true },
-  ];
+  protected readonly topNavItems = DASHBOARD_TOP_NAV_ITEMS;
 
-  protected readonly sidebarItems: ReadonlyArray<NavItem> = [
-    { label: 'Panel', href: '/dashboard', icon: 'bi-grid-1x2' },
-    { label: 'Explorador de Empleos', href: '/dashboard/jobs', icon: 'bi-search' },
-    { label: 'Monitor de Auditoría', href: '/dashboard/audit', icon: 'bi-shield-check' },
-    { label: 'Demanda', href: '/dashboard', fragment: 'demand', icon: 'bi-bar-chart-line' },
-    { label: 'Mis Rutas', href: '/dashboard', fragment: 'routes', icon: 'bi-signpost-2' },
-    { label: 'Habilidades', href: '/dashboard', fragment: 'skills', icon: 'bi-stars' },
-    { label: 'Comparación', href: '/dashboard/comparison', icon: 'bi-arrow-left-right' },
-    { label: 'Progreso', href: '/dashboard/progress', icon: 'bi-graph-up-arrow', active: true },
-    { label: 'Mi Perfil', href: '/dashboard/profile', icon: 'bi-person' },
-  ];
+  protected readonly sidebarItems = DASHBOARD_SIDEBAR_ITEMS.map((item) => ({
+    ...item,
+    active: item.href === '/dashboard/progress',
+  }));
 }
