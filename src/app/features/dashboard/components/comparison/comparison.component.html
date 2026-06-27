@@ -1,6 +1,6 @@
 <section class="comparison-panel" id="comparison" aria-label="Comparador de carrera">
   <!-- ═══════ HEADER ═══════ -->
-  <div class="flex flex-wrap items-start justify-between gap-4 mb-10">
+  <div class="flex flex-wrap items-start justify-between gap-4 mb-8">
     <div>
       <span
         class="inline-flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold uppercase tracking-wider text-primary bg-primary/5 border border-primary/10 rounded-full"
@@ -17,164 +17,307 @@
     </div>
   </div>
 
-  <!-- ═══════ OPTION CARDS ═══════ -->
-  <div class="mt-6 grid gap-6 xl:grid-cols-2">
-    @for (option of options(); track option.title) {
-      <article
-        class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
-      >
-        <div class="p-8 pb-0">
-          <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
-            {{ option.label }}
-          </p>
-          <h3 class="mt-2 text-3xl font-black text-slate-900 tracking-tight">
-            {{ option.title }}
-          </h3>
-          <p class="mt-3 max-w-[420px] text-sm font-medium leading-relaxed text-slate-500">
-            {{ option.subtitle }}
-          </p>
-        </div>
+  <!-- ═══════ USER GOAL BADGE ═══════ -->
+  @if (userGoal() !== 'General') {
+    <div class="mb-6 inline-flex items-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-xl text-sm">
+      <i class="bi bi-signpost-2 text-primary"></i>
+      <span class="text-slate-600">Tu ruta actual:</span>
+      <span class="font-bold text-primary">{{ userGoal() }}</span>
+    </div>
+  }
 
-        <div class="grid gap-4 p-8 sm:grid-cols-2">
-          <div class="rounded-xl bg-slate-50 border border-slate-200 p-5">
-            <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
-              Salario Promedio
-            </p>
-            <p
-              class="mt-2 text-2xl font-black tracking-tighter"
-              [class.text-primary]="option.accent === 'primary'"
-              [class.text-secondary]="option.accent === 'secondary'"
-            >
-              {{ option.salary === '$0' ? 'En análisis...' : option.salary }}
-            </p>
-          </div>
-          <div class="rounded-xl bg-slate-50 border border-slate-200 p-5">
-            <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
-              Crecimiento
-            </p>
-            <p
-              class="mt-2 text-2xl font-black tracking-tighter"
-              [class.text-primary]="option.accent === 'primary'"
-              [class.text-secondary]="option.accent === 'secondary'"
-            >
-              {{ option.growth }}
-            </p>
-          </div>
-        </div>
-
-        <div class="px-8 pb-4">
-          <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
-            Stack Tecnológico
-          </p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            @for (tech of option.stack.slice(0, 5); track tech) {
-              <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600">{{
-                tech
-              }}</span>
-            }
-          </div>
-        </div>
-
-        <div class="px-8 pb-8 mt-4">
-          <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
-            Proyección de Demanda (5 años)
-          </p>
-          <div
-            class="mt-4 flex h-[70px] items-end gap-2 rounded-xl bg-slate-50 border border-slate-200 px-4 py-3"
-          >
-            @for (bar of option.projectionBars; track $index) {
-              <div
-                class="flex-1 rounded-t-lg transition-all duration-700"
-                [class.bg-primary]="option.accent === 'primary'"
-                [class.bg-secondary]="option.accent === 'secondary'"
-                [class.opacity-30]="$index < 4"
-                [style.height.%]="bar"
-              ></div>
-            }
-          </div>
-        </div>
-      </article>
-    }
-  </div>
-
-  <!-- ═══════ COMPARISON TABLE ═══════ -->
-  <article
-    class="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-8"
-    aria-label="Comparación directa de métricas"
-  >
-    <h3 class="text-xl font-bold text-slate-900 tracking-tight">Comparación Directa</h3>
-
+  <!-- ═══════ GOAL UPDATE MESSAGE ═══════ -->
+  @if (goalUpdateMessage()) {
     <div
-      class="mt-8 overflow-hidden rounded-xl border border-slate-200"
+      class="mb-6 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2 transition-all"
+      [class.bg-green-50]="!goalUpdateMessage()!.includes('Error')"
+      [class.border-green-200]="!goalUpdateMessage()!.includes('Error')"
+      [class.text-green-700]="!goalUpdateMessage()!.includes('Error')"
+      [class.bg-red-50]="goalUpdateMessage()!.includes('Error')"
+      [class.border-red-200]="goalUpdateMessage()!.includes('Error')"
+      [class.text-red-600]="goalUpdateMessage()!.includes('Error')"
+      [class.border]="true"
     >
-      <!-- Table header -->
-      <div
-        class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] gap-4 border-b border-slate-200 bg-slate-50 px-6 py-4 text-[0.65rem] font-bold uppercase tracking-wider text-slate-400"
-      >
-        <span>Métrica</span>
-        <span class="text-primary">{{ options()[0]?.title ?? 'Opción A' }}</span>
-        <span class="text-secondary">{{ options()[1]?.title ?? 'Opción B' }}</span>
-        <span class="text-right">Análisis</span>
-      </div>
+      <i
+        [class.bi]="goalUpdateMessage()!.includes('Error') ? 'bi-exclamation-circle' : 'bi-check-circle'"
+      ></i>
+      {{ goalUpdateMessage() }}
+    </div>
+  }
 
-      <!-- Table rows -->
-      @for (row of metricRows(); track row.metric) {
-        <div
-          class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] items-center gap-4 border-b border-slate-100 px-6 py-4 text-sm text-slate-600 last:border-b-0 hover:bg-slate-50 transition-colors"
-        >
-          <span class="font-semibold text-slate-900">{{ row.metric }}</span>
-          <span>{{ row.optionA }}</span>
-          <span>{{ row.optionB }}</span>
-          <div class="flex justify-end">
-            <span
-              class="px-3 py-1 text-[0.6rem] font-bold uppercase tracking-wider rounded-full text-center"
-              [class.bg-primary/10]="row.tone === 'primary' || row.tone === 'neutral'"
-              [class.text-primary]="row.tone === 'primary' || row.tone === 'neutral'"
-              [class.bg-secondary/10]="row.tone === 'secondary'"
-              [class.text-secondary]="row.tone === 'secondary'"
-            >
-              {{ row.outcome }}
-            </span>
+  <!-- ═══════ FALLBACK: NOT ENOUGH DATA ═══════ -->
+  @if (!isLoadingData() && !hasEnoughData()) {
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-12 text-center">
+      <div class="text-5xl mb-4 text-slate-200">📊</div>
+      <h3 class="text-lg font-bold text-slate-400">Datos insuficientes para comparar</h3>
+      <p class="text-slate-400 text-sm mt-1">
+        Se necesitan al menos 2 carreras en la base de datos para realizar una comparación.
+      </p>
+    </div>
+  }
+
+  <!-- ═══════ LOADING ═══════ -->
+  @if (isLoadingData()) {
+    <div class="grid gap-6 xl:grid-cols-2">
+      @for (i of [1, 2]; track i) {
+        <article class="bg-white rounded-2xl border border-slate-200 shadow-sm p-8">
+          <div class="skeleton h-4 w-20 rounded-full mb-4"></div>
+          <div class="skeleton h-8 w-48 rounded-lg mb-3"></div>
+          <div class="skeleton h-4 w-64 rounded-lg mb-6"></div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="skeleton h-24 rounded-xl"></div>
+            <div class="skeleton h-24 rounded-xl"></div>
           </div>
-        </div>
+          <div class="skeleton h-16 w-full rounded-xl mt-6"></div>
+        </article>
       }
     </div>
-  </article>
+  }
 
-  <!-- ═══════ MENTOR SUMMARY ═══════ -->
-  <article
-    class="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-8"
-  >
-    <div class="flex flex-wrap items-start gap-6">
-      <div
-        class="grid h-14 w-14 place-content-center rounded-2xl bg-purple-50 text-purple-600"
-      >
-        <i class="bi bi-stars text-2xl" aria-hidden="true"></i>
-      </div>
+  @if (hasEnoughData() && !isLoadingData()) {
+    <!-- ═══════ CAREER SELECTORS ═══════ -->
+    <div
+      id="career-selectors"
+      class="mb-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 flex flex-wrap items-center gap-4 md:gap-6"
+    >
+      <span class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+        Comparar:
+      </span>
 
-      <div class="min-w-0 flex-1">
-        <p class="text-xs font-bold uppercase tracking-wider text-purple-600">
-          Análisis del Mentor
-        </p>
-        <p class="mt-3 max-w-[1000px] text-lg leading-relaxed text-slate-600 font-medium italic">
-          "{{ mentorSummary }}"
-        </p>
-
-        <div class="mt-8 flex flex-wrap gap-4">
-          <button
-            type="button"
-            class="btn btn-primary rounded-xl px-8 py-2.5 text-sm font-bold border-none"
+      <div class="flex items-center gap-3">
+        <!-- Selector A -->
+        <div class="relative">
+          <select
+            class="appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm font-semibold text-slate-700 focus:border-primary focus:ring-2 focus:ring-primary/10 outline-none cursor-pointer transition-all hover:border-slate-300"
+            [value]="selectedIndexA()"
+            (change)="onSelectA(+$any($event.target).value)"
           >
-            Elegir Ruta {{ options()[0]?.title }}
-          </button>
-          <button
-            type="button"
-            class="px-8 py-2.5 text-sm font-bold rounded-xl border border-slate-200 text-slate-500 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+            @for (career of availableCareers(); track career.title; let i = $index) {
+              <option [value]="i" [disabled]="i === selectedIndexB()">
+                {{ career.title }}
+              </option>
+            }
+          </select>
+          <i class="bi bi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
+        </div>
+
+        <span class="text-slate-300 font-bold text-lg">vs</span>
+
+        <!-- Selector B -->
+        <div class="relative">
+          <select
+            class="appearance-none bg-slate-50 border border-slate-200 rounded-xl px-4 py-2.5 pr-10 text-sm font-semibold text-slate-700 focus:border-secondary focus:ring-2 focus:ring-secondary/10 outline-none cursor-pointer transition-all hover:border-slate-300"
+            [value]="selectedIndexB()"
+            (change)="onSelectB(+$any($event.target).value)"
           >
-            Simular Otra Ruta
-          </button>
+            @for (career of availableCareers(); track career.title; let i = $index) {
+              <option [value]="i" [disabled]="i === selectedIndexA()">
+                {{ career.title }}
+              </option>
+            }
+          </select>
+          <i class="bi bi-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none"></i>
         </div>
       </div>
     </div>
-  </article>
+
+    <!-- ═══════ OPTION CARDS ═══════ -->
+    <div class="mt-6 grid gap-6 xl:grid-cols-2">
+      @for (option of options(); track option.title) {
+        <article
+          class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+        >
+          <div class="p-8 pb-0">
+            <div class="flex items-center gap-2">
+              <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                {{ option.label }}
+              </p>
+              @if (isUserGoal(option.title)) {
+                <span class="px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wider rounded-full bg-primary/10 text-primary">
+                  Tu ruta
+                </span>
+              }
+            </div>
+            <h3 class="mt-2 text-3xl font-black text-slate-900 tracking-tight">
+              {{ option.title }}
+            </h3>
+            <p class="mt-3 max-w-[420px] text-sm font-medium leading-relaxed text-slate-500">
+              {{ option.subtitle }}
+            </p>
+          </div>
+
+          <div class="grid gap-4 p-8 sm:grid-cols-2">
+            <div class="rounded-xl bg-slate-50 border border-slate-200 p-5">
+              <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                Salario Promedio
+              </p>
+              <p
+                class="mt-2 text-2xl font-black tracking-tighter"
+                [class.text-primary]="option.accent === 'primary'"
+                [class.text-secondary]="option.accent === 'secondary'"
+              >
+                {{ option.salary === '$0' ? 'En análisis...' : option.salary }}
+              </p>
+            </div>
+            <div class="rounded-xl bg-slate-50 border border-slate-200 p-5">
+              <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                Crecimiento
+              </p>
+              <p
+                class="mt-2 text-2xl font-black tracking-tighter"
+                [class.text-primary]="option.accent === 'primary'"
+                [class.text-secondary]="option.accent === 'secondary'"
+              >
+                {{ option.growth }}
+              </p>
+              <p class="text-[0.6rem] text-slate-400 font-semibold mt-0.5">
+                {{ option.growthLabel }}
+              </p>
+            </div>
+          </div>
+
+          <div class="px-8 pb-4">
+            <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+              Stack Tecnológico
+            </p>
+            <div class="mt-4 flex flex-wrap gap-2">
+              @for (tech of option.stack.slice(0, 5); track tech) {
+                <span class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 text-slate-600">{{
+                  tech
+                }}</span>
+              }
+            </div>
+          </div>
+
+          <!-- Projection bars: real data from snapshots -->
+          @if (option.projectionBars.length > 0) {
+            <div class="px-8 pb-8 mt-4">
+              <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                Evolución Salarial
+              </p>
+              <div
+                class="mt-4 flex h-[80px] items-end gap-3 rounded-xl bg-slate-50 border border-slate-200 px-4 py-3"
+              >
+                @for (bar of option.projectionBars; track bar.year) {
+                  <div class="flex-1 flex flex-col items-center gap-1">
+                    <span class="text-[0.6rem] font-bold text-slate-500">
+                      ${{ (bar.salary / 1000) | number:'1.0-0' }}k
+                    </span>
+                    <div
+                      class="w-full rounded-t-lg transition-all duration-700"
+                      [class.bg-primary]="option.accent === 'primary'"
+                      [class.bg-secondary]="option.accent === 'secondary'"
+                      [style.height.%]="bar.height"
+                    ></div>
+                    <span class="text-[0.6rem] font-semibold text-slate-400">{{ bar.year }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+          } @else {
+            <div class="px-8 pb-8 mt-4">
+              <p class="text-[0.65rem] font-bold uppercase tracking-wider text-slate-400">
+                Evolución Salarial
+              </p>
+              <div class="mt-4 flex h-[80px] items-center justify-center rounded-xl bg-slate-50 border border-slate-200 px-4">
+                <span class="text-xs text-slate-400">Sin datos de evolución disponibles</span>
+              </div>
+            </div>
+          }
+        </article>
+      }
+    </div>
+
+    <!-- ═══════ COMPARISON TABLE ═══════ -->
+    <article
+      class="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-8"
+      aria-label="Comparación directa de métricas"
+    >
+      <h3 class="text-xl font-bold text-slate-900 tracking-tight">Comparación Directa</h3>
+
+      <div class="mt-8 overflow-hidden rounded-xl border border-slate-200">
+        <!-- Table header -->
+        <div
+          class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] gap-4 border-b border-slate-200 bg-slate-50 px-6 py-4 text-[0.65rem] font-bold uppercase tracking-wider text-slate-400"
+        >
+          <span>Métrica</span>
+          <span class="text-primary">{{ options()[0]?.title ?? 'Opción A' }}</span>
+          <span class="text-secondary">{{ options()[1]?.title ?? 'Opción B' }}</span>
+          <span class="text-right">Análisis</span>
+        </div>
+
+        <!-- Table rows -->
+        @for (row of metricRows(); track row.metric) {
+          <div
+            class="grid grid-cols-[1.2fr_1fr_1fr_1.1fr] items-center gap-4 border-b border-slate-100 px-6 py-4 text-sm text-slate-600 last:border-b-0 hover:bg-slate-50 transition-colors"
+          >
+            <span class="font-semibold text-slate-900">{{ row.metric }}</span>
+            <span>{{ row.optionA }}</span>
+            <span>{{ row.optionB }}</span>
+            <div class="flex justify-end">
+              <span
+                class="px-3 py-1 text-[0.6rem] font-bold uppercase tracking-wider rounded-full text-center"
+                [class.bg-primary/10]="row.tone === 'primary' || row.tone === 'neutral'"
+                [class.text-primary]="row.tone === 'primary' || row.tone === 'neutral'"
+                [class.bg-secondary/10]="row.tone === 'secondary'"
+                [class.text-secondary]="row.tone === 'secondary'"
+              >
+                {{ row.outcome }}
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    </article>
+
+    <!-- ═══════ MENTOR SUMMARY ═══════ -->
+    <article
+      class="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-8"
+    >
+      <div class="flex flex-wrap items-start gap-6">
+        <div
+          class="grid h-14 w-14 place-content-center rounded-2xl bg-purple-50 text-purple-600 shrink-0"
+        >
+          <i class="bi bi-stars text-2xl" aria-hidden="true"></i>
+        </div>
+
+        <div class="min-w-0 flex-1">
+          <p class="text-xs font-bold uppercase tracking-wider text-purple-600">
+            Análisis del Mentor
+          </p>
+          <p class="mt-3 max-w-[1000px] text-lg leading-relaxed text-slate-600 font-medium italic">
+            "{{ mentorSummary() }}"
+          </p>
+
+          <div class="mt-8 flex flex-wrap gap-4">
+            <button
+              type="button"
+              class="rounded-xl px-8 py-2.5 text-sm font-bold border-none transition-all"
+              [class.bg-primary]="!isUpdatingGoal()"
+              [class.text-white]="!isUpdatingGoal()"
+              [class.hover:bg-primary/90]="!isUpdatingGoal()"
+              [class.cursor-pointer]="!isUpdatingGoal()"
+              [class.opacity-60]="isUpdatingGoal()"
+              [class.cursor-not-allowed]="isUpdatingGoal()"
+              [disabled]="isUpdatingGoal()"
+              (click)="chooseRoute(0)"
+            >
+              @if (isUpdatingGoal()) {
+                <span class="loading loading-spinner loading-xs mr-2"></span>
+              }
+              Elegir Ruta {{ options()[0]?.title }}
+            </button>
+            <button
+              type="button"
+              class="px-8 py-2.5 text-sm font-bold rounded-xl border border-slate-200 text-slate-500 hover:border-primary hover:text-primary hover:bg-primary/5 transition-all"
+              (click)="scrollToSelectors()"
+            >
+              <i class="bi bi-arrow-up mr-1.5"></i>
+              Cambiar Selección
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+  }
 </section>
